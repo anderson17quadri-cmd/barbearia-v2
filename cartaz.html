@@ -29,6 +29,9 @@ canvas#preview { border-radius:20px; max-width:360px; width:100%; box-shadow:0 3
 </div>
 
 <script>
+const { createClient } = supabase
+const db = createClient(SUPA_URL, SUPA_KEY)
+
 const params = new URLSearchParams(window.location.search)
 const barb_id = params.get('b') || ''
 const barb_nome = decodeURIComponent(params.get('n') || 'A minha barbearia')

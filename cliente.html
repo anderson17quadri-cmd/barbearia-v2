@@ -288,7 +288,11 @@ input[type="date"] { width:100%; padding:14px; background:var(--surface2); borde
 <div class="toast" id="toast"></div>
 
 <script>
-// shared.js já inicializa db, toast, fmt_data, fmt_preco, badge
+// shared.js fornece toast, fmt_data, fmt_preco, badge, esc, etc.
+
+const { createClient } = supabase
+const db = createClient(SUPA_URL, SUPA_KEY)
+
 let user_atual = null
 let cliente_id = null
 let barb_selecionada = null

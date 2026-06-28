@@ -1,6 +1,6 @@
 // ===== SUPABASE =====
-var createClient = supabase.createClient
-var db = createClient(SUPA_URL, SUPA_KEY)
+// NOTA: db é inicializado em cada HTML, NÃO aqui
+// var createClient = supabase.createClient (removido daqui)
 
 // ===== RIPPLE EFFECT =====
 document.addEventListener('click', function(e) {

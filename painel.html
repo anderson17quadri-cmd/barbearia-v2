@@ -300,6 +300,9 @@
 <script>
 // shared.js já inicializa db, toast, fmt_data, fmt_preco, badge, etc.
 
+const { createClient } = supabase
+const db = createClient(SUPA_URL, SUPA_KEY)
+
 let barbearia_id = null
 let data_agenda = new Date()
 let filtro_status_atual = ''
