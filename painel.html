@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Agendamento.pt</title>
+<script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
+<script src="shared.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -438,8 +440,6 @@ input[type="time"], input[type="date"] { width:100%; padding:12px 14px; backgrou
 <div class="toast" id="toast"></div>
 
 <script>
-const SUPA_URL = 'https://ogtyffrokangokeqlufr.supabase.co'
-const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ndHlmZnJva2FuZ29rZXFsdWZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0NzE1NjIsImV4cCI6MjA5ODA0NzU2Mn0.fdHAQlS9OM0bEwjpPB0rJOSFPlhhX7gButoxPWy-Fts'
 const { createClient } = supabase
 const db = createClient(SUPA_URL, SUPA_KEY)
 
@@ -552,9 +552,9 @@ async function carregar_dashboard() {
   const el=document.getElementById('lista_proximos')
   if(!lista.length){el.innerHTML='<div class="empty"><div class="empty_ico"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-calendar"/></svg></div><div class="empty_txt">Sem agendamentos próximos</div></div>';return}
   el.innerHTML=lista.map(a=>`<div class="card_item">
-    <div class="card_item_header"><div><div class="card_item_nome">${a.clientes?.nome||'Cliente'}</div><div class="card_item_info">${fmt_data(a.data)} às ${fmt_hora(a.hora_inicio)}${a.hora_fim?' - '+fmt_hora(a.hora_fim):''}</div></div>${badge(a.status)}</div>
-    <div class="card_item_info" style="margin-top:4px">${a.servicos?.nome||'—'} · ${a.profissionais?.nome||'Qualquer'}</div>
-    <div class="card_item_info" style="margin-top:2px;color:var(--text2)">${a.clientes?.telefone||''}</div>
+    <div class="card_item_header"><div><div class="card_item_nome">${esc(a.clientes?.nome||'Cliente')}</div><div class="card_item_info">${fmt_data(a.data)} às ${fmt_hora(a.hora_inicio)}${a.hora_fim?' - '+fmt_hora(a.hora_fim):''}</div></div>${badge(a.status)}</div>
+    <div class="card_item_info" style="margin-top:4px">${esc(a.servicos?.nome||'—')} · ${esc(a.profissionais?.nome||'Qualquer')}</div>
+    <div class="card_item_info" style="margin-top:2px;color:var(--text2)">${esc(a.clientes?.telefone||'')}</div>
     ${a.status==='pendente'?`<div class="card_item_actions"><button class="btn btn_success btn_sm" onclick="mudar_status('${a.id}','confirmado')"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-check"/></svg> Confirmar</button><button class="btn btn_danger btn_sm" onclick="if(confirm('Cancelar?'))mudar_status('${a.id}','cancelado')"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-x"/></svg> Cancelar</button></div>`:''}
   </div>`).join('')
 }
@@ -568,8 +568,8 @@ async function carregar_agenda(){
   const el=document.getElementById('agenda_visual')
   if(!(data||[]).length){el.innerHTML='<div class="empty"><div class="empty_ico">🗓️</div><div class="empty_txt">Sem agendamentos</div></div>';return}
   el.innerHTML=(data||[]).map(a=>`<div class="card_item">
-    <div class="card_item_header"><div><div class="card_item_nome">${fmt_hora(a.hora_inicio)}${a.hora_fim?' - '+fmt_hora(a.hora_fim):''} · ${a.clientes?.nome||'Cliente'}</div><div class="card_item_info">${a.servicos?.nome||'—'} · ${a.profissionais?.nome||'Qualquer'}</div></div>${badge(a.status)}</div>
-    <div class="card_item_info" style="margin-top:4px;color:var(--text2)">${a.clientes?.telefone||''}</div>
+    <div class="card_item_header"><div><div class="card_item_nome">${fmt_hora(a.hora_inicio)}${a.hora_fim?' - '+fmt_hora(a.hora_fim):''} · ${esc(a.clientes?.nome||'Cliente')}</div><div class="card_item_info">${esc(a.servicos?.nome||'—')} · ${esc(a.profissionais?.nome||'Qualquer')}</div></div>${badge(a.status)}</div>
+    <div class="card_item_info" style="margin-top:4px;color:var(--text2)">${esc(a.clientes?.telefone||'')}</div>
     ${a.status==='pendente'?`<div class="card_item_actions"><button class="btn btn_success btn_sm" onclick="mudar_status('${a.id}','confirmado')"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-check"/></svg> Confirmar</button><button class="btn btn_danger btn_sm" onclick="if(confirm('Cancelar este agendamento?'))mudar_status('${a.id}','cancelado')"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-x"/></svg> Cancelar</button></div>`:''}
     ${a.status==='confirmado'?`<div class="card_item_actions"><button class="btn btn_outline btn_sm" onclick="mudar_status('${a.id}','concluido')"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-check"/></svg> Concluir</button><button class="btn btn_danger btn_sm" onclick="if(confirm('Cancelar este agendamento?'))mudar_status('${a.id}','cancelado')"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-x"/></svg> Cancelar</button></div>`:''}
   </div>`).join('')
@@ -589,9 +589,9 @@ async function carregar_agendamentos(){
   const el=document.getElementById('lista_agendamentos')
   if(!lista.length){el.innerHTML='<div class="empty"><div class="empty_ico"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-clipboard"/></svg></div><div class="empty_txt">Sem agendamentos</div></div>';return}
   el.innerHTML=lista.map(a=>`<div class="card_item">
-    <div class="card_item_header"><div><div class="card_item_nome">${a.clientes?.nome||'Cliente'}</div><div class="card_item_info">${fmt_data(a.data)} às ${fmt_hora(a.hora_inicio)}${a.hora_fim?' - '+fmt_hora(a.hora_fim):''}</div></div>${badge(a.status)}</div>
-    <div class="card_item_info" style="margin-top:4px">${a.servicos?.nome||'—'} · ${a.profissionais?.nome||'Qualquer profissional'}</div>
-    <div class="card_item_info" style="margin-top:2px;color:var(--text2)">${a.clientes?.telefone||''}</div>
+    <div class="card_item_header"><div><div class="card_item_nome">${esc(a.clientes?.nome||'Cliente')}</div><div class="card_item_info">${fmt_data(a.data)} às ${fmt_hora(a.hora_inicio)}${a.hora_fim?' - '+fmt_hora(a.hora_fim):''}</div></div>${badge(a.status)}</div>
+    <div class="card_item_info" style="margin-top:4px">${esc(a.servicos?.nome||'—')} · ${esc(a.profissionais?.nome||'Qualquer profissional')}</div>
+    <div class="card_item_info" style="margin-top:2px;color:var(--text2)">${esc(a.clientes?.telefone||'')}</div>
     <div class="card_item_actions">
       ${a.status==='pendente'?`<button class="btn btn_success btn_sm" onclick="mudar_status('${a.id}','confirmado')"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-check"/></svg> Confirmar</button><button class="btn btn_danger btn_sm" onclick="if(confirm('Cancelar?'))mudar_status('${a.id}','cancelado')"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-x"/></svg></button>`:''}
       ${a.status==='confirmado'?`<button class="btn btn_outline btn_sm" onclick="mudar_status('${a.id}','concluido')"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-check"/></svg> Concluir</button><button class="btn btn_danger btn_sm" onclick="if(confirm('Cancelar?'))mudar_status('${a.id}','cancelado')"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-x"/></svg></button>`:''}
@@ -611,8 +611,8 @@ async function carregar_servicos(){
   const el=document.getElementById('lista_servicos')
   if(!lista.length){el.innerHTML='<div class="empty"><div class="empty_ico"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-scissors"/></svg></div><div class="empty_txt">Ainda não tens serviços</div><div class="empty_txt" style="font-size:12px">Clica no + para adicionar</div></div>';return}
   el.innerHTML=lista.map(s=>`<div class="card_item">
-    <div class="card_item_header"><div><div class="card_item_nome">${s.nome}</div><div class="card_item_info">${s.descricao||''}</div></div><div style="text-align:right"><div style="font-weight:700;color:var(--accent)">${fmt_preco(s.preco)}</div><div class="card_item_info">${s.duracao||30} min</div></div></div>
-    <div class="card_item_actions"><button class="btn btn_outline btn_sm" onclick="editar_servico('${s.id}','${(s.nome||'').replace(/'/g,"\\'")}','${(s.descricao||'').replace(/'/g,"\\'")}','${s.preco}','${s.duracao}')">Editar</button><button class="btn btn_danger btn_sm" onclick="apagar_servico('${s.id}')">Apagar</button></div>
+    <div class="card_item_header"><div><div class="card_item_nome">${esc(s.nome)}</div><div class="card_item_info">${esc(s.descricao||'')}</div></div><div style="text-align:right"><div style="font-weight:700;color:var(--accent)">${fmt_preco(s.preco)}</div><div class="card_item_info">${s.duracao||30} min</div></div></div>
+    <div class="card_item_actions"><button class="btn btn_outline btn_sm" onclick="editar_servico('${s.id}','${esc((s.nome||'').replace(/'/g,"\\'"))}','${esc((s.descricao||'').replace(/'/g,"\\'"))}','${s.preco}','${s.duracao}')">Editar</button><button class="btn btn_danger btn_sm" onclick="apagar_servico('${s.id}')">Apagar</button></div>
   </div>`).join('')
 }
 
@@ -654,8 +654,8 @@ async function carregar_profissionais(){
   const el=document.getElementById('lista_profissionais')
   if(!lista.length){el.innerHTML='<div class="empty"><div class="empty_ico"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-users"/></svg></div><div class="empty_txt">Ainda não tens profissionais</div><div class="empty_txt" style="font-size:12px">Clica no + para adicionar</div></div>';return}
   el.innerHTML=lista.map(p=>`<div class="card_item">
-    <div class="card_item_header"><div><div class="card_item_nome">${p.nome}</div><div class="card_item_info">${p.especialidade||'—'} · ${p.telefone||'—'}</div></div></div>
-    <div class="card_item_actions"><button class="btn btn_outline btn_sm" onclick="editar_profissional('${p.id}','${(p.nome||'').replace(/'/g,"\\'")}','${(p.especialidade||'').replace(/'/g,"\\'")}','${p.telefone||''}')">Editar</button><button class="btn btn_danger btn_sm" onclick="apagar_profissional('${p.id}')">Apagar</button></div>
+    <div class="card_item_header"><div><div class="card_item_nome">${esc(p.nome)}</div><div class="card_item_info">${esc(p.especialidade||'—')} · ${esc(p.telefone||'—')}</div></div></div>
+    <div class="card_item_actions"><button class="btn btn_outline btn_sm" onclick="editar_profissional('${p.id}','${esc((p.nome||'').replace(/'/g,"\\'"))}','${esc((p.especialidade||'').replace(/'/g,"\\'"))}','${esc(p.telefone||'')}')">Editar</button><button class="btn btn_danger btn_sm" onclick="apagar_profissional('${p.id}')">Apagar</button></div>
   </div>`).join('')
 }
 function abrir_modal_profissional(){
@@ -691,7 +691,7 @@ async function carregar_clientes(){
   const lista=data||[]
   const el=document.getElementById('lista_clientes')
   if(!lista.length){el.innerHTML='<div class="empty"><div class="empty_ico"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-user"/></svg></div><div class="empty_txt">Sem clientes ainda</div></div>';return}
-  el.innerHTML=lista.map(c=>`<div class="card_item"><div class="card_item_nome">${c.nome}</div><div class="card_item_info">${c.telefone||'—'} · ${c.email||'—'}</div></div>`).join('')
+  el.innerHTML=lista.map(c=>`<div class="card_item"><div class="card_item_nome">${esc(c.nome)}</div><div class="card_item_info">${esc(c.telefone||'—')} · ${esc(c.email||'—')}</div></div>`).join('')
 }
 
 // HORÁRIOS
@@ -770,7 +770,7 @@ function ver_qr() {
 function preview_logo(input) {
   const file = input.files[0]
   if(!file) return
-  if(file.size > 2 * 1024 * 1024) { toast('Imagem demasiado grande. Máx 2MB', 'erro'); return }
+  if(file.size > 3 * 1024 * 1024) { toast('Imagem demasiado grande. Máx 3MB', 'erro'); return }
   const reader = new FileReader()
   reader.onload = (e) => {
     const preview = document.getElementById('logo_preview')
@@ -787,7 +787,7 @@ async function upload_logo() {
   const ext = file.name.split('.').pop().toLowerCase()
   const path = 'logos/' + barbearia_id + '.' + ext
   const { error } = await db.storage.from('barbearias').upload(path, file, { upsert: true })
-  if(error) { alert('Erro upload: ' + JSON.stringify(error)); return null }
+  if(error) { toast('Erro no upload da logo', 'erro'); return null }
   return 'https://ogtyffrokangokeqlufr.supabase.co/storage/v1/object/public/barbearias/' + path
 }
 
