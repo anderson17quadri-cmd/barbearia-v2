@@ -207,7 +207,7 @@ footer{padding:40px 24px;border-top:1px solid var(--border);text-align:center}
     </div>
   </div>
 
-  <div class="hero_visual reveal">
+  <div class="hero_visual reveal-scale">
     <div class="stat_cards">
       <div class="stat_card"><div class="stat_num">8</div><div class="stat_lbl">marcações hoje</div></div>
       <div class="stat_card"><div class="stat_num">€312</div><div class="stat_lbl">faturado hoje</div></div>
@@ -252,7 +252,7 @@ footer{padding:40px 24px;border-top:1px solid var(--border);text-align:center}
 <section class="sec" id="como-funciona">
   <div class="sec_eyebrow">Funcionalidades</div>
   <h2 class="sec_h2">Tudo o que uma barbearia profissional precisa</h2>
-  <div class="features_lista reveal">
+  <div class="features_lista reveal-left">
     <div class="feat"><div class="feat_num">01</div><div><div class="feat_titulo">Agenda online 24 horas</div><div class="feat_desc">Os teus clientes marcam a qualquer hora, mesmo quando estás a dormir ou a cortar cabelo. A agenda actualiza em tempo real.</div></div></div>
     <div class="feat"><div class="feat_num">02</div><div><div class="feat_titulo">App para os teus clientes</div><div class="feat_desc">Cada cliente tem acesso a uma app onde vê os teus horários disponíveis, escolhe o serviço e confirma a marcação em segundos.</div></div></div>
     <div class="feat"><div class="feat_num">03</div><div><div class="feat_titulo">Lembretes que eliminam faltas</div><div class="feat_desc">O sistema lembra os clientes automaticamente antes da hora marcada. Sem surpresas, sem tempo desperdiçado.</div></div></div>
@@ -262,7 +262,7 @@ footer{padding:40px 24px;border-top:1px solid var(--border);text-align:center}
 </section>
 
 <!-- NUMEROS -->
-<section class="nums reveal">
+<section class="nums reveal-scale">
   <div class="nums_grid">
     <div class="num_item"><div class="num_val">2h</div><div class="num_lbl">poupadas por dia em mensagens</div></div>
     <div class="num_item"><div class="num_val">30%</div><div class="num_lbl">menos faltas com lembretes</div></div>
@@ -356,17 +356,25 @@ footer{padding:40px 24px;border-top:1px solid var(--border);text-align:center}
   <div class="f_txt">© 2026 Agendamento.pt · Todos os direitos reservados<br>Feito com ❤️ em Portugal</div>
 </footer>
 
+<script src="config.js"></script>
 <script>
 // Nav scroll
 window.addEventListener('scroll',()=>{
-  document.getElementById('nav').classList.toggle('scrolled',window.scrollY>50)
+  var nav = document.getElementById('nav')
+  nav.classList.toggle('scrolled',window.scrollY>50)
 })
 
 // Reveal on scroll
-const obs = new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible') })
+var obs = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('visible') })
 },{threshold:.1})
-document.querySelectorAll('.reveal').forEach(el=>obs.observe(el))
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(function(el){ obs.observe(el) })
+
+// Parallax hero
+window.addEventListener('scroll',function(){
+  var bg = document.querySelector('.hero_bg')
+  if(bg) bg.style.transform = 'translateY(' + (window.scrollY * 0.3) + 'px)'
+})
 
 // Toggle precos
 let modo='mensal'
