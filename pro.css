@@ -314,3 +314,10 @@ body::after {
   80% { opacity: 0.2; }
   100% { transform: translateY(-110vh) scale(1.5); opacity: 0; }
 }
+
+/* Phosphor Icons */
+.ph { font-family: 'Phosphor' !important; font-size: inherit; font-style: normal; display: inline-block; }
+.ph-fill { font-family: 'Phosphor-Fill' !important; }
+
+/* Converter emojis comuns para ícones via CSS - mantém compatibilidade */
+.ico-scissors::before { content: '\e000'; font-family: 'Phosphor'; }
