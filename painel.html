@@ -7,6 +7,7 @@
 <title>Agendamento.pt</title>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
+<script src="shared.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css">
 <style>
@@ -702,7 +703,7 @@ async function upload_logo() {
   const path = 'logos/' + barbearia_id + '.' + ext
   const { error } = await db.storage.from('barbearias').upload(path, file, { upsert: true })
   if(error) { alert('Erro upload: ' + JSON.stringify(error)); return null }
-  return 'https://ogtyffrokangokeqlufr.supabase.co/storage/v1/object/public/barbearias/' + path
+  return SUPA_URL + '/storage/v1/object/public/barbearias/' + path
 }
 
 async function excluir_logo() {
