@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agendamento.pt — A tua barbearia a sério</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
 <style>
+/* LANDING PAGE — estilos especificos */
 :root{--gold:#C9A84C;--gold2:#E8C96A;--dark:#080808;--dark2:#101010;--dark3:#181818;--border:#1e1e1e;--text:#f0f0f0;--text2:#777;--green:#2ecc71}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -175,6 +177,7 @@ footer{padding:40px 24px;border-top:1px solid var(--border);text-align:center}
 </style>
 </head>
 <body>
+<div id="offline_banner" class="msg_erro" style="position:fixed;top:0;left:0;right:0;z-index:9999;display:none;text-align:center;border-radius:0;margin:0;padding:8px">⚠️ Sem ligação à internet</div>
 
 <nav id="nav">
   <div class="nav_logo">Agenda<span>mento</span>.pt</div>
@@ -379,6 +382,13 @@ function trocar(){
   document.getElementById('ps_solo').textContent=a?'Poupa €39,80/ano':''
   document.getElementById('ps_pro').textContent=a?'Poupa €79,80/ano':''
   document.getElementById('ps_bus').textContent=a?'Poupa €139,80/ano':''
+}
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function() {
+    navigator.serviceWorker.register("sw.js").catch(function(){})
+  })
 }
 </script>
 </body>

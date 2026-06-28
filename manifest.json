@@ -2,7 +2,7 @@
   "name": "Agendamento.pt",
   "short_name": "Agendamento",
   "description": "Marca o teu próximo corte em segundos",
-  "start_url": "/pre-os-/cliente.html",
+  "start_url": "/barbearia-v2/cliente.html",
   "display": "standalone",
   "background_color": "#080808",
   "theme_color": "#C9A84C",

@@ -8,80 +8,26 @@
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
 <style>
-:root {
-  --bg: #080808;
-  --surface: #101010;
-  --surface2: #181818;
-  --border: #222;
-  --accent: #C9A84C;
-  --accent2: #E8C96A;
-  --text: #f0f0f0;
-  --text2: #777;
-  --text3: #444;
-  --success: #2ecc71;
-  --danger: #e74c3c;
-  --radius: 14px;
-  --bottom-bar: 68px;
-}
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; min-height:100vh; max-width:480px; margin:0 auto; }
-
 /* ===== AUTH ===== */
-#tela_auth {
-  min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  padding:28px; background:radial-gradient(ellipse at 50% -20%, rgba(201,168,76,.12) 0%, #080808 60%);
-}
+#tela_auth { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:28px; background:radial-gradient(ellipse at 50% -20%, rgba(201,168,76,.12) 0%, #080808 60%); }
 .logo { font-family:'Playfair Display',serif; font-size:34px; font-weight:700; text-align:center; margin-bottom:6px; letter-spacing:.5px; }
 .logo span { color:var(--accent); font-style:italic; }
-.auth_sub { color:var(--text2); font-size:13px; text-align:center; margin-bottom:36px; letter-spacing:.5px; text-transform:uppercase; font-size:11px; font-weight:600; }
+.auth_sub { color:var(--text2); font-size:11px; text-align:center; margin-bottom:36px; letter-spacing:.5px; text-transform:uppercase; font-weight:600; }
 .auth_box { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:24px; padding:28px; box-shadow:0 40px 80px rgba(0,0,0,.4); }
 .tabs_auth { display:flex; background:var(--surface2); border-radius:12px; padding:4px; margin-bottom:28px; gap:4px; }
 .tab_auth { flex:1; padding:11px; text-align:center; border-radius:9px; cursor:pointer; font-size:14px; font-weight:700; color:var(--text2); border:none; background:transparent; transition:.2s; letter-spacing:.3px; }
 .tab_auth.active { background:var(--accent); color:#000; }
-.field { margin-bottom:16px; }
-.field label { display:block; font-size:10px; font-weight:700; color:var(--text2); margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; }
-.field input { width:100%; padding:15px; background:var(--surface2); border:1.5px solid var(--border); border-radius:12px; color:var(--text); font-size:15px; outline:none; transition:.2s; font-family:'Inter',sans-serif; }
-.field input:focus { border-color:var(--accent); background:#1a1500; }
-.btn_primary { width:100%; padding:16px; background:linear-gradient(135deg, var(--accent), var(--accent2)); color:#000; border:none; border-radius:12px; font-weight:800; font-size:15px; cursor:pointer; font-family:'Inter',sans-serif; margin-top:4px; letter-spacing:.3px; }
-.msg_erro { background:#150808; border:1px solid rgba(231,76,60,.3); color:#e88; border-radius:10px; padding:12px 16px; font-size:13px; margin-top:12px; display:none; }
-.msg_ok { background:#081510; border:1px solid rgba(46,204,113,.3); color:#6da; border-radius:10px; padding:12px 16px; font-size:13px; margin-top:12px; display:none; }
 
 /* ===== APP ===== */
 #tela_app { display:none; padding-bottom:var(--bottom-bar); }
 
-/* TOPBAR */
-.topbar {
-  position:sticky; top:0; z-index:100;
-  background:rgba(8,8,8,.95); border-bottom:1px solid var(--border);
-  padding:16px 20px; display:flex; align-items:center; justify-content:space-between;
-  backdrop-filter:blur(20px);
-}
-.topbar_logo { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; letter-spacing:.5px; }
-.topbar_logo span { color:var(--accent); font-style:italic; }
-.topbar_right { display:flex; align-items:center; gap:10px; }
+/* ===== TOPBAR ===== */
 .topbar_nome { font-size:12px; color:var(--text2); }
+.topbar_right { display:flex; align-items:center; gap:10px; }
 
-/* BOTTOM NAV */
-.bottom_nav {
-  position:fixed; bottom:0; left:50%; transform:translateX(-50%);
-  width:100%; max-width:480px;
-  background:var(--surface); border-top:1px solid var(--border);
-  display:flex; height:var(--bottom-bar); z-index:100;
-}
-.nav_btn { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; cursor:pointer; color:var(--text3); border:none; background:transparent; transition:.15s; }
-.nav_btn.active { color:var(--accent); }
-.nav_btn .ico { font-size:20px; }
-.nav_btn .lbl { font-size:10px; font-weight:600; }
-
-/* PAGES */
-.page { display:none; padding:16px; }
-.page.active { display:block; }
-.page_header { margin-bottom:20px; }
-.page_titulo { font-family:'Playfair Display',serif; font-size:26px; font-weight:700; letter-spacing:-.3px; }
-.page_sub { color:var(--text2); font-size:13px; margin-top:2px; }
-
-/* STAT CARDS */
+/* ===== STAT CARDS ===== */
 .stats_grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
 .stat_card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px; position:relative; overflow:hidden; }
 .stat_card::after { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, var(--accent), var(--accent2)); }
@@ -89,87 +35,26 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; 
 .stat_valor { font-family:'Playfair Display',serif; font-size:32px; font-weight:700; line-height:1; color:var(--accent); }
 .stat_sub { font-size:11px; color:var(--text3); margin-top:4px; }
 
-/* CARDS LISTA */
-.lista { display:flex; flex-direction:column; gap:10px; }
-.card_item { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px; transition:.15s; } .card_item:active { background:var(--surface2); }
-.card_item_header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; }
-.card_item_nome { font-weight:600; font-size:15px; }
-.card_item_info { font-size:13px; color:var(--text2); margin-top:2px; }
-.card_item_actions { display:flex; gap:8px; margin-top:12px; }
-
-/* BADGES */
-.badge { display:inline-flex; align-items:center; padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700; }
-.badge_pendente { background:rgba(230,126,34,.12); color:#e89043; border:1px solid rgba(230,126,34,.2); }
-.badge_confirmado { background:rgba(46,204,113,.12); color:#2ecc71; border:1px solid rgba(46,204,113,.2); }
-.badge_cancelado { background:rgba(192,57,43,.15); color:#c0392b; }
-.badge_concluido { background:rgba(100,100,200,.15); color:#aab; }
-
-/* BOTÕES */
-.btn { padding:9px 16px; border-radius:8px; border:none; cursor:pointer; font-size:13px; font-weight:600; font-family:'Inter',sans-serif; transition:.15s; display:inline-flex; align-items:center; gap:6px; }
-.btn_gold { background:var(--accent); color:#000; }
-.btn_outline { background:transparent; border:1px solid var(--border); color:var(--text2); }
-.btn_danger { background:rgba(192,57,43,.1); color:var(--danger); border:1px solid rgba(192,57,43,.2); }
-.btn_success { background:rgba(45,158,107,.1); color:var(--success); border:1px solid rgba(45,158,107,.2); }
-.btn_full { width:100%; justify-content:center; padding:13px; font-size:15px; }
-.btn_sm { padding:6px 12px; font-size:12px; }
-
-/* FAB */
-.fab { position:fixed; bottom:calc(var(--bottom-bar) + 16px); right:20px; width:52px; height:52px; background:var(--accent); border-radius:50%; display:none; align-items:center; justify-content:center; font-size:24px; color:#000; cursor:pointer; box-shadow:0 4px 20px rgba(201,168,76,.4); z-index:99; border:none; }
-.fab.show { display:flex; }
-
-/* MODAL */
-.modal_overlay { position:fixed; inset:0; background:rgba(0,0,0,.8); z-index:200; display:none; align-items:flex-end; }
-.modal_overlay.open { display:flex; }
-.modal { background:var(--surface); border-radius:24px 24px 0 0; padding:28px; width:100%; max-height:90vh; overflow-y:auto; border-top:1px solid var(--border); }
-.modal_handle { width:40px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 20px; }
-.modal_titulo { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; margin-bottom:20px; letter-spacing:-.3px; }
-
-/* SECÇÃO */
-.section_card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:12px; }
-.section_label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--accent); margin-bottom:14px; }
-
-/* AGENDA */
+/* ===== AGENDA ===== */
 .agenda_nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
 .agenda_data { font-weight:700; font-size:15px; }
 .agenda_btn { width:36px; height:36px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; }
 
-/* HORÁRIOS */
+/* ===== HORÁRIOS ===== */
 .dia_card { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px; margin-bottom:8px; }
 .dia_header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
 .dia_nome { font-size:13px; font-weight:700; }
-.toggle_wrap { display:flex; align-items:center; gap:8px; }
-.toggle { width:40px; height:22px; background:var(--border); border-radius:11px; position:relative; cursor:pointer; transition:.2s; flex-shrink:0; }
-.toggle.on { background:var(--accent); }
-.toggle::after { content:''; position:absolute; width:18px; height:18px; background:#fff; border-radius:50%; top:2px; left:2px; transition:.2s; }
-.toggle.on::after { left:20px; }
-.toggle_label { font-size:12px; color:var(--text2); }
 .dia_horas { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
 
-/* LOADING / EMPTY */
-.loading { display:flex; align-items:center; justify-content:center; padding:40px; color:var(--text3); gap:10px; }
-.spinner { width:20px; height:20px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .7s linear infinite; }
-@keyframes spin { to { transform:rotate(360deg); } }
-.empty { text-align:center; padding:40px 20px; }
-.empty_ico { font-size:44px; margin-bottom:12px; }
-.empty_txt { color:var(--text2); font-size:14px; margin-bottom:16px; }
+/* ===== LISTA ===== */
+.lista { display:flex; flex-direction:column; gap:10px; }
 
-/* TOAST */
-.toast { position:fixed; bottom:calc(var(--bottom-bar) + 12px); left:50%; transform:translateX(-50%); background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:12px 20px; font-size:14px; z-index:999; display:none; white-space:nowrap; }
-.toast.show { display:block; }
-.toast.ok { border-color:var(--success); color:#6da; }
-.toast.erro { border-color:var(--danger); color:#e88; }
-
-/* FILTROS */
-.filtros { display:flex; gap:8px; margin-bottom:16px; overflow-x:auto; padding-bottom:4px; }
-.filtro_chip { padding:7px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:20px; font-size:12px; font-weight:600; color:var(--text2); cursor:pointer; white-space:nowrap; flex-shrink:0; }
-.filtro_chip.active { background:var(--accent); color:#000; border-color:var(--accent); }
-
-select { width:100%; padding:12px 14px; background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; color:var(--text); font-size:14px; outline:none; font-family:'Inter',sans-serif; appearance:none; }
-textarea { width:100%; padding:12px 14px; background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; color:var(--text); font-size:14px; outline:none; font-family:'Inter',sans-serif; resize:vertical; }
-input[type="time"], input[type="date"] { width:100%; padding:12px 14px; background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; color:var(--text); font-size:14px; outline:none; font-family:'Inter',sans-serif; }
+/* ===== PAGE HEADER ===== */
+.page_header { margin-bottom:20px; }
 </style>
 </head>
 <body>
+<div id="offline_banner" class="msg_erro" style="position:fixed;top:0;left:0;right:0;z-index:9999;display:none;text-align:center;border-radius:0;margin:0;padding:8px">⚠️ Sem ligação à internet</div>
 
 <!-- AUTH -->
 <div id="tela_auth">
@@ -412,26 +297,12 @@ input[type="time"], input[type="date"] { width:100%; padding:12px 14px; backgrou
 <div class="toast" id="toast"></div>
 
 <script>
-const { createClient } = supabase
-const db = createClient(SUPA_URL, SUPA_KEY)
+// shared.js já inicializa db, toast, fmt_data, fmt_preco, badge, etc.
 
 let barbearia_id = null
 let data_agenda = new Date()
 let filtro_status_atual = ''
 let pagina_atual = 'dashboard'
-
-function toast(msg, tipo='ok') {
-  const t = document.getElementById('toast')
-  t.textContent = msg; t.className = 'toast show ' + tipo
-  setTimeout(() => t.className = 'toast', 2500)
-}
-function fmt_data(d) { return new Date(d+'T12:00:00').toLocaleDateString('pt-PT',{weekday:'short',day:'numeric',month:'short'}) }
-function fmt_hora(h) { return h ? h.substring(0,5) : '—' }
-function fmt_preco(v) { return v ? '€'+parseFloat(v).toFixed(2) : '—' }
-function badge(s) {
-  const m={pendente:'badge_pendente',confirmado:'badge_confirmado',cancelado:'badge_cancelado',concluido:'badge_concluido'}
-  return `<span class="badge ${m[s]||''}">${s}</span>`
-}
 
 // AUTH
 function trocar_tab(t) {
@@ -523,12 +394,28 @@ async function carregar_dashboard() {
   const lista=r5.data||[]
   const el=document.getElementById('lista_proximos')
   if(!lista.length){el.innerHTML='<div class="empty"><div class="empty_ico">📅</div><div class="empty_txt">Sem agendamentos próximos</div></div>';return}
-  el.innerHTML=lista.map(a=>`<div class="card_item">
-    <div class="card_item_header"><div><div class="card_item_nome">${a.clientes?.nome||'Cliente'}</div><div class="card_item_info">${fmt_data(a.data)} às ${fmt_hora(a.hora_inicio)}${a.hora_fim?' - '+fmt_hora(a.hora_fim):''}</div></div>${badge(a.status)}</div>
-    <div class="card_item_info" style="margin-top:4px">${a.servicos?.nome||'—'} · ${a.profissionais?.nome||'Qualquer'}</div>
-    <div class="card_item_info" style="margin-top:2px;color:var(--text2)">${a.clientes?.telefone||''}</div>
-    ${a.status==='pendente'?`<div class="card_item_actions"><button class="btn btn_success btn_sm" onclick="mudar_status('${a.id}','confirmado')">✓ Confirmar</button><button class="btn btn_danger btn_sm" onclick="if(confirm('Cancelar?'))mudar_status('${a.id}','cancelado')">✕ Cancelar</button></div>`:''}
-  </div>`).join('')
+  el.innerHTML = lista.map(function(a) {
+    var nome_cli = a.clientes ? a.clientes.nome : 'Cliente'
+    var nome_srv = a.servicos ? a.servicos.nome : '—'
+    var nome_pro = a.profissionais ? a.profissionais.nome : 'Qualquer'
+    var tel = a.clientes ? (a.clientes.telefone || '') : ''
+    var data_txt = fmt_data(a.data)
+    var hora_txt = fmt_hora(a.hora_inicio)
+    var hora_fim_txt = a.hora_fim ? ' - ' + fmt_hora(a.hora_fim) : ''
+    var html = '<div class="card_item">'
+      + '<div class="card_item_header"><div>'
+      + '<div class="card_item_nome">' + esc(nome_cli) + '</div>'
+      + '<div class="card_item_info">' + esc(data_txt) + ' às ' + esc(hora_txt) + esc(hora_fim_txt) + '</div>'
+      + '</div>' + badge(a.status) + '</div>'
+      + '<div class="card_item_info" style="margin-top:4px">' + esc(nome_srv) + ' · ' + esc(nome_pro) + '</div>'
+      + (tel ? '<div class="card_item_info" style="margin-top:2px;color:var(--text2)">' + esc(tel) + '</div>' : '')
+    if (a.status === 'pendente') {
+      html += '<div class="card_item_actions"><button class="btn btn_success btn_sm" onclick="mudar_status(\'' + esc(a.id) + '\',\'confirmado\')">✓ Confirmar</button>'
+      html += '<button class="btn btn_danger btn_sm" onclick="if(confirm(\'Cancelar?\'))mudar_status(\'' + esc(a.id) + '\',\'cancelado\')">✕ Cancelar</button></div>'
+    }
+    html += '</div>'
+    return html
+  }).join('')
 }
 
 // AGENDA
@@ -539,12 +426,30 @@ async function carregar_agenda(){
   const{data}=await db.from('agendamentos').select('*,servicos(nome),profissionais(nome),clientes(nome,telefone)').eq('barbearia_id',barbearia_id).eq('data',d).order('hora_inicio')
   const el=document.getElementById('agenda_visual')
   if(!(data||[]).length){el.innerHTML='<div class="empty"><div class="empty_ico">🗓️</div><div class="empty_txt">Sem agendamentos</div></div>';return}
-  el.innerHTML=(data||[]).map(a=>`<div class="card_item">
-    <div class="card_item_header"><div><div class="card_item_nome">${fmt_hora(a.hora_inicio)}${a.hora_fim?' - '+fmt_hora(a.hora_fim):''} · ${a.clientes?.nome||'Cliente'}</div><div class="card_item_info">${a.servicos?.nome||'—'} · ${a.profissionais?.nome||'Qualquer'}</div></div>${badge(a.status)}</div>
-    <div class="card_item_info" style="margin-top:4px;color:var(--text2)">${a.clientes?.telefone||''}</div>
-    ${a.status==='pendente'?`<div class="card_item_actions"><button class="btn btn_success btn_sm" onclick="mudar_status('${a.id}','confirmado')">✓ Confirmar</button><button class="btn btn_danger btn_sm" onclick="if(confirm('Cancelar este agendamento?'))mudar_status('${a.id}','cancelado')">✕ Cancelar</button></div>`:''}
-    ${a.status==='confirmado'?`<div class="card_item_actions"><button class="btn btn_outline btn_sm" onclick="mudar_status('${a.id}','concluido')">✓ Concluir</button><button class="btn btn_danger btn_sm" onclick="if(confirm('Cancelar este agendamento?'))mudar_status('${a.id}','cancelado')">✕ Cancelar</button></div>`:''}
-  </div>`).join('')
+  el.innerHTML=(data||[]).map(function(a) {
+    var nome_cli = a.clientes ? a.clientes.nome : 'Cliente'
+    var nome_srv = a.servicos ? a.servicos.nome : '—'
+    var nome_pro = a.profissionais ? a.profissionais.nome : 'Qualquer'
+    var tel = a.clientes ? (a.clientes.telefone || '') : ''
+    var hora_txt = fmt_hora(a.hora_inicio)
+    var hora_fim_txt = a.hora_fim ? ' - ' + fmt_hora(a.hora_fim) : ''
+    var html = '<div class="card_item">'
+      + '<div class="card_item_header"><div>'
+      + '<div class="card_item_nome">' + esc(hora_txt) + esc(hora_fim_txt) + ' · ' + esc(nome_cli) + '</div>'
+      + '<div class="card_item_info">' + esc(nome_srv) + ' · ' + esc(nome_pro) + '</div>'
+      + '</div>' + badge(a.status) + '</div>'
+      + (tel ? '<div class="card_item_info" style="margin-top:4px;color:var(--text2)">' + esc(tel) + '</div>' : '')
+    if (a.status === 'pendente') {
+      html += '<div class="card_item_actions"><button class="btn btn_success btn_sm" onclick="mudar_status(\'' + esc(a.id) + '\',\'confirmado\')">✓ Confirmar</button>'
+      html += '<button class="btn btn_danger btn_sm" onclick="if(confirm(\'Cancelar este agendamento?\'))mudar_status(\'' + esc(a.id) + '\',\'cancelado\')">✕ Cancelar</button></div>'
+    }
+    if (a.status === 'confirmado') {
+      html += '<div class="card_item_actions"><button class="btn btn_outline btn_sm" onclick="mudar_status(\'' + esc(a.id) + '\',\'concluido\')">✓ Concluir</button>'
+      html += '<button class="btn btn_danger btn_sm" onclick="if(confirm(\'Cancelar este agendamento?\'))mudar_status(\'' + esc(a.id) + '\',\'cancelado\')">✕ Cancelar</button></div>'
+    }
+    html += '</div>'
+    return html
+  }).join('')
 }
 
 // AGENDAMENTOS
@@ -560,15 +465,33 @@ async function carregar_agendamentos(){
   const lista=data||[]
   const el=document.getElementById('lista_agendamentos')
   if(!lista.length){el.innerHTML='<div class="empty"><div class="empty_ico">📋</div><div class="empty_txt">Sem agendamentos</div></div>';return}
-  el.innerHTML=lista.map(a=>`<div class="card_item">
-    <div class="card_item_header"><div><div class="card_item_nome">${a.clientes?.nome||'Cliente'}</div><div class="card_item_info">${fmt_data(a.data)} às ${fmt_hora(a.hora_inicio)}${a.hora_fim?' - '+fmt_hora(a.hora_fim):''}</div></div>${badge(a.status)}</div>
-    <div class="card_item_info" style="margin-top:4px">${a.servicos?.nome||'—'} · ${a.profissionais?.nome||'Qualquer profissional'}</div>
-    <div class="card_item_info" style="margin-top:2px;color:var(--text2)">${a.clientes?.telefone||''}</div>
-    <div class="card_item_actions">
-      ${a.status==='pendente'?`<button class="btn btn_success btn_sm" onclick="mudar_status('${a.id}','confirmado')">✓ Confirmar</button><button class="btn btn_danger btn_sm" onclick="if(confirm('Cancelar?'))mudar_status('${a.id}','cancelado')">✕</button>`:''}
-      ${a.status==='confirmado'?`<button class="btn btn_outline btn_sm" onclick="mudar_status('${a.id}','concluido')">✓ Concluir</button><button class="btn btn_danger btn_sm" onclick="if(confirm('Cancelar?'))mudar_status('${a.id}','cancelado')">✕</button>`:''}
-    </div>
-  </div>`).join('')
+  el.innerHTML=lista.map(function(a) {
+    var nome_cli = a.clientes ? a.clientes.nome : 'Cliente'
+    var nome_srv = a.servicos ? a.servicos.nome : '—'
+    var nome_pro = a.profissionais ? a.profissionais.nome : 'Qualquer profissional'
+    var tel = a.clientes ? (a.clientes.telefone || '') : ''
+    var data_txt = fmt_data(a.data)
+    var hora_txt = fmt_hora(a.hora_inicio)
+    var hora_fim_txt = a.hora_fim ? ' - ' + fmt_hora(a.hora_fim) : ''
+    var html = '<div class="card_item">'
+      + '<div class="card_item_header"><div>'
+      + '<div class="card_item_nome">' + esc(nome_cli) + '</div>'
+      + '<div class="card_item_info">' + esc(data_txt) + ' às ' + esc(hora_txt) + esc(hora_fim_txt) + '</div>'
+      + '</div>' + badge(a.status) + '</div>'
+      + '<div class="card_item_info" style="margin-top:4px">' + esc(nome_srv) + ' · ' + esc(nome_pro) + '</div>'
+      + (tel ? '<div class="card_item_info" style="margin-top:2px;color:var(--text2)">' + esc(tel) + '</div>' : '')
+      + '<div class="card_item_actions">'
+    if (a.status === 'pendente') {
+      html += '<button class="btn btn_success btn_sm" onclick="mudar_status(\'' + esc(a.id) + '\',\'confirmado\')">✓ Confirmar</button>'
+      html += '<button class="btn btn_danger btn_sm" onclick="if(confirm(\'Cancelar?\'))mudar_status(\'' + esc(a.id) + '\',\'cancelado\')">✕</button>'
+    }
+    if (a.status === 'confirmado') {
+      html += '<button class="btn btn_outline btn_sm" onclick="mudar_status(\'' + esc(a.id) + '\',\'concluido\')">✓ Concluir</button>'
+      html += '<button class="btn btn_danger btn_sm" onclick="if(confirm(\'Cancelar?\'))mudar_status(\'' + esc(a.id) + '\',\'cancelado\')">✕</button>'
+    }
+    html += '</div></div>'
+    return html
+  }).join('')
 }
 
 async function mudar_status(id,status){
@@ -582,10 +505,17 @@ async function carregar_servicos(){
   const lista=data||[]
   const el=document.getElementById('lista_servicos')
   if(!lista.length){el.innerHTML='<div class="empty"><div class="empty_ico">✂️</div><div class="empty_txt">Ainda não tens serviços</div><div class="empty_txt" style="font-size:12px">Clica no + para adicionar</div></div>';return}
-  el.innerHTML=lista.map(s=>`<div class="card_item">
-    <div class="card_item_header"><div><div class="card_item_nome">${s.nome}</div><div class="card_item_info">${s.descricao||''}</div></div><div style="text-align:right"><div style="font-weight:700;color:var(--accent)">${fmt_preco(s.preco)}</div><div class="card_item_info">${s.duracao||30} min</div></div></div>
-    <div class="card_item_actions"><button class="btn btn_outline btn_sm" onclick="editar_servico('${s.id}','${(s.nome||'').replace(/'/g,"\\'")}','${(s.descricao||'').replace(/'/g,"\\'")}','${s.preco}','${s.duracao}')">Editar</button><button class="btn btn_danger btn_sm" onclick="apagar_servico('${s.id}')">Apagar</button></div>
-  </div>`).join('')
+  el.innerHTML=lista.map(function(s) {
+    var html = '<div class="card_item">'
+      + '<div class="card_item_header"><div>'
+      + '<div class="card_item_nome">' + esc(s.nome) + '</div>'
+      + '<div class="card_item_info">' + esc(s.descricao||'') + '</div>'
+      + '</div><div style="text-align:right"><div style="font-weight:700;color:var(--accent)">' + fmt_preco(s.preco) + '</div><div class="card_item_info">' + esc(s.duracao||30) + ' min</div></div></div>'
+      + '<div class="card_item_actions"><button class="btn btn_outline btn_sm" onclick="editar_servico(\'' + esc(s.id) + '\',\'' + esc(s.nome||'') + '\',\'' + esc(s.descricao||'') + '\',\'' + esc(s.preco) + '\',\'' + esc(s.duracao) + '\')">Editar</button>'
+      + '<button class="btn btn_danger btn_sm" onclick="apagar_servico(\'' + esc(s.id) + '\')">Apagar</button></div>'
+      + '</div>'
+    return html
+  }).join('')
 }
 
 function abrir_modal_servico(){
@@ -625,10 +555,17 @@ async function carregar_profissionais(){
   const lista=data||[]
   const el=document.getElementById('lista_profissionais')
   if(!lista.length){el.innerHTML='<div class="empty"><div class="empty_ico">👥</div><div class="empty_txt">Ainda não tens profissionais</div><div class="empty_txt" style="font-size:12px">Clica no + para adicionar</div></div>';return}
-  el.innerHTML=lista.map(p=>`<div class="card_item">
-    <div class="card_item_header"><div><div class="card_item_nome">${p.nome}</div><div class="card_item_info">${p.especialidade||'—'} · ${p.telefone||'—'}</div></div></div>
-    <div class="card_item_actions"><button class="btn btn_outline btn_sm" onclick="editar_profissional('${p.id}','${(p.nome||'').replace(/'/g,"\\'")}','${(p.especialidade||'').replace(/'/g,"\\'")}','${p.telefone||''}')">Editar</button><button class="btn btn_danger btn_sm" onclick="apagar_profissional('${p.id}')">Apagar</button></div>
-  </div>`).join('')
+  el.innerHTML=lista.map(function(p) {
+    var html = '<div class="card_item">'
+      + '<div class="card_item_header"><div>'
+      + '<div class="card_item_nome">' + esc(p.nome) + '</div>'
+      + '<div class="card_item_info">' + esc(p.especialidade||'—') + ' · ' + esc(p.telefone||'—') + '</div>'
+      + '</div></div>'
+      + '<div class="card_item_actions"><button class="btn btn_outline btn_sm" onclick="editar_profissional(\'' + esc(p.id) + '\',\'' + esc(p.nome||'') + '\',\'' + esc(p.especialidade||'') + '\',\'' + esc(p.telefone||'') + '\')">Editar</button>'
+      + '<button class="btn btn_danger btn_sm" onclick="apagar_profissional(\'' + esc(p.id) + '\')">Apagar</button></div>'
+      + '</div>'
+    return html
+  }).join('')
 }
 function abrir_modal_profissional(){
   document.getElementById('prof_id').value=''
@@ -663,7 +600,9 @@ async function carregar_clientes(){
   const lista=data||[]
   const el=document.getElementById('lista_clientes')
   if(!lista.length){el.innerHTML='<div class="empty"><div class="empty_ico">👤</div><div class="empty_txt">Sem clientes ainda</div></div>';return}
-  el.innerHTML=lista.map(c=>`<div class="card_item"><div class="card_item_nome">${c.nome}</div><div class="card_item_info">${c.telefone||'—'} · ${c.email||'—'}</div></div>`).join('')
+  el.innerHTML=lista.map(function(c) {
+    return '<div class="card_item"><div class="card_item_nome">' + esc(c.nome) + '</div><div class="card_item_info">' + esc(c.telefone||'—') + ' · ' + esc(c.email||'—') + '</div></div>'
+  }).join('')
 }
 
 // HORÁRIOS
@@ -672,20 +611,23 @@ let horarios_data={}
 async function carregar_horarios(){
   const{data}=await db.from('horarios').select('*').eq('barbearia_id',barbearia_id)
   DIAS.forEach((_,i)=>{ horarios_data[i]=(data||[]).find(x=>x.dia_semana===i)||{ativo:i>=1&&i<=5,hora_inicio:'09:00',hora_fim:'19:00'} })
-  document.getElementById('horarios_lista').innerHTML=DIAS.map((_,i)=>`
-    <div class="dia_card">
-      <div class="dia_header">
-        <div class="dia_nome">${DIAS[i]}</div>
-        <div class="toggle_wrap">
-          <div class="toggle ${horarios_data[i].ativo?'on':''}" id="tog_${i}" onclick="toggle_dia(${i})"></div>
-          <span class="toggle_label" id="tog_lbl_${i}">${horarios_data[i].ativo?'Aberto':'Fechado'}</span>
-        </div>
-      </div>
-      <div class="dia_horas" id="hrs_${i}" style="${horarios_data[i].ativo?'':'opacity:.3;pointer-events:none'}">
-        <div class="field" style="margin:0"><label>Abre</label><input type="time" id="hi_${i}" value="${horarios_data[i].hora_inicio||'09:00'}"></div>
-        <div class="field" style="margin:0"><label>Fecha</label><input type="time" id="hf_${i}" value="${horarios_data[i].hora_fim||'19:00'}"></div>
-      </div>
-    </div>`).join('')
+  document.getElementById('horarios_lista').innerHTML=DIAS.map(function(_,i) {
+    var d = horarios_data[i]
+    var html = '<div class="dia_card">'
+      + '<div class="dia_header">'
+      + '<div class="dia_nome">' + DIAS[i] + '</div>'
+      + '<div class="toggle_wrap">'
+      + '<div class="toggle ' + (d.ativo?'on':'') + '" id="tog_' + i + '" onclick="toggle_dia(' + i + ')"></div>'
+      + '<span class="toggle_label" id="tog_lbl_' + i + '">' + (d.ativo?'Aberto':'Fechado') + '</span>'
+      + '</div>'
+      + '</div>'
+      + '<div class="dia_horas" id="hrs_' + i + '" style="' + (d.ativo?'':'opacity:.3;pointer-events:none') + '">'
+      + '<div class="field" style="margin:0"><label>Abre</label><input type="time" id="hi_' + i + '" value="' + esc(d.hora_inicio||'09:00') + '"></div>'
+      + '<div class="field" style="margin:0"><label>Fecha</label><input type="time" id="hf_' + i + '" value="' + esc(d.hora_fim||'19:00') + '"></div>'
+      + '</div>'
+      + '</div>'
+    return html
+  }).join('')
 }
 function toggle_dia(i){
   horarios_data[i].ativo=!horarios_data[i].ativo
@@ -716,12 +658,12 @@ async function carregar_perfil(){
   document.getElementById('perfil_cidade').value=data.cidade||''
   // Mostrar logo se existir
   if(data.logo_url) {
-    document.getElementById('logo_preview').innerHTML = `<img src="${data.logo_url}?t=${Date.now()}" style="width:100%;height:100%;object-fit:cover">`
+    document.getElementById('logo_preview').innerHTML = '<img src="' + esc(data.logo_url) + '?t=' + Date.now() + '" style="width:100%;height:100%;object-fit:cover">'
     document.getElementById('btn_excluir_logo').style.display = 'block'
   }
 }
 function copiar_link() {
-  const link = 'https://anderson17quadri-cmd.github.io/barbearia-v2/cliente.html?b=' + barbearia_id
+  var link = link_barbearia(barbearia_id)
   if(navigator.clipboard) {
     navigator.clipboard.writeText(link).then(() => toast('Link copiado! 🔗'))
   } else {
@@ -734,72 +676,9 @@ function copiar_link() {
 }
 
 function ver_qr() {
-  const nome = encodeURIComponent(document.getElementById('perfil_nome')?.value || 'A minha barbearia')
-  const url = 'https://anderson17quadri-cmd.github.io/barbearia-v2/cartaz.html?b=' + barbearia_id + '&n=' + nome
+  var nome = encodeURIComponent(document.getElementById('perfil_nome')?.value || 'A minha barbearia')
+  var url = APP_URL + '/cartaz.html?b=' + barbearia_id + '&n=' + nome
   window.open(url, '_blank')
-  return
-
-  // LEGACY (nao usado)
-  const win = window.open('', '_blank')
-  win.document.write(`<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>QR Code - ${nome}</title>
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"><\/script>
-<style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:#fff; font-family:'Georgia',serif; display:flex; align-items:center; justify-content:center; min-height:100vh; }
-  .cartaz { width:400px; padding:40px 32px; text-align:center; border:3px solid #C9A84C; border-radius:16px; }
-  .logo_top { font-size:13px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:#888; margin-bottom:8px; }
-  .nome_barb { font-size:28px; font-weight:700; color:#111; margin-bottom:6px; line-height:1.2; }
-  .tagline { font-size:14px; color:#888; margin-bottom:28px; }
-  .qr_wrap { background:#fff; padding:16px; border-radius:12px; display:inline-block; border:2px solid #f0e8d0; margin-bottom:24px; }
-  .instrucao { font-size:14px; color:#555; margin-bottom:6px; }
-  .instrucao strong { color:#111; }
-  .divider { height:1px; background:#e0d0a8; margin:20px 0; }
-  .logo_bottom { font-size:18px; font-weight:700; color:#111; letter-spacing:1px; }
-  .logo_bottom span { color:#C9A84C; }
-  .url_txt { font-size:10px; color:#aaa; margin-top:6px; word-break:break-all; }
-  @media print {
-    body { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-    .btn_print { display:none; }
-  }
-</style>
-</head>
-<body>
-<div>
-  <div class="cartaz">
-    <div class="logo_top">Agendamento.pt</div>
-    <div class="nome_barb">${nome}</div>
-    <div class="tagline">Marca o teu corte agora</div>
-    <div class="qr_wrap">
-      <canvas id="qr"></canvas>
-    </div>
-    <div class="instrucao">📱 <strong>Aponta a câmara</strong> para o QR code</div>
-    <div class="instrucao">e marca online em segundos!</div>
-    <div class="divider"></div>
-    <div class="logo_bottom">Agenda<span>mento</span>.pt</div>
-    <div class="url_txt">${link}</div>
-  </div>
-  <div style="text-align:center;margin-top:16px">
-    <button class="btn_print" onclick="window.print()" 
-      style="background:#C9A84C;color:#000;border:none;padding:12px 32px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer">
-      🖨️ Imprimir / Guardar PDF
-    </button>
-  </div>
-</div>
-<script>
-  window.onload = function() {
-    QRCode.toCanvas(document.getElementById('qr'), '${link}', {
-      width: 220, margin: 2,
-      color: { dark: '#111111', light: '#ffffff' }
-    })
-  }
-<\/script>
-</body>
-</html>`)
-  win.document.close()
 }
 
 function preview_logo(input) {
@@ -809,7 +688,7 @@ function preview_logo(input) {
   const reader = new FileReader()
   reader.onload = (e) => {
     const preview = document.getElementById('logo_preview')
-    preview.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover">`
+    preview.innerHTML = '<img src="' + esc(e.target.result) + '" style="width:100%;height:100%;object-fit:cover">'
     document.getElementById('btn_excluir_logo').style.display = 'block'
   }
   reader.readAsDataURL(file)
@@ -850,7 +729,7 @@ async function guardar_perfil(){
   if(logo_url) {
     dados.logo_url = logo_url
     // Mostrar nova logo imediatamente
-    document.getElementById('logo_preview').innerHTML = `<img src="${logo_url}?t=${Date.now()}" style="width:100%;height:100%;object-fit:cover">`
+    document.getElementById('logo_preview').innerHTML = '<img src="' + esc(logo_url) + '?t=' + Date.now() + '" style="width:100%;height:100%;object-fit:cover">'
     document.getElementById('btn_excluir_logo').style.display = 'block'
   }
 
@@ -876,7 +755,7 @@ async function entrar_app(user){
     document.getElementById('sidebar_nome').textContent=bar.nome
 
   // Atualizar link da barbearia
-  const link = 'https://anderson17quadri-cmd.github.io/barbearia-v2/cliente.html?b=' + barbearia_id
+  var link = link_barbearia(barbearia_id)
   const el = document.getElementById('meu_link')
   if(el) el.textContent = link
   }
@@ -894,6 +773,13 @@ async function init(){
   })
 }
 init()
+
+// SERVICE WORKER
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('sw.js').catch(function(){})
+  })
+}
 </script>
 </body>
 </html>
