@@ -320,9 +320,9 @@ async function fazer_login() {
   if (!email||!pass) { erro.textContent='Preenche email e password.'; erro.style.display='block'; return }
   try {
     const { data, error } = await db.auth.signInWithPassword({ email, password: pass })
-    if (error) { erro.textContent='Erro: '+error.message; erro.style.display='block'; return }
+    if (error) { erro.textContent='Erro: '+error.message; erro.style.display='block'; toast(error.message,'erro'); return }
     if (data.user) await entrar_app(data.user)
-  } catch(e) { erro.textContent='Erro: '+e.message; erro.style.display='block' }
+  } catch(e) { erro.textContent='Erro: '+err_msg(e); erro.style.display='block'; toast(err_msg(e),'erro'); console.error(e) }
 }
 
 async function fazer_registro() {
@@ -336,7 +336,7 @@ async function fazer_registro() {
   if (pass.length < 6) { erro.textContent='A password deve ter pelo menos 6 caracteres.'; erro.style.display='block'; return }
   if (!email.includes('@')) { erro.textContent='Email inválido.'; erro.style.display='block'; return }
   const { data, error } = await db.auth.signUp({ email, password: pass })
-  if (error) { erro.textContent=error.message; erro.style.display='block'; return }
+  if (error) { erro.textContent=error.message; erro.style.display='block'; toast(error.message,'erro'); return }
   if (data.user) {
     // Verificar se já existe barbearia para este user
     const { data: barb_exist } = await db.from('barbearias').select('id').eq('user_id', data.user.id).maybeSingle()
