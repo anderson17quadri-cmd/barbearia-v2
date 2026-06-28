@@ -1,4 +1,3 @@
-<!-- v1782658984 -->
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -885,7 +884,13 @@ async function entrar_app(user){
   }
   document.getElementById('tela_auth').style.display='none'
   document.getElementById('tela_app').style.display='block'
-  carregar_dashboard()
+  try {
+    carregar_dashboard()
+  } catch(e) {
+    document.getElementById('erro_login').textContent = 'Erro dashboard: ' + e.message
+    document.getElementById('erro_login').style.display = 'block'
+    console.error(e)
+  }
 }
 
 async function init(){
