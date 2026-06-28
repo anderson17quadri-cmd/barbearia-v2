@@ -322,3 +322,5 @@ body::after {
 .ic { width: 1.2em; height: 1.2em; vertical-align: middle; flex-shrink: 0; display: inline-block; }
 .ic-lg { width: 1.6em; height: 1.6em; }
 .ic-xl { width: 2.5em; height: 2.5em; }
+
+.ic svg, svg.ic { width: 1.2em !important; height: 1.2em !important; }
