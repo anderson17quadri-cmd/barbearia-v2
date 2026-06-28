@@ -174,18 +174,44 @@ input[type="date"] { width:100%; padding:14px; background:var(--surface2); borde
 <link rel="stylesheet" href="pro.css">
 </head>
 <body>
+<!-- SVG ICONS SPRITE -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ic-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+  <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="ic-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="ic-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+  <symbol id="ic-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></symbol>
+  <symbol id="ic-scissors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></symbol>
+  <symbol id="ic-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></symbol>
+  <symbol id="ic-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></symbol>
+  <symbol id="ic-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></symbol>
+  <symbol id="ic-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+  <symbol id="ic-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></symbol>
+  <symbol id="ic-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="ic-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+  <symbol id="ic-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></symbol>
+  <symbol id="ic-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+  <symbol id="ic-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></symbol>
+  <symbol id="ic-map-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="ic-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></symbol>
+  <symbol id="ic-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></symbol>
+  <symbol id="ic-shuffle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></symbol>
+  <symbol id="ic-barber" viewBox="0 0 24 24" fill="none"><rect x="10" y="1" width="4" height="22" rx="2" stroke="currentColor" stroke-width="1.5"/><line x1="10" y1="3" x2="14" y2="1.5" stroke="#e74c3c" stroke-width="2.5"/><line x1="10" y1="6.5" x2="14" y2="5" stroke="#fff" stroke-width="2.5"/><line x1="10" y1="10" x2="14" y2="8.5" stroke="#3498db" stroke-width="2.5"/><line x1="10" y1="13.5" x2="14" y2="12" stroke="#e74c3c" stroke-width="2.5"/><line x1="10" y1="17" x2="14" y2="15.5" stroke="#fff" stroke-width="2.5"/><line x1="10" y1="20.5" x2="14" y2="19" stroke="#3498db" stroke-width="2.5"/><circle cx="12" cy="1" r="2.5" fill="#e74c3c"/><circle cx="12" cy="23" r="2.5" fill="#e74c3c"/></symbol>
+</svg>
+
 <div id="offline_banner" class="msg_erro" style="position:fixed;top:0;left:0;right:0;z-index:9999;display:none;text-align:center;border-radius:0;margin:0;padding:8px">⚠️ Sem ligação à internet</div>
 
 <!-- BANNER INSTALAÇÃO PWA -->
 <div id="banner_pwa" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;background:var(--surface);border-top:1px solid rgba(201,168,76,.3);padding:16px 20px;max-width:480px;margin:0 auto">
   <div style="display:flex;align-items:center;gap:14px">
-    <div style="font-size:36px"><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-barber"/></svg></div>
+    <div style="font-size:36px"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-barber"/></svg></div>
     <div style="flex:1">
       <div style="font-weight:700;font-size:14px;margin-bottom:2px">Instalar Agendamento.pt</div>
       <div style="font-size:12px;color:var(--text2)">Adiciona ao ecrã inicial para acesso rápido</div>
     </div>
     <button onclick="instalar_pwa()" style="background:var(--accent);color:#000;border:none;border-radius:8px;padding:10px 16px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap">Instalar</button>
-    <button onclick="document.getElementById('banner_pwa').style.display='none'" style="background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:4px"><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-x"/></svg></button>
+    <button onclick="document.getElementById('banner_pwa').style.display='none'" style="background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:4px"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-x"/></svg></button>
   </div>
 </div>
 
@@ -201,7 +227,7 @@ input[type="date"] { width:100%; padding:14px; background:var(--surface2); borde
 
 <!-- AUTH -->
 <div id="tela_auth">
-  <div class="auth_back" onclick="voltar_splash()"><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-arrow-left"/></svg></div>
+  <div class="auth_back" onclick="voltar_splash()"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-arrow-left"/></svg></div>
 
   <!-- STEP 1: DADOS -->
   <div id="auth_step1">
@@ -239,12 +265,12 @@ input[type="date"] { width:100%; padding:14px; background:var(--surface2); borde
     <div class="page_titulo" style="padding-top:8px">Barbearias</div>
     <div class="page_sub">Encontra e marca online</div>
     <div class="search_box">
-      <span class="ico"><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-search"/></svg></span>
+      <span class="ico"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-search"/></svg></span>
       <input type="text" id="search_input" placeholder="Pesquisar barbearia..." oninput="pesquisar()">
     </div>
     <div style="display:flex;gap:8px;margin-bottom:16px">
-      <button class="btn btn_outline" style="flex:1;padding:10px" onclick="buscar_por_localizacao()"><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-map-pin"/></svg> Perto de mim</button>
-      <button class="btn btn_outline" style="flex:1;padding:10px" onclick="mostrar_qr()"><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-camera"/></svg> QR Code</button>
+      <button class="btn btn_outline" style="flex:1;padding:10px" onclick="buscar_por_localizacao()"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-map-pin"/></svg> Perto de mim</button>
+      <button class="btn btn_outline" style="flex:1;padding:10px" onclick="mostrar_qr()"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-camera"/></svg> QR Code</button>
     </div>
     <div class="section_label">Todas as barbearias</div>
     <div id="lista_barbearias"><div class="loading"><div class="spinner"></div></div></div>
@@ -262,7 +288,7 @@ input[type="date"] { width:100%; padding:14px; background:var(--surface2); borde
     <div class="page_titulo" style="padding-top:8px">O meu perfil</div>
     <div id="perfil_content">
       <div class="resumo_card" style="margin-bottom:16px">
-        <div style="font-size:40px;text-align:center;margin-bottom:12px"><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-user"/></svg></div>
+        <div style="font-size:40px;text-align:center;margin-bottom:12px"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-user"/></svg></div>
         <div style="text-align:center">
           <div style="font-weight:700;font-size:18px" id="perfil_nome_show">—</div>
           <div style="color:var(--text2);font-size:14px;margin-top:4px" id="perfil_tel_show">—</div>
@@ -272,7 +298,7 @@ input[type="date"] { width:100%; padding:14px; background:var(--surface2); borde
     </div>
     <div id="perfil_sem_login" style="display:none">
       <div class="empty">
-        <div class="empty_ico"><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-user"/></svg></div>
+        <div class="empty_ico"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-user"/></svg></div>
         <div class="empty_txt" style="margin-bottom:20px">Entra para ver o teu perfil e histórico</div>
         <button class="btn_primary" onclick="mostrar_auth()">Entrar com telemóvel</button>
       </div>
@@ -280,16 +306,16 @@ input[type="date"] { width:100%; padding:14px; background:var(--surface2); borde
   </div>
 
   <nav class="bottom_nav">
-    <button class="nav_btn active" onclick="ir_para('descobrir')"><span class="ico"><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-home"/></svg></span><span class="lbl">Início</span></button>
-    <button class="nav_btn" onclick="ir_para('marcacoes')"><span class="ico"><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-clipboard"/></svg></span><span class="lbl">Marcações</span></button>
-    <button class="nav_btn" onclick="ir_para('perfil_cliente')"><span class="ico"><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-user"/></svg></span><span class="lbl">Perfil</span></button>
+    <button class="nav_btn active" onclick="ir_para('descobrir')"><span class="ico"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-home"/></svg></span><span class="lbl">Início</span></button>
+    <button class="nav_btn" onclick="ir_para('marcacoes')"><span class="ico"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-clipboard"/></svg></span><span class="lbl">Marcações</span></button>
+    <button class="nav_btn" onclick="ir_para('perfil_cliente')"><span class="ico"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-user"/></svg></span><span class="lbl">Perfil</span></button>
   </nav>
 </div>
 
 <!-- PERFIL BARBEARIA (fullscreen) -->
 <div id="tela_barbearia" style="display:none; padding-bottom:var(--bottom-bar)">
   <div style="padding:20px">
-    <div class="barb_back" onclick="fechar_barbearia()"><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-arrow-left"/></svg></div>
+    <div class="barb_back" onclick="fechar_barbearia()"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-arrow-left"/></svg></div>
     <div id="barb_hero_content"></div>
     <div class="divider"></div>
 
@@ -345,8 +371,8 @@ input[type="date"] { width:100%; padding:14px; background:var(--surface2); borde
           <div class="field"><label>O teu nome</label><input type="text" id="nome_sem_conta" placeholder="João Silva"></div>
           <div class="field"><label>Telemóvel</label><input type="tel" id="tel_sem_conta" placeholder="+351 912 000 000"></div>
         </div>
-        <button class="btn_primary btn_full" id="btn_confirmar" onclick="confirmar_marcacao()"><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-check"/></svg> Confirmar marcação</button>
-        <button class="btn_outline btn_full" style="margin-top:8px" onclick="ir_step(3)"><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-arrow-left"/></svg> Voltar</button>
+        <button class="btn_primary btn_full" id="btn_confirmar" onclick="confirmar_marcacao()"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-check"/></svg> Confirmar marcação</button>
+        <button class="btn_outline btn_full" style="margin-top:8px" onclick="ir_step(3)"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-arrow-left"/></svg> Voltar</button>
       </div>
 
       <!-- SUCESSO -->
@@ -368,7 +394,7 @@ input[type="date"] { width:100%; padding:14px; background:var(--surface2); borde
 <!-- QR MODAL -->
 <div id="modal_qr" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:300;align-items:center;justify-content:center;flex-direction:column;gap:16px">
   <div style="color:var(--text2);font-size:14px">Aponta a câmara para o QR code da barbearia</div>
-  <div style="width:240px;height:240px;border:3px solid var(--accent);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:60px"><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-camera"/></svg></div>
+  <div style="width:240px;height:240px;border:3px solid var(--accent);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:60px"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-camera"/></svg></div>
   <div style="color:var(--text3);font-size:13px">Funcionalidade QR em breve</div>
   <button class="btn_secondary" style="width:200px" onclick="document.getElementById('modal_qr').style.display='none'">Fechar</button>
 </div>
@@ -525,13 +551,13 @@ async function carregar_barbearias(termo='') {
   if(termo) q = q.ilike('nome', '%'+termo+'%')
   var { data } = await q.order('nome')
   var lista = data || []
-  if(!lista.length) { el.innerHTML='<div class="empty"><div class="empty_ico"><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-barber"/></svg></div><div class="empty_txt">Nenhuma barbearia encontrada</div></div>'; return }
+  if(!lista.length) { el.innerHTML='<div class="empty"><div class="empty_ico"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-barber"/></svg></div><div class="empty_txt">Nenhuma barbearia encontrada</div></div>'; return }
   el.innerHTML = lista.map(b => `<div class="barb_card" onclick="abrir_barbearia('${b.id}')">
     <div class="barb_card_body">
-      <div class="barb_card_nome"><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-barber"/></svg> ${b.nome}</div>
+      <div class="barb_card_nome"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-barber"/></svg> ${b.nome}</div>
       <div class="barb_card_info">
-        ${b.cidade ? `<span><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-map-pin"/></svg> ${b.cidade}</span>` : ''}
-        ${b.telefone ? `<span><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-phone"/></svg> ${b.telefone}</span>` : ''}
+        ${b.cidade ? `<span><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-map-pin"/></svg> ${b.cidade}</span>` : ''}
+        ${b.telefone ? `<span><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-phone"/></svg> ${b.telefone}</span>` : ''}
       </div>
       ${b.descricao ? `<div style="font-size:13px;color:var(--text2);margin-top:8px">${b.descricao}</div>` : ''}
     </div>
@@ -564,7 +590,7 @@ async function abrir_barbearia(id) {
 
   var { data: barb } = await db.from('barbearias').select('*').eq('id', id).single()
   document.getElementById('barb_hero_content').innerHTML = `
-    <div style="font-size:44px;margin-bottom:12px"><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-barber"/></svg></div>
+    <div style="font-size:44px;margin-bottom:12px"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-barber"/></svg></div>
     <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:800;margin-bottom:4px">${barb.nome}</div>
     <div style="color:var(--text2);font-size:13px">${[barb.cidade,barb.telefone].filter(Boolean).join(' · ')}</div>
     ${barb.descricao?`<div style="margin-top:10px;font-size:14px;color:var(--text2)">${barb.descricao}</div>`:''}
@@ -622,11 +648,11 @@ async function ir_step(n) {
     var lista = profs || []
     // Adicionar opção "qualquer"
     el.innerHTML = `<div class="prof_card selected" id="prof_qualquer" onclick="selecionar_prof('qualquer','Qualquer profissional')">
-      <div class="prof_avatar"><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-shuffle"/></svg></div>
+      <div class="prof_avatar"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-shuffle"/></svg></div>
       <div class="prof_nome">Qualquer</div>
       <div class="prof_esp">Sem preferência</div>
     </div>` + lista.map(p=>`<div class="prof_card" id="prof_${p.id}" onclick="selecionar_prof('${p.id}','${(p.nome||'').replace(/'/g,"\\'")}')">
-      <div class="prof_avatar"><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-barber"/></svg></div>
+      <div class="prof_avatar"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-barber"/></svg></div>
       <div class="prof_nome">${p.nome}</div>
       <div class="prof_esp">${p.especialidade||''}</div>
     </div>`).join('')
@@ -789,7 +815,7 @@ async function confirmar_marcacao() {
 async function carregar_marcacoes() {
   var el = document.getElementById('lista_marcacoes')
   if(!cliente_id && !localStorage.getItem('cliente_tel')) {
-    el.innerHTML='<div class="empty"><div class="empty_ico"><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-clipboard"/></svg></div><div class="empty_txt" style="margin-bottom:16px">Entra para ver as tuas marcações</div><button class="btn_primary" onclick="mostrar_auth()">Entrar</button></div>'
+    el.innerHTML='<div class="empty"><div class="empty_ico"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-clipboard"/></svg></div><div class="empty_txt" style="margin-bottom:16px">Entra para ver as tuas marcações</div><button class="btn_primary" onclick="mostrar_auth()">Entrar</button></div>'
     return
   }
   el.innerHTML='<div class="loading"><div class="spinner"></div></div>'
@@ -797,10 +823,10 @@ async function carregar_marcacoes() {
   if(cliente_id) q = q.eq('cliente_id', cliente_id)
   var { data } = await q.order('data',{ascending:false}).order('hora_inicio',{ascending:false}).limit(20)
   var lista = data||[]
-  if(!lista.length) { el.innerHTML='<div class="empty"><div class="empty_ico"><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-clipboard"/></svg></div><div class="empty_txt">Ainda não tens marcações</div></div>'; return }
+  if(!lista.length) { el.innerHTML='<div class="empty"><div class="empty_ico"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-clipboard"/></svg></div><div class="empty_txt">Ainda não tens marcações</div></div>'; return }
   el.innerHTML=lista.map(a=>`<div class="hist_card">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
-      <div><div class="hist_nome"><svg class="ic" width="1.2em" height="1.2em"><use href="icons.svg#ic-barber"/></svg> ${a.barbearias?.nome||'Barbearia'}</div><div class="hist_info">${fmt_data(a.data)} às ${a.hora_inicio?.substring(0,5)||'—'}</div></div>
+      <div><div class="hist_nome"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-barber"/></svg> ${a.barbearias?.nome||'Barbearia'}</div><div class="hist_info">${fmt_data(a.data)} às ${a.hora_inicio?.substring(0,5)||'—'}</div></div>
       ${badge(a.status)}
     </div>
     <div class="hist_info">${a.servicos?.nome||'—'} · ${a.profissionais?.nome||'Qualquer profissional'}</div>
