@@ -6,6 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Agendamento.pt</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -412,10 +413,10 @@ input[type="time"], input[type="date"] { width:100%; padding:12px 14px; backgrou
 <div class="toast" id="toast"></div>
 
 <script>
-var SUPA_URL = 'https://ogtyffrokangokeqlufr.supabase.co'
-var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ndHlmZnJva2FuZ29rZXFsdWZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0NzE1NjIsImV4cCI6MjA5ODA0NzU2Mn0.fdHAQlS9OM0bEwjpPB0rJOSFPlhhX7gButoxPWy-Fts'
-var { createClient } = supabase
-var db = createClient(SUPA_URL, SUPA_KEY)
+const SUPA_URL = 'https://ogtyffrokangokeqlufr.supabase.co'
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ndHlmZnJva2FuZ29rZXFsdWZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0NzE1NjIsImV4cCI6MjA5ODA0NzU2Mn0.fdHAQlS9OM0bEwjpPB0rJOSFPlhhX7gButoxPWy-Fts'
+const { createClient } = supabase
+const db = createClient(SUPA_URL, SUPA_KEY)
 
 let barbearia_id = null
 let data_agenda = new Date()
@@ -423,7 +424,7 @@ let filtro_status_atual = ''
 let pagina_atual = 'dashboard'
 
 function toast(msg, tipo='ok') {
-  var t = document.getElementById('toast')
+  const t = document.getElementById('toast')
   t.textContent = msg; t.className = 'toast show ' + tipo
   setTimeout(() => t.className = 'toast', 2500)
 }
@@ -431,7 +432,7 @@ function fmt_data(d) { return new Date(d+'T12:00:00').toLocaleDateString('pt-PT'
 function fmt_hora(h) { return h ? h.substring(0,5) : '—' }
 function fmt_preco(v) { return v ? '€'+parseFloat(v).toFixed(2) : '—' }
 function badge(s) {
-  var m ={pendente:'badge_pendente',confirmado:'badge_confirmado',cancelado:'badge_cancelado',concluido:'badge_concluido'}
+  const m={pendente:'badge_pendente',confirmado:'badge_confirmado',cancelado:'badge_cancelado',concluido:'badge_concluido'}
   return `<span class="badge ${m[s]||''}">${s}</span>`
 }
 
@@ -443,33 +444,33 @@ function trocar_tab(t) {
 }
 
 async function fazer_login() {
-  var email = document.getElementById('login_email').value
-  var pass = document.getElementById('login_pass').value
-  var erro = document.getElementById('erro_login')
+  const email = document.getElementById('login_email').value
+  const pass = document.getElementById('login_pass').value
+  const erro = document.getElementById('erro_login')
   erro.style.display='none'
   if (!email||!pass) { erro.textContent='Preenche email e password.'; erro.style.display='block'; return }
   try {
-    var { data, error } = await db.auth.signInWithPassword({ email, password: pass })
+    const { data, error } = await db.auth.signInWithPassword({ email, password: pass })
     if (error) { erro.textContent='Erro: '+error.message; erro.style.display='block'; return }
     if (data.user) await entrar_app(data.user)
   } catch(e) { erro.textContent='Erro: '+e.message; erro.style.display='block' }
 }
 
 async function fazer_registro() {
-  var nome =document.getElementById('reg_nome').value.trim()
-  var email =document.getElementById('reg_email').value.trim()
-  var tel =document.getElementById('reg_tel').value.trim()
-  var pass =document.getElementById('reg_pass').value
-  var erro =document.getElementById('erro_reg'); var ok =document.getElementById('ok_reg')
+  const nome=document.getElementById('reg_nome').value.trim()
+  const email=document.getElementById('reg_email').value.trim()
+  const tel=document.getElementById('reg_tel').value.trim()
+  const pass=document.getElementById('reg_pass').value
+  const erro=document.getElementById('erro_reg'); const ok=document.getElementById('ok_reg')
   erro.style.display='none'; ok.style.display='none'
   if (!nome||!email||!pass) { erro.textContent='Preenche todos os campos.'; erro.style.display='block'; return }
   if (pass.length < 6) { erro.textContent='A password deve ter pelo menos 6 caracteres.'; erro.style.display='block'; return }
   if (!email.includes('@')) { erro.textContent='Email inválido.'; erro.style.display='block'; return }
-  var { data, error } = await db.auth.signUp({ email, password: pass })
+  const { data, error } = await db.auth.signUp({ email, password: pass })
   if (error) { erro.textContent=error.message; erro.style.display='block'; return }
   if (data.user) {
     // Verificar se já existe barbearia para este user
-    var { data: barb_exist } = await db.from('barbearias').select('id').eq('user_id', data.user.id).maybeSingle()
+    const { data: barb_exist } = await db.from('barbearias').select('id').eq('user_id', data.user.id).maybeSingle()
     if (!barb_exist) {
       await db.from('barbearias').insert({ user_id:data.user.id, nome, email, telefone:tel, ativo:true })
     }
@@ -486,9 +487,9 @@ function ir_para(pag) {
   document.querySelectorAll('.nav_btn').forEach(n => n.classList.remove('active'))
   document.getElementById('page_'+pag).classList.add('active')
   pagina_atual = pag
-  var navMap = {dashboard:0,agenda:1,agendamentos:2,servicos:3,mais:4}
+  const navMap = {dashboard:0,agenda:1,agendamentos:2,servicos:3,mais:4}
   if (navMap[pag]!==undefined) document.querySelectorAll('.nav_btn')[navMap[pag]].classList.add('active')
-  var fab = document.getElementById('fab')
+  const fab = document.getElementById('fab')
   fab.className = (pag==='servicos'||pag==='profissionais') ? 'fab show' : 'fab'
   if(pag==='dashboard') carregar_dashboard()
   if(pag==='agenda') carregar_agenda()
@@ -508,10 +509,10 @@ function fab_action() {
 
 // DASHBOARD
 async function carregar_dashboard() {
-  var hoje = new Date().toISOString().split('T')[0]
-  var semana = new Date(Date.now()+7*86400000).toISOString().split('T')[0]
+  const hoje = new Date().toISOString().split('T')[0]
+  const semana = new Date(Date.now()+7*86400000).toISOString().split('T')[0]
   document.getElementById('dash_data').textContent = fmt_data(hoje)
-  var [r1,r2,r3,r4,r5] = await Promise.all([
+  const [r1,r2,r3,r4,r5] = await Promise.all([
     db.from('agendamentos').select('id',{count:'exact'}).eq('barbearia_id',barbearia_id).eq('data',hoje),
     db.from('agendamentos').select('id',{count:'exact'}).eq('barbearia_id',barbearia_id).gte('data',hoje).lte('data',semana),
     db.from('clientes').select('id',{count:'exact'}).eq('barbearia_id',barbearia_id),
@@ -522,8 +523,8 @@ async function carregar_dashboard() {
   document.getElementById('stat_semana').textContent=r2.count||0
   document.getElementById('stat_clientes').textContent=r3.count||0
   document.getElementById('stat_pendentes').textContent=r4.count||0
-  var lista =r5.data||[]
-  var el =document.getElementById('lista_proximos')
+  const lista=r5.data||[]
+  const el=document.getElementById('lista_proximos')
   if(!lista.length){el.innerHTML='<div class="empty"><div class="empty_ico">📅</div><div class="empty_txt">Sem agendamentos próximos</div></div>';return}
   el.innerHTML=lista.map(a=>`<div class="card_item">
     <div class="card_item_header"><div><div class="card_item_nome">${a.clientes?.nome||'Cliente'}</div><div class="card_item_info">${fmt_data(a.data)} às ${fmt_hora(a.hora_inicio)}${a.hora_fim?' - '+fmt_hora(a.hora_fim):''}</div></div>${badge(a.status)}</div>
@@ -536,10 +537,10 @@ async function carregar_dashboard() {
 // AGENDA
 function mudar_dia(n){data_agenda.setDate(data_agenda.getDate()+n);carregar_agenda()}
 async function carregar_agenda(){
-  var d =data_agenda.toISOString().split('T')[0]
+  const d=data_agenda.toISOString().split('T')[0]
   document.getElementById('agenda_data_label').textContent=fmt_data(d)
-  var {data}=await db.from('agendamentos').select('*,servicos(nome),profissionais(nome),clientes(nome,telefone)').eq('barbearia_id',barbearia_id).eq('data',d).order('hora_inicio')
-  var el =document.getElementById('agenda_visual')
+  const{data}=await db.from('agendamentos').select('*,servicos(nome),profissionais(nome),clientes(nome,telefone)').eq('barbearia_id',barbearia_id).eq('data',d).order('hora_inicio')
+  const el=document.getElementById('agenda_visual')
   if(!(data||[]).length){el.innerHTML='<div class="empty"><div class="empty_ico">🗓️</div><div class="empty_txt">Sem agendamentos</div></div>';return}
   el.innerHTML=(data||[]).map(a=>`<div class="card_item">
     <div class="card_item_header"><div><div class="card_item_nome">${fmt_hora(a.hora_inicio)}${a.hora_fim?' - '+fmt_hora(a.hora_fim):''} · ${a.clientes?.nome||'Cliente'}</div><div class="card_item_info">${a.servicos?.nome||'—'} · ${a.profissionais?.nome||'Qualquer'}</div></div>${badge(a.status)}</div>
@@ -558,9 +559,9 @@ function filtrar_status(el,s){
 async function carregar_agendamentos(){
   let q=db.from('agendamentos').select('*,servicos(nome),profissionais(nome),clientes(nome,telefone)').eq('barbearia_id',barbearia_id).order('data',{ascending:false}).order('hora_inicio',{ascending:false})
   if(_filtro) q=q.eq('status',_filtro)
-  var {data}=await q.limit(30)
-  var lista =data||[]
-  var el =document.getElementById('lista_agendamentos')
+  const{data}=await q.limit(30)
+  const lista=data||[]
+  const el=document.getElementById('lista_agendamentos')
   if(!lista.length){el.innerHTML='<div class="empty"><div class="empty_ico">📋</div><div class="empty_txt">Sem agendamentos</div></div>';return}
   el.innerHTML=lista.map(a=>`<div class="card_item">
     <div class="card_item_header"><div><div class="card_item_nome">${a.clientes?.nome||'Cliente'}</div><div class="card_item_info">${fmt_data(a.data)} às ${fmt_hora(a.hora_inicio)}${a.hora_fim?' - '+fmt_hora(a.hora_fim):''}</div></div>${badge(a.status)}</div>
@@ -580,9 +581,9 @@ async function mudar_status(id,status){
 
 // SERVIÇOS
 async function carregar_servicos(){
-  var {data}=await db.from('servicos').select('*').eq('barbearia_id',barbearia_id).eq('ativo',true).order('nome')
-  var lista =data||[]
-  var el =document.getElementById('lista_servicos')
+  const{data}=await db.from('servicos').select('*').eq('barbearia_id',barbearia_id).eq('ativo',true).order('nome')
+  const lista=data||[]
+  const el=document.getElementById('lista_servicos')
   if(!lista.length){el.innerHTML='<div class="empty"><div class="empty_ico">✂️</div><div class="empty_txt">Ainda não tens serviços</div><div class="empty_txt" style="font-size:12px">Clica no + para adicionar</div></div>';return}
   el.innerHTML=lista.map(s=>`<div class="card_item">
     <div class="card_item_header"><div><div class="card_item_nome">${s.nome}</div><div class="card_item_info">${s.descricao||''}</div></div><div style="text-align:right"><div style="font-weight:700;color:var(--accent)">${fmt_preco(s.preco)}</div><div class="card_item_info">${s.duracao||30} min</div></div></div>
@@ -609,8 +610,8 @@ function editar_servico(id,nome,desc,preco,dur){
   document.getElementById('modal_servico').classList.add('open')
 }
 async function guardar_servico(){
-  var id =document.getElementById('srv_id').value
-  var dados ={barbearia_id,nome:document.getElementById('srv_nome').value,descricao:document.getElementById('srv_desc').value,preco:parseFloat(document.getElementById('srv_preco').value)||0,duracao:parseInt(document.getElementById('srv_duracao').value)||30}
+  const id=document.getElementById('srv_id').value
+  const dados={barbearia_id,nome:document.getElementById('srv_nome').value,descricao:document.getElementById('srv_desc').value,preco:parseFloat(document.getElementById('srv_preco').value)||0,duracao:parseInt(document.getElementById('srv_duracao').value)||30}
   if(id) await db.from('servicos').update(dados).eq('id',id)
   else await db.from('servicos').insert(dados)
   fechar_modal('modal_servico'); toast('Serviço guardado!'); carregar_servicos()
@@ -623,9 +624,9 @@ async function apagar_servico(id){
 
 // PROFISSIONAIS
 async function carregar_profissionais(){
-  var {data}=await db.from('profissionais').select('*').eq('barbearia_id',barbearia_id).eq('ativo',true).order('nome')
-  var lista =data||[]
-  var el =document.getElementById('lista_profissionais')
+  const{data}=await db.from('profissionais').select('*').eq('barbearia_id',barbearia_id).eq('ativo',true).order('nome')
+  const lista=data||[]
+  const el=document.getElementById('lista_profissionais')
   if(!lista.length){el.innerHTML='<div class="empty"><div class="empty_ico">👥</div><div class="empty_txt">Ainda não tens profissionais</div><div class="empty_txt" style="font-size:12px">Clica no + para adicionar</div></div>';return}
   el.innerHTML=lista.map(p=>`<div class="card_item">
     <div class="card_item_header"><div><div class="card_item_nome">${p.nome}</div><div class="card_item_info">${p.especialidade||'—'} · ${p.telefone||'—'}</div></div></div>
@@ -647,8 +648,8 @@ function editar_profissional(id,nome,esp,tel){
   document.getElementById('modal_profissional').classList.add('open')
 }
 async function guardar_profissional(){
-  var id =document.getElementById('prof_id').value
-  var dados ={barbearia_id,nome:document.getElementById('prof_nome').value,especialidade:document.getElementById('prof_esp').value,telefone:document.getElementById('prof_tel').value}
+  const id=document.getElementById('prof_id').value
+  const dados={barbearia_id,nome:document.getElementById('prof_nome').value,especialidade:document.getElementById('prof_esp').value,telefone:document.getElementById('prof_tel').value}
   if(id) await db.from('profissionais').update(dados).eq('id',id)
   else await db.from('profissionais').insert(dados)
   fechar_modal('modal_profissional'); toast('Profissional guardado!'); carregar_profissionais()
@@ -661,18 +662,18 @@ async function apagar_profissional(id){
 
 // CLIENTES
 async function carregar_clientes(){
-  var {data}=await db.from('clientes').select('*').eq('barbearia_id',barbearia_id).order('nome')
-  var lista =data||[]
-  var el =document.getElementById('lista_clientes')
+  const{data}=await db.from('clientes').select('*').eq('barbearia_id',barbearia_id).order('nome')
+  const lista=data||[]
+  const el=document.getElementById('lista_clientes')
   if(!lista.length){el.innerHTML='<div class="empty"><div class="empty_ico">👤</div><div class="empty_txt">Sem clientes ainda</div></div>';return}
   el.innerHTML=lista.map(c=>`<div class="card_item"><div class="card_item_nome">${c.nome}</div><div class="card_item_info">${c.telefone||'—'} · ${c.email||'—'}</div></div>`).join('')
 }
 
 // HORÁRIOS
-var DIAS =['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado']
+const DIAS=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado']
 let horarios_data={}
 async function carregar_horarios(){
-  var {data}=await db.from('horarios').select('*').eq('barbearia_id',barbearia_id)
+  const{data}=await db.from('horarios').select('*').eq('barbearia_id',barbearia_id)
   DIAS.forEach((_,i)=>{ horarios_data[i]=(data||[]).find(x=>x.dia_semana===i)||{ativo:i>=1&&i<=5,hora_inicio:'09:00',hora_fim:'19:00'} })
   document.getElementById('horarios_lista').innerHTML=DIAS.map((_,i)=>`
     <div class="dia_card">
@@ -693,14 +694,14 @@ function toggle_dia(i){
   horarios_data[i].ativo=!horarios_data[i].ativo
   document.getElementById('tog_'+i).classList.toggle('on',horarios_data[i].ativo)
   document.getElementById('tog_lbl_'+i).textContent=horarios_data[i].ativo?'Aberto':'Fechado'
-  var hrs =document.getElementById('hrs_'+i)
+  const hrs=document.getElementById('hrs_'+i)
   hrs.style.opacity=horarios_data[i].ativo?'1':'0.3'
   hrs.style.pointerEvents=horarios_data[i].ativo?'all':'none'
 }
 async function guardar_horarios(){
   for(let i=0;i<7;i++){
-    var dados ={barbearia_id,dia_semana:i,ativo:horarios_data[i].ativo,hora_inicio:document.getElementById('hi_'+i)?.value||'09:00',hora_fim:document.getElementById('hf_'+i)?.value||'19:00'}
-    var {data}=await db.from('horarios').select('id').eq('barbearia_id',barbearia_id).eq('dia_semana',i)
+    const dados={barbearia_id,dia_semana:i,ativo:horarios_data[i].ativo,hora_inicio:document.getElementById('hi_'+i)?.value||'09:00',hora_fim:document.getElementById('hf_'+i)?.value||'19:00'}
+    const{data}=await db.from('horarios').select('id').eq('barbearia_id',barbearia_id).eq('dia_semana',i)
     if(data&&data.length) await db.from('horarios').update(dados).eq('barbearia_id',barbearia_id).eq('dia_semana',i)
     else await db.from('horarios').insert(dados)
   }
@@ -709,7 +710,7 @@ async function guardar_horarios(){
 
 // PERFIL
 async function carregar_perfil(){
-  var {data}=await db.from('barbearias').select('*').eq('id',barbearia_id).single()
+  const{data}=await db.from('barbearias').select('*').eq('id',barbearia_id).single()
   if(!data) return
   document.getElementById('perfil_nome').value=data.nome||''
   document.getElementById('perfil_desc').value=data.descricao||''
@@ -723,11 +724,11 @@ async function carregar_perfil(){
   }
 }
 function copiar_link() {
-  var link = 'https://anderson17quadri-cmd.github.io/barbearia-v2/cliente.html?b=' + barbearia_id
+  const link = 'https://anderson17quadri-cmd.github.io/barbearia-v2/cliente.html?b=' + barbearia_id
   if(navigator.clipboard) {
     navigator.clipboard.writeText(link).then(() => toast('Link copiado! 🔗'))
   } else {
-    var el = document.createElement('textarea')
+    const el = document.createElement('textarea')
     el.value = link; document.body.appendChild(el)
     el.select(); document.execCommand('copy')
     document.body.removeChild(el)
@@ -736,18 +737,19 @@ function copiar_link() {
 }
 
 function ver_qr() {
-  var nome = encodeURIComponent(document.getElementById('perfil_nome')?.value || 'A minha barbearia')
-  var url = 'https://anderson17quadri-cmd.github.io/barbearia-v2/cartaz.html?b=' + barbearia_id + '&n=' + nome
+  const nome = encodeURIComponent(document.getElementById('perfil_nome')?.value || 'A minha barbearia')
+  const url = 'https://anderson17quadri-cmd.github.io/barbearia-v2/cartaz.html?b=' + barbearia_id + '&n=' + nome
   window.open(url, '_blank')
   return
 
   // LEGACY (nao usado)
-  var win = window.open('', '_blank')
+  const win = window.open('', '_blank')
   win.document.write(`<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>QR Code - ${nome}</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"><\/script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   body { background:#fff; font-family:'Georgia',serif; display:flex; align-items:center; justify-content:center; min-height:100vh; }
@@ -805,12 +807,12 @@ function ver_qr() {
 }
 
 function preview_logo(input) {
-  var file = input.files[0]
+  const file = input.files[0]
   if(!file) return
   if(file.size > 2 * 1024 * 1024) { toast('Imagem demasiado grande. Máx 2MB', 'erro'); return }
-  var reader = new FileReader()
+  const reader = new FileReader()
   reader.onload = (e) => {
-    var preview = document.getElementById('logo_preview')
+    const preview = document.getElementById('logo_preview')
     preview.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover">`
     document.getElementById('btn_excluir_logo').style.display = 'block'
   }
@@ -818,12 +820,12 @@ function preview_logo(input) {
 }
 
 async function upload_logo() {
-  var input = document.getElementById('logo_input')
+  const input = document.getElementById('logo_input')
   if(!input.files[0]) return null
-  var file = input.files[0]
-  var ext = file.name.split('.').pop().toLowerCase()
-  var path = 'logos/' + barbearia_id + '.' + ext
-  var { error } = await db.storage.from('barbearias').upload(path, file, { upsert: true })
+  const file = input.files[0]
+  const ext = file.name.split('.').pop().toLowerCase()
+  const path = 'logos/' + barbearia_id + '.' + ext
+  const { error } = await db.storage.from('barbearias').upload(path, file, { upsert: true })
   if(error) { alert('Erro upload: ' + JSON.stringify(error)); return null }
   return 'https://ogtyffrokangokeqlufr.supabase.co/storage/v1/object/public/barbearias/' + path
 }
@@ -831,8 +833,8 @@ async function upload_logo() {
 async function excluir_logo() {
   if(!confirm('Remover logo da barbearia?')) return
   // Remover do Storage
-  var ext_list = ['jpg','jpeg','png','webp']
-  for(var ext of ext_list) {
+  const ext_list = ['jpg','jpeg','png','webp']
+  for(const ext of ext_list) {
     await db.storage.from('barbearias').remove([`logos/${barbearia_id}.${ext}`])
   }
   // Remover da tabela
@@ -845,10 +847,10 @@ async function excluir_logo() {
 }
 
 async function guardar_perfil(){
-  var dados ={nome:document.getElementById('perfil_nome').value,descricao:document.getElementById('perfil_desc').value,telefone:document.getElementById('perfil_tel').value,morada:document.getElementById('perfil_morada').value,cidade:document.getElementById('perfil_cidade').value}
+  const dados={nome:document.getElementById('perfil_nome').value,descricao:document.getElementById('perfil_desc').value,telefone:document.getElementById('perfil_tel').value,morada:document.getElementById('perfil_morada').value,cidade:document.getElementById('perfil_cidade').value}
   
   // Upload logo se selecionada
-  var logo_url = await upload_logo()
+  const logo_url = await upload_logo()
   if(logo_url) {
     dados.logo_url = logo_url
     // Mostrar nova logo imediatamente
@@ -867,10 +869,10 @@ document.querySelectorAll('.modal_overlay').forEach(m=>m.addEventListener('click
 
 // INIT
 async function entrar_app(user){
-  var {data:bar}=await db.from('barbearias').select('*').eq('user_id',user.id).maybeSingle()
+  const{data:bar}=await db.from('barbearias').select('*').eq('user_id',user.id).maybeSingle()
   if(!bar){
     // Só cria se realmente não existe — evita duplicados
-    var {data:novaBar}=await db.from('barbearias').insert({user_id:user.id,nome:user.email.split('@')[0],email:user.email,ativo:true}).select().single()
+    const{data:novaBar}=await db.from('barbearias').insert({user_id:user.id,nome:user.email.split('@')[0],email:user.email,ativo:true}).select().single()
     if(novaBar){barbearia_id=novaBar.id;document.getElementById('sidebar_nome').textContent=novaBar.nome}
     else { await sair(); return }
   } else {
@@ -878,23 +880,17 @@ async function entrar_app(user){
     document.getElementById('sidebar_nome').textContent=bar.nome
 
   // Atualizar link da barbearia
-  var link = 'https://anderson17quadri-cmd.github.io/barbearia-v2/cliente.html?b=' + barbearia_id
-  var el = document.getElementById('meu_link')
+  const link = 'https://anderson17quadri-cmd.github.io/barbearia-v2/cliente.html?b=' + barbearia_id
+  const el = document.getElementById('meu_link')
   if(el) el.textContent = link
   }
   document.getElementById('tela_auth').style.display='none'
   document.getElementById('tela_app').style.display='block'
-  try {
-    carregar_dashboard()
-  } catch(e) {
-    document.getElementById('erro_login').textContent = 'Erro dashboard: ' + e.message
-    document.getElementById('erro_login').style.display = 'block'
-    console.error(e)
-  }
+  carregar_dashboard()
 }
 
 async function init(){
-  var {data:{session}}=await db.auth.getSession()
+  const{data:{session}}=await db.auth.getSession()
   if(session) await entrar_app(session.user)
   db.auth.onAuthStateChange(async(_,session)=>{
     if(session) await entrar_app(session.user)
