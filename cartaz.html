@@ -29,34 +29,34 @@ canvas#preview { border-radius:20px; max-width:360px; width:100%; box-shadow:0 3
 </div>
 
 <script>
-const { createClient } = supabase
-const db = createClient(SUPA_URL, SUPA_KEY)
+var { createClient } = supabase
+var db = createClient(SUPA_URL, SUPA_KEY)
 
-const params = new URLSearchParams(window.location.search)
-const barb_id = params.get('b') || ''
-const barb_nome = decodeURIComponent(params.get('n') || 'A minha barbearia')
-const link_url = APP_URL + '/cliente.html?b=' + barb_id
+var params = new URLSearchParams(window.location.search)
+var barb_id = params.get('b') || ''
+var barb_nome = decodeURIComponent(params.get('n') || 'A minha barbearia')
+var link_url = APP_URL + '/cliente.html?b=' + barb_id
 
-const SCALE = 3
-const W = 400
-const H = 600
-const canvas = document.getElementById('preview')
+var SCALE = 3
+var W = 400
+var H = 600
+var canvas = document.getElementById('preview')
 canvas.width = W * SCALE
 canvas.height = H * SCALE
 canvas.style.width = W + 'px'
 canvas.style.height = H + 'px'
-const ctx = canvas.getContext('2d')
+var ctx = canvas.getContext('2d')
 ctx.scale(SCALE, SCALE)
 
 let logo_img = null
 
-const qr_img = new Image()
+var qr_img = new Image()
 qr_img.crossOrigin = 'anonymous'
 qr_img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=600x600&data=' + encodeURIComponent(link_url) + '&bgcolor=ffffff&color=0a0a0a&margin=8'
 
 async function init_cartaz() {
   if(barb_id) {
-    const { data: barb } = await db.from('barbearias').select('logo_url').eq('id', barb_id).maybeSingle()
+    var { data: barb } = await db.from('barbearias').select('logo_url').eq('id', barb_id).maybeSingle()
     if(barb && barb.logo_url) {
       logo_img = new Image()
       logo_img.crossOrigin = 'anonymous'
@@ -86,14 +86,14 @@ function desenhar(qr) {
   ctx.fillRect(0, 0, W, H)
 
   // Textura de fundo - gradiente radial subtil
-  const bg_grad = ctx.createRadialGradient(W/2, H*0.3, 0, W/2, H*0.3, W*0.8)
+  var bg_grad = ctx.createRadialGradient(W/2, H*0.3, 0, W/2, H*0.3, W*0.8)
   bg_grad.addColorStop(0, 'rgba(201,168,76,0.06)')
   bg_grad.addColorStop(1, 'rgba(0,0,0,0)')
   ctx.fillStyle = bg_grad
   ctx.fillRect(0, 0, W, H)
 
   // === BORDA DOURADA ===
-  const border_grad = ctx.createLinearGradient(0,0,W,H)
+  var border_grad = ctx.createLinearGradient(0,0,W,H)
   border_grad.addColorStop(0, '#C9A84C')
   border_grad.addColorStop(0.5, '#E8C96A')
   border_grad.addColorStop(1, '#8B6914')
@@ -112,18 +112,18 @@ function desenhar(qr) {
   // === LOGO AGENDAMENTO.PT ===
   ctx.font = 'italic 700 32px Georgia, serif'
   ctx.textAlign = 'left'
-  const t1 = 'Agendamento'
-  const t2 = '.pt'
-  const w1 = ctx.measureText(t1).width
-  const w2 = ctx.measureText(t2).width
-  const lx = W/2 - (w1+w2)/2
+  var t1 = 'Agendamento'
+  var t2 = '.pt'
+  var w1 = ctx.measureText(t1).width
+  var w2 = ctx.measureText(t2).width
+  var lx = W/2 - (w1+w2)/2
   ctx.fillStyle = '#f0f0f0'
   ctx.fillText(t1, lx, 70)
   ctx.fillStyle = '#C9A84C'
   ctx.fillText(t2, lx + w1, 70)
 
   // Linha separadora topo
-  const sep_grad = ctx.createLinearGradient(0,0,W,0)
+  var sep_grad = ctx.createLinearGradient(0,0,W,0)
   sep_grad.addColorStop(0, 'rgba(201,168,76,0)')
   sep_grad.addColorStop(0.5, 'rgba(201,168,76,0.4)')
   sep_grad.addColorStop(1, 'rgba(201,168,76,0)')
@@ -133,7 +133,7 @@ function desenhar(qr) {
 
   // === NOME DA BARBEARIA ===
   ctx.textAlign = 'center'
-  const nome_size = barb_nome.length > 18 ? 22 : barb_nome.length > 12 ? 28 : 34
+  var nome_size = barb_nome.length > 18 ? 22 : barb_nome.length > 12 ? 28 : 34
   ctx.font = `700 ${nome_size}px Georgia, serif`
   ctx.fillStyle = '#f0f0f0'
   ctx.fillText(barb_nome, W/2, 130)
@@ -144,9 +144,9 @@ function desenhar(qr) {
   ctx.fillText('AGENDA ONLINE · 24 HORAS', W/2, 155)
 
   // === QR CODE — fundo branco arredondado ===
-  const qr_size = 200
-  const qr_x = W/2 - qr_size/2
-  const qr_y = 180
+  var qr_size = 200
+  var qr_x = W/2 - qr_size/2
+  var qr_y = 180
 
   // Sombra dourada
   ctx.shadowColor = 'rgba(201,168,76,0.25)'
@@ -160,8 +160,8 @@ function desenhar(qr) {
   ctx.drawImage(qr, qr_x, qr_y, qr_size, qr_size)
 
   // Cantos decorativos dourados
-  const c = 16, t = 3
-  const cx = qr_x-14, cy = qr_y-14, cs = qr_size+28
+  var c = 16, t = 3
+  var cx = qr_x-14, cy = qr_y-14, cs = qr_size+28
   ctx.strokeStyle = '#C9A84C'
   ctx.lineWidth = t
   ;[
@@ -187,9 +187,9 @@ function desenhar(qr) {
   // === RODAPÉ — Logo ou marca ===
   if(logo_img && logo_img.complete && logo_img.naturalWidth > 0) {
     // Círculo dourado
-    const cir_r = 40
-    const cir_x = W/2
-    const cir_y = 490
+    var cir_r = 40
+    var cir_x = W/2
+    var cir_y = 490
 
     // Sombra
     ctx.shadowColor = 'rgba(201,168,76,0.3)'
@@ -212,7 +212,7 @@ function desenhar(qr) {
     ctx.beginPath()
     ctx.arc(cir_x, cir_y, cir_r - 2, 0, Math.PI*2)
     ctx.clip()
-    const logo_size = (cir_r - 2) * 2
+    var logo_size = (cir_r - 2) * 2
     ctx.drawImage(logo_img, cir_x - cir_r + 2, cir_y - cir_r + 2, logo_size, logo_size)
     ctx.restore()
 
@@ -224,13 +224,13 @@ function desenhar(qr) {
   } else {
     ctx.font = 'italic 700 18px Georgia, serif'
     ctx.textAlign = 'left'
-    const r1 = 'Agenda'
-    const r2 = 'mento'
-    const r3 = '.pt'
-    const rw1 = ctx.measureText(r1).width
-    const rw2 = ctx.measureText(r2).width
-    const rw3 = ctx.measureText(r3).width
-    const rx = W/2 - (rw1+rw2+rw3)/2
+    var r1 = 'Agenda'
+    var r2 = 'mento'
+    var r3 = '.pt'
+    var rw1 = ctx.measureText(r1).width
+    var rw2 = ctx.measureText(r2).width
+    var rw3 = ctx.measureText(r3).width
+    var rx = W/2 - (rw1+rw2+rw3)/2
     ctx.fillStyle = '#C9A84C'
     ctx.fillText(r1, rx, 490)
     ctx.fillStyle = 'rgba(255,255,255,0.7)'
@@ -245,14 +245,14 @@ function desenhar(qr) {
 }
 
 async function guardar() {
-  const blob = await new Promise(r => canvas.toBlob(r, 'image/png'))
-  const nome_ficheiro = 'cartaz-' + barb_nome.toLowerCase().replace(/\s+/g,'-') + '.png'
-  const file = new File([blob], nome_ficheiro, { type: 'image/png' })
+  var blob = await new Promise(r => canvas.toBlob(r, 'image/png'))
+  var nome_ficheiro = 'cartaz-' + barb_nome.toLowerCase().replace(/\s+/g,'-') + '.png'
+  var file = new File([blob], nome_ficheiro, { type: 'image/png' })
   if(navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
     await navigator.share({ files: [file], title: 'Cartaz ' + barb_nome })
   } else {
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
+    var url = URL.createObjectURL(blob)
+    var a = document.createElement('a')
     a.href = url; a.download = nome_ficheiro; a.click()
     URL.revokeObjectURL(url)
   }

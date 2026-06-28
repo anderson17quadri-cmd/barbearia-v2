@@ -376,8 +376,8 @@ input[type="date"] { width:100%; padding:14px; background:var(--surface2); borde
 <div class="toast" id="toast"></div>
 
 <script>
-const { createClient } = supabase
-const db = createClient(SUPA_URL, SUPA_KEY)
+var { createClient } = supabase
+var db = createClient(SUPA_URL, SUPA_KEY)
 
 let user_atual = null
 let cliente_id = null
@@ -388,14 +388,14 @@ let hora_selecionada = null
 let step_atual = 1
 
 function toast(msg, tipo='ok') {
-  const t = document.getElementById('toast')
+  var t = document.getElementById('toast')
   t.textContent = msg; t.className = 'toast show ' + tipo
   setTimeout(() => t.className = 'toast', 2500)
 }
 function fmt_data(d) { return new Date(d+'T12:00:00').toLocaleDateString('pt-PT',{weekday:'long',day:'numeric',month:'long'}) }
 function fmt_preco(v) { return v ? '€'+parseFloat(v).toFixed(2) : 'Grátis' }
 function badge(s) {
-  const m={pendente:'badge_pendente',confirmado:'badge_confirmado',cancelado:'badge_cancelado',concluido:'badge_concluido'}
+  var m ={pendente:'badge_pendente',confirmado:'badge_confirmado',cancelado:'badge_cancelado',concluido:'badge_concluido'}
   return `<span class="badge ${m[s]||''}">${s}</span>`
 }
 
@@ -420,17 +420,17 @@ function entrar_sem_login() {
 
 // AUTH EMAIL MAGIC LINK
 async function enviar_magic_link() {
-  const nome = document.getElementById('auth_nome').value.trim()
-  const tel = document.getElementById('auth_tel').value.trim()
-  const email = document.getElementById('auth_email').value.trim()
-  const erro = document.getElementById('erro_auth')
+  var nome = document.getElementById('auth_nome').value.trim()
+  var tel = document.getElementById('auth_tel').value.trim()
+  var email = document.getElementById('auth_email').value.trim()
+  var erro = document.getElementById('erro_auth')
   erro.style.display='none'
   if(!nome||!email) { erro.textContent='Preenche o nome e email.'; erro.style.display='block'; return }
   localStorage.setItem('cliente_nome', nome)
   localStorage.setItem('cliente_tel', tel)
   localStorage.setItem('cliente_email', email)
   try {
-    const { error } = await db.auth.signInWithOtp({
+    var { error } = await db.auth.signInWithOtp({
       email,
       options: { emailRedirectTo: window.location.href, data: { nome, telefone: tel } }
     })
@@ -444,7 +444,7 @@ async function enviar_magic_link() {
 }
 
 async function reenviar_email() {
-  const email = localStorage.getItem('cliente_email') || ''
+  var email = localStorage.getItem('cliente_email') || ''
   if(!email) return
   await db.auth.signInWithOtp({ email })
   toast('Email reenviado!')
@@ -452,13 +452,13 @@ async function reenviar_email() {
 
 async function entrar_cliente(user) {
   user_atual = user
-  const nome = localStorage.getItem('cliente_nome') || ''
-  const tel = localStorage.getItem('cliente_tel') || ''
-  const email = user.email || localStorage.getItem('cliente_email') || ''
+  var nome = localStorage.getItem('cliente_nome') || ''
+  var tel = localStorage.getItem('cliente_tel') || ''
+  var email = user.email || localStorage.getItem('cliente_email') || ''
   // Criar ou buscar cliente pelo email
-  const { data: cli } = await db.from('clientes').select('*').eq('email', email).maybeSingle()
+  var { data: cli } = await db.from('clientes').select('*').eq('email', email).maybeSingle()
   if(!cli) {
-    const { data: novoCli } = await db.from('clientes').insert({
+    var { data: novoCli } = await db.from('clientes').insert({
       nome: nome||'Cliente',
       telefone: tel,
       email: email
@@ -482,8 +482,8 @@ async function entrar_cliente(user) {
 }
 
 function atualizar_perfil_ui() {
-  const nome = localStorage.getItem('cliente_nome') || ''
-  const tel = localStorage.getItem('cliente_tel') || ''
+  var nome = localStorage.getItem('cliente_nome') || ''
+  var tel = localStorage.getItem('cliente_tel') || ''
   document.getElementById('user_nome_top').textContent = nome ? nome.split(' ')[0] : ''
   if(user_atual || nome) {
     document.getElementById('perfil_content').style.display='block'
@@ -509,7 +509,7 @@ function ir_para(pag) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
   document.querySelectorAll('.nav_btn').forEach(n => n.classList.remove('active'))
   document.getElementById('page_'+pag).classList.add('active')
-  const navMap = {descobrir:0, marcacoes:1, perfil_cliente:2}
+  var navMap = {descobrir:0, marcacoes:1, perfil_cliente:2}
   if(navMap[pag]!==undefined) document.querySelectorAll('.nav_btn')[navMap[pag]].classList.add('active')
   if(pag==='descobrir') carregar_barbearias()
   if(pag==='marcacoes') carregar_marcacoes()
@@ -519,12 +519,12 @@ function ir_para(pag) {
 
 // BARBEARIAS
 async function carregar_barbearias(termo='') {
-  const el = document.getElementById('lista_barbearias')
+  var el = document.getElementById('lista_barbearias')
   el.innerHTML = '<div class="loading"><div class="spinner"></div></div>'
   let q = db.from('barbearias').select('*').eq('ativo', true)
   if(termo) q = q.ilike('nome', '%'+termo+'%')
-  const { data } = await q.order('nome')
-  const lista = data || []
+  var { data } = await q.order('nome')
+  var lista = data || []
   if(!lista.length) { el.innerHTML='<div class="empty"><div class="empty_ico">💈</div><div class="empty_txt">Nenhuma barbearia encontrada</div></div>'; return }
   el.innerHTML = lista.map(b => `<div class="barb_card" onclick="abrir_barbearia('${b.id}')">
     <div class="barb_card_body">
@@ -539,7 +539,7 @@ async function carregar_barbearias(termo='') {
 }
 
 function pesquisar() {
-  const termo = document.getElementById('search_input').value
+  var termo = document.getElementById('search_input').value
   clearTimeout(window._searchTimer)
   window._searchTimer = setTimeout(() => carregar_barbearias(termo), 400)
 }
@@ -562,7 +562,7 @@ async function abrir_barbearia(id) {
   document.getElementById('tela_barbearia').style.display='block'
   window.scrollTo(0,0)
 
-  const { data: barb } = await db.from('barbearias').select('*').eq('id', id).single()
+  var { data: barb } = await db.from('barbearias').select('*').eq('id', id).single()
   document.getElementById('barb_hero_content').innerHTML = `
     <div style="font-size:44px;margin-bottom:12px">💈</div>
     <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:800;margin-bottom:4px">${barb.nome}</div>
@@ -579,8 +579,8 @@ async function abrir_barbearia(id) {
   document.getElementById('step1').className='step done'
 
   // Carregar serviços
-  const { data: servicos } = await db.from('servicos').select('*').eq('barbearia_id', id).eq('ativo', true).order('nome')
-  const el = document.getElementById('lista_servicos_barb')
+  var { data: servicos } = await db.from('servicos').select('*').eq('barbearia_id', id).eq('ativo', true).order('nome')
+  var el = document.getElementById('lista_servicos_barb')
   if(!(servicos||[]).length) { el.innerHTML='<div class="empty"><div class="empty_txt">Sem serviços disponíveis</div></div>'; return }
   el.innerHTML = (servicos||[]).map(s => `<div class="srv_card" id="srv_${s.id}" onclick="selecionar_servico('${s.id}','${(s.nome||'').replace(/'/g,"\\'")}',${s.preco},${s.duracao})">
     <div><div class="srv_nome">${s.nome}</div><div class="srv_info">${s.descricao||''}</div></div>
@@ -603,7 +603,7 @@ function selecionar_servico(id, nome, preco, duracao) {
   document.querySelectorAll('.srv_card').forEach(c => c.classList.remove('selected'))
   document.getElementById('srv_'+id).classList.add('selected')
   srv_selecionado = { id, nome, preco, duracao }
-  const btn = document.getElementById('btn_step1')
+  var btn = document.getElementById('btn_step1')
   btn.disabled = false; btn.style.opacity='1'
 }
 
@@ -617,9 +617,9 @@ async function ir_step(n) {
 
   if(n === 2) {
     document.getElementById('flow_step2').style.display='block'
-    const { data: profs } = await db.from('profissionais').select('*').eq('barbearia_id', barb_selecionada).eq('ativo', true).order('nome')
-    const el = document.getElementById('lista_profs_barb')
-    const lista = profs || []
+    var { data: profs } = await db.from('profissionais').select('*').eq('barbearia_id', barb_selecionada).eq('ativo', true).order('nome')
+    var el = document.getElementById('lista_profs_barb')
+    var lista = profs || []
     // Adicionar opção "qualquer"
     el.innerHTML = `<div class="prof_card selected" id="prof_qualquer" onclick="selecionar_prof('qualquer','Qualquer profissional')">
       <div class="prof_avatar">🎲</div>
@@ -631,12 +631,12 @@ async function ir_step(n) {
       <div class="prof_esp">${p.especialidade||''}</div>
     </div>`).join('')
     prof_selecionado = { id: 'qualquer', nome: 'Qualquer profissional' }
-    const btn = document.getElementById('btn_step2'); btn.disabled=false; btn.style.opacity='1'
+    var btn = document.getElementById('btn_step2'); btn.disabled=false; btn.style.opacity='1'
   }
 
   if(n === 3) {
     document.getElementById('flow_step3').style.display='block'
-    const hoje = new Date().toISOString().split('T')[0]
+    var hoje = new Date().toISOString().split('T')[0]
     document.getElementById('data_agendar').min = hoje
     document.getElementById('data_agendar').value = hoje
     carregar_horas()
@@ -666,52 +666,52 @@ function selecionar_prof(id, nome) {
   document.querySelectorAll('.prof_card').forEach(c => c.classList.remove('selected'))
   document.getElementById('prof_'+(id==='qualquer'?'qualquer':id)).classList.add('selected')
   prof_selecionado = { id, nome }
-  const btn = document.getElementById('btn_step2'); btn.disabled=false; btn.style.opacity='1'
+  var btn = document.getElementById('btn_step2'); btn.disabled=false; btn.style.opacity='1'
 }
 
 async function carregar_horas() {
-  const data = document.getElementById('data_agendar').value
+  var data = document.getElementById('data_agendar').value
   if(!data) return
-  const el = document.getElementById('lista_horas')
+  var el = document.getElementById('lista_horas')
   el.innerHTML = '<div style="color:var(--text3);font-size:13px">A carregar...</div>'
   hora_selecionada = null
-  const btn = document.getElementById('btn_step3'); btn.disabled=true; btn.style.opacity='.4'
+  var btn = document.getElementById('btn_step3'); btn.disabled=true; btn.style.opacity='.4'
 
-  const dur = srv_selecionado?.duracao || 30
+  var dur = srv_selecionado?.duracao || 30
 
-  const dia_semana = new Date(data + 'T12:00:00').getDay()
-  const { data: horario_barb } = await db.from('horarios').select('*').eq('barbearia_id', barb_selecionada).eq('dia_semana', dia_semana).maybeSingle()
+  var dia_semana = new Date(data + 'T12:00:00').getDay()
+  var { data: horario_barb } = await db.from('horarios').select('*').eq('barbearia_id', barb_selecionada).eq('dia_semana', dia_semana).maybeSingle()
 
   if(horario_barb && !horario_barb.ativo) {
     el.innerHTML = '<div style="color:var(--text2);font-size:13px;text-align:center;padding:16px">A barbearia esta fechada neste dia.</div>'
     return
   }
 
-  const hora_abre = horario_barb?.hora_inicio || '09:00'
-  const hora_fecha = horario_barb?.hora_fim || '19:00'
-  const [h_abre, m_abre] = hora_abre.split(':').map(Number)
-  const [h_fecha, m_fecha] = hora_fecha.split(':').map(Number)
-  const min_abre = h_abre * 60 + m_abre
-  const min_fecha = h_fecha * 60 + m_fecha
+  var hora_abre = horario_barb?.hora_inicio || '09:00'
+  var hora_fecha = horario_barb?.hora_fim || '19:00'
+  var [h_abre, m_abre] = hora_abre.split(':').map(Number)
+  var [h_fecha, m_fecha] = hora_fecha.split(':').map(Number)
+  var min_abre = h_abre * 60 + m_abre
+  var min_fecha = h_fecha * 60 + m_fecha
 
-  const prof_id = prof_selecionado?.id === 'qualquer' ? null : prof_selecionado?.id
+  var prof_id = prof_selecionado?.id === 'qualquer' ? null : prof_selecionado?.id
   let q = db.from('agendamentos').select('hora_inicio,servicos(duracao)').eq('barbearia_id', barb_selecionada).eq('data', data).neq('status','cancelado')
   if(prof_id) q = q.eq('profissional_id', prof_id)
-  const { data: marcados } = await q
+  var { data: marcados } = await q
 
-  const minutos_bloqueados = new Set()
-  for(const ag of (marcados||[])) {
-    const [hh, mm] = (ag.hora_inicio||'00:00').split(':').map(Number)
-    const dur_ag = ag.servicos?.duracao || 30
-    const inicio_min = hh * 60 + mm
+  var minutos_bloqueados = new Set()
+  for(var ag of (marcados||[])) {
+    var [hh, mm] = (ag.hora_inicio||'00:00').split(':').map(Number)
+    var dur_ag = ag.servicos?.duracao || 30
+    var inicio_min = hh * 60 + mm
     for(let m = inicio_min; m < inicio_min + dur_ag; m++) minutos_bloqueados.add(m)
   }
 
-  const agora = new Date()
-  const hoje = agora.toISOString().split('T')[0]
-  const min_agora = data === hoje ? agora.getHours() * 60 + agora.getMinutes() + 30 : 0
+  var agora = new Date()
+  var hoje = agora.toISOString().split('T')[0]
+  var min_agora = data === hoje ? agora.getHours() * 60 + agora.getMinutes() + 30 : 0
 
-  const slots = []
+  var slots = []
   for(let m = min_abre; m + dur <= min_fecha; m += 30) slots.push(m)
 
   if(!slots.length) {
@@ -720,34 +720,34 @@ async function carregar_horas() {
   }
 
   el.innerHTML = slots.map(m => {
-    const h = String(Math.floor(m/60)).padStart(2,'0')
-    const min = String(m%60).padStart(2,'0')
-    const s = h + ':' + min
+    var h = String(Math.floor(m/60)).padStart(2,'0')
+    var min = String(m%60).padStart(2,'0')
+    var s = h + ':' + min
     let bloqueado = m < min_agora
     if(!bloqueado) for(let i = m; i < m + dur; i++) if(minutos_bloqueados.has(i)) { bloqueado = true; break }
-    const cls = bloqueado ? 'hora_chip indisponivel' : 'hora_chip'
-    const id = 'hora_' + h + '_' + min
+    var cls = bloqueado ? 'hora_chip indisponivel' : 'hora_chip'
+    var id = 'hora_' + h + '_' + min
     return `<div class="${cls}" id="${id}" onclick="selecionar_hora('${s}')">${s}</div>`
   }).join('')
 }
 
 function selecionar_hora(hora) {
   document.querySelectorAll('.hora_chip').forEach(c => c.classList.remove('selected'))
-  const el = document.getElementById('hora_'+hora.replace(':','_'))
+  var el = document.getElementById('hora_'+hora.replace(':','_'))
   if(el) el.classList.add('selected')
   hora_selecionada = hora
-  const btn = document.getElementById('btn_step3'); btn.disabled=false; btn.style.opacity='1'
+  var btn = document.getElementById('btn_step3'); btn.disabled=false; btn.style.opacity='1'
 }
 
 async function confirmar_marcacao() {
-  const data = document.getElementById('data_agendar').value
+  var data = document.getElementById('data_agendar').value
   let cid = cliente_id
 
   // Se não tem conta, cria cliente temporário
   if(!cid) {
-    const nome = document.getElementById('nome_sem_conta')?.value || 'Cliente'
-    const tel = document.getElementById('tel_sem_conta')?.value || ''
-    const { data: novoCli } = await db.from('clientes').insert({ barbearia_id: barb_selecionada, nome, telefone: tel }).select().single()
+    var nome = document.getElementById('nome_sem_conta')?.value || 'Cliente'
+    var tel = document.getElementById('tel_sem_conta')?.value || ''
+    var { data: novoCli } = await db.from('clientes').insert({ barbearia_id: barb_selecionada, nome, telefone: tel }).select().single()
     if(novoCli) cid = novoCli.id
   }
 
@@ -755,17 +755,17 @@ async function confirmar_marcacao() {
   if(!hora_selecionada) { toast('Escolhe uma hora primeiro', 'erro'); return }
 
   // Hora fim - garantir que so usa HH:MM
-  const hora_limpa = hora_selecionada.substring(0,5)
-  const partes = hora_limpa.split(':')
-  const hh = parseInt(partes[0]) || 0
-  const mm = parseInt(partes[1]) || 0
-  const dur = parseInt(srv_selecionado?.duracao) || 30
-  const fim_min = hh*60+mm+dur
-  const hora_fim = String(Math.floor(fim_min/60)).padStart(2,'0')+':'+String(fim_min%60).padStart(2,'0')
+  var hora_limpa = hora_selecionada.substring(0,5)
+  var partes = hora_limpa.split(':')
+  var hh = parseInt(partes[0]) || 0
+  var mm = parseInt(partes[1]) || 0
+  var dur = parseInt(srv_selecionado?.duracao) || 30
+  var fim_min = hh*60+mm+dur
+  var hora_fim = String(Math.floor(fim_min/60)).padStart(2,'0')+':'+String(fim_min%60).padStart(2,'0')
 
-  const prof_id = prof_selecionado?.id === 'qualquer' ? null : prof_selecionado?.id
+  var prof_id = prof_selecionado?.id === 'qualquer' ? null : prof_selecionado?.id
 
-  const { error } = await db.from('agendamentos').insert({
+  var { error } = await db.from('agendamentos').insert({
     barbearia_id: barb_selecionada,
     cliente_id: cid,
     servico_id: srv_selecionado?.id,
@@ -787,7 +787,7 @@ async function confirmar_marcacao() {
 
 // MARCAÇÕES
 async function carregar_marcacoes() {
-  const el = document.getElementById('lista_marcacoes')
+  var el = document.getElementById('lista_marcacoes')
   if(!cliente_id && !localStorage.getItem('cliente_tel')) {
     el.innerHTML='<div class="empty"><div class="empty_ico">📋</div><div class="empty_txt" style="margin-bottom:16px">Entra para ver as tuas marcações</div><button class="btn_primary" onclick="mostrar_auth()">Entrar</button></div>'
     return
@@ -795,8 +795,8 @@ async function carregar_marcacoes() {
   el.innerHTML='<div class="loading"><div class="spinner"></div></div>'
   let q = db.from('agendamentos').select('*,barbearias(nome),servicos(nome),profissionais(nome)')
   if(cliente_id) q = q.eq('cliente_id', cliente_id)
-  const { data } = await q.order('data',{ascending:false}).order('hora_inicio',{ascending:false}).limit(20)
-  const lista = data||[]
+  var { data } = await q.order('data',{ascending:false}).order('hora_inicio',{ascending:false}).limit(20)
+  var lista = data||[]
   if(!lista.length) { el.innerHTML='<div class="empty"><div class="empty_ico">📋</div><div class="empty_txt">Ainda não tens marcações</div></div>'; return }
   el.innerHTML=lista.map(a=>`<div class="hist_card">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
@@ -821,12 +821,12 @@ if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js").catch(function(){})
   })
 }
-  const { data: { session } } = await db.auth.getSession()
+  var { data: { session } } = await db.auth.getSession()
   if(session) {
     await entrar_cliente(session.user)
   } else {
     // Verificar se tem nome guardado (usou sem login antes)
-    const nome = localStorage.getItem('cliente_nome')
+    var nome = localStorage.getItem('cliente_nome')
     if(nome) {
       document.getElementById('tela_splash').style.display='none'
       document.getElementById('tela_app').style.display='block'
@@ -834,8 +834,8 @@ if ("serviceWorker" in navigator) {
       carregar_barbearias()
     }
     // Verificar se URL tem ID de barbearia
-    const params = new URLSearchParams(window.location.search)
-    const barbId = params.get('b')
+    var params = new URLSearchParams(window.location.search)
+    var barbId = params.get('b')
     if(barbId) {
       document.getElementById('tela_splash').style.display='none'
       document.getElementById('tela_app').style.display='block'
