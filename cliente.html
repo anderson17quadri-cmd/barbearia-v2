@@ -180,7 +180,17 @@ input[type="date"] { width:100%; padding:14px; background:var(--surface2); borde
 <!-- BANNER INSTALAÇÃO PWA -->
 <div id="banner_pwa" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;background:var(--surface);border-top:1px solid rgba(201,168,76,.3);padding:16px 20px;max-width:480px;margin:0 auto">
   <div style="display:flex;align-items:center;gap:14px">
-    <div style="font-size:36px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M3 21h18"/><path d="M5 21V9l7-6 7 6v12"/><path d="M9 21v-7h6v7"/><path d="M5 9h14"/></svg></div>
+    <div style="font-size:36px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;overflow:visible">
+  <rect x="10" y="1" width="4" height="22" rx="2" fill="none" stroke="currentColor"/>
+  <line x1="10" y1="3" x2="14" y2="1.5" stroke="#e74c3c" stroke-width="2.5"/>
+  <line x1="10" y1="6.5" x2="14" y2="5" stroke="#fff" stroke-width="2.5"/>
+  <line x1="10" y1="10" x2="14" y2="8.5" stroke="#3498db" stroke-width="2.5"/>
+  <line x1="10" y1="13.5" x2="14" y2="12" stroke="#e74c3c" stroke-width="2.5"/>
+  <line x1="10" y1="17" x2="14" y2="15.5" stroke="#fff" stroke-width="2.5"/>
+  <line x1="10" y1="20.5" x2="14" y2="19" stroke="#3498db" stroke-width="2.5"/>
+  <circle cx="12" cy="1" r="2.5" fill="#e74c3c" stroke="#e74c3c"/>
+  <circle cx="12" cy="23" r="2.5" fill="#e74c3c" stroke="#e74c3c"/>
+</svg></div>
     <div style="flex:1">
       <div style="font-weight:700;font-size:14px;margin-bottom:2px">Instalar Agendamento.pt</div>
       <div style="font-size:12px;color:var(--text2)">Adiciona ao ecrã inicial para acesso rápido</div>
@@ -526,10 +536,30 @@ async function carregar_barbearias(termo='') {
   if(termo) q = q.ilike('nome', '%'+termo+'%')
   var { data } = await q.order('nome')
   var lista = data || []
-  if(!lista.length) { el.innerHTML='<div class="empty"><div class="empty_ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M3 21h18"/><path d="M5 21V9l7-6 7 6v12"/><path d="M9 21v-7h6v7"/><path d="M5 9h14"/></svg></div><div class="empty_txt">Nenhuma barbearia encontrada</div></div>'; return }
+  if(!lista.length) { el.innerHTML='<div class="empty"><div class="empty_ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;overflow:visible">
+  <rect x="10" y="1" width="4" height="22" rx="2" fill="none" stroke="currentColor"/>
+  <line x1="10" y1="3" x2="14" y2="1.5" stroke="#e74c3c" stroke-width="2.5"/>
+  <line x1="10" y1="6.5" x2="14" y2="5" stroke="#fff" stroke-width="2.5"/>
+  <line x1="10" y1="10" x2="14" y2="8.5" stroke="#3498db" stroke-width="2.5"/>
+  <line x1="10" y1="13.5" x2="14" y2="12" stroke="#e74c3c" stroke-width="2.5"/>
+  <line x1="10" y1="17" x2="14" y2="15.5" stroke="#fff" stroke-width="2.5"/>
+  <line x1="10" y1="20.5" x2="14" y2="19" stroke="#3498db" stroke-width="2.5"/>
+  <circle cx="12" cy="1" r="2.5" fill="#e74c3c" stroke="#e74c3c"/>
+  <circle cx="12" cy="23" r="2.5" fill="#e74c3c" stroke="#e74c3c"/>
+</svg></div><div class="empty_txt">Nenhuma barbearia encontrada</div></div>'; return }
   el.innerHTML = lista.map(b => `<div class="barb_card" onclick="abrir_barbearia('${b.id}')">
     <div class="barb_card_body">
-      <div class="barb_card_nome"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M3 21h18"/><path d="M5 21V9l7-6 7 6v12"/><path d="M9 21v-7h6v7"/><path d="M5 9h14"/></svg> ${b.nome}</div>
+      <div class="barb_card_nome"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;overflow:visible">
+  <rect x="10" y="1" width="4" height="22" rx="2" fill="none" stroke="currentColor"/>
+  <line x1="10" y1="3" x2="14" y2="1.5" stroke="#e74c3c" stroke-width="2.5"/>
+  <line x1="10" y1="6.5" x2="14" y2="5" stroke="#fff" stroke-width="2.5"/>
+  <line x1="10" y1="10" x2="14" y2="8.5" stroke="#3498db" stroke-width="2.5"/>
+  <line x1="10" y1="13.5" x2="14" y2="12" stroke="#e74c3c" stroke-width="2.5"/>
+  <line x1="10" y1="17" x2="14" y2="15.5" stroke="#fff" stroke-width="2.5"/>
+  <line x1="10" y1="20.5" x2="14" y2="19" stroke="#3498db" stroke-width="2.5"/>
+  <circle cx="12" cy="1" r="2.5" fill="#e74c3c" stroke="#e74c3c"/>
+  <circle cx="12" cy="23" r="2.5" fill="#e74c3c" stroke="#e74c3c"/>
+</svg> ${b.nome}</div>
       <div class="barb_card_info">
         ${b.cidade ? `<span><i class="ph ph-map-pin"></i> ${b.cidade}</span>` : ''}
         ${b.telefone ? `<span><i class="ph ph-phone"></i> ${b.telefone}</span>` : ''}
@@ -627,7 +657,17 @@ async function ir_step(n) {
       <div class="prof_nome">Qualquer</div>
       <div class="prof_esp">Sem preferência</div>
     </div>` + lista.map(p=>`<div class="prof_card" id="prof_${p.id}" onclick="selecionar_prof('${p.id}','${(p.nome||'').replace(/'/g,"\\'")}')">
-      <div class="prof_avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M3 21h18"/><path d="M5 21V9l7-6 7 6v12"/><path d="M9 21v-7h6v7"/><path d="M5 9h14"/></svg></div>
+      <div class="prof_avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;overflow:visible">
+  <rect x="10" y="1" width="4" height="22" rx="2" fill="none" stroke="currentColor"/>
+  <line x1="10" y1="3" x2="14" y2="1.5" stroke="#e74c3c" stroke-width="2.5"/>
+  <line x1="10" y1="6.5" x2="14" y2="5" stroke="#fff" stroke-width="2.5"/>
+  <line x1="10" y1="10" x2="14" y2="8.5" stroke="#3498db" stroke-width="2.5"/>
+  <line x1="10" y1="13.5" x2="14" y2="12" stroke="#e74c3c" stroke-width="2.5"/>
+  <line x1="10" y1="17" x2="14" y2="15.5" stroke="#fff" stroke-width="2.5"/>
+  <line x1="10" y1="20.5" x2="14" y2="19" stroke="#3498db" stroke-width="2.5"/>
+  <circle cx="12" cy="1" r="2.5" fill="#e74c3c" stroke="#e74c3c"/>
+  <circle cx="12" cy="23" r="2.5" fill="#e74c3c" stroke="#e74c3c"/>
+</svg></div>
       <div class="prof_nome">${p.nome}</div>
       <div class="prof_esp">${p.especialidade||''}</div>
     </div>`).join('')
@@ -801,7 +841,17 @@ async function carregar_marcacoes() {
   if(!lista.length) { el.innerHTML='<div class="empty"><div class="empty_ico"><i class="ph ph-clipboard-text"></i></div><div class="empty_txt">Ainda não tens marcações</div></div>'; return }
   el.innerHTML=lista.map(a=>`<div class="hist_card">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
-      <div><div class="hist_nome"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M3 21h18"/><path d="M5 21V9l7-6 7 6v12"/><path d="M9 21v-7h6v7"/><path d="M5 9h14"/></svg> ${a.barbearias?.nome||'Barbearia'}</div><div class="hist_info">${fmt_data(a.data)} às ${a.hora_inicio?.substring(0,5)||'—'}</div></div>
+      <div><div class="hist_nome"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;overflow:visible">
+  <rect x="10" y="1" width="4" height="22" rx="2" fill="none" stroke="currentColor"/>
+  <line x1="10" y1="3" x2="14" y2="1.5" stroke="#e74c3c" stroke-width="2.5"/>
+  <line x1="10" y1="6.5" x2="14" y2="5" stroke="#fff" stroke-width="2.5"/>
+  <line x1="10" y1="10" x2="14" y2="8.5" stroke="#3498db" stroke-width="2.5"/>
+  <line x1="10" y1="13.5" x2="14" y2="12" stroke="#e74c3c" stroke-width="2.5"/>
+  <line x1="10" y1="17" x2="14" y2="15.5" stroke="#fff" stroke-width="2.5"/>
+  <line x1="10" y1="20.5" x2="14" y2="19" stroke="#3498db" stroke-width="2.5"/>
+  <circle cx="12" cy="1" r="2.5" fill="#e74c3c" stroke="#e74c3c"/>
+  <circle cx="12" cy="23" r="2.5" fill="#e74c3c" stroke="#e74c3c"/>
+</svg> ${a.barbearias?.nome||'Barbearia'}</div><div class="hist_info">${fmt_data(a.data)} às ${a.hora_inicio?.substring(0,5)||'—'}</div></div>
       ${badge(a.status)}
     </div>
     <div class="hist_info">${a.servicos?.nome||'—'} · ${a.profissionais?.nome||'Qualquer profissional'}</div>
