@@ -2,22 +2,76 @@
 const { createClient } = supabase
 const db = createClient(SUPA_URL, SUPA_KEY)
 
+// ===== RIPPLE EFFECT =====
+document.addEventListener('click', function(e) {
+  var btn = e.target.closest('.btn, .btn_primary, .btn_secondary, .btn_gold, .btn_outline, .btn_danger, .btn_success, .filtro_chip')
+  if (!btn) return
+  var ripple = document.createElement('span')
+  ripple.className = 'ripple'
+  var rect = btn.getBoundingClientRect()
+  var size = Math.max(rect.width, rect.height)
+  ripple.style.width = ripple.style.height = size + 'px'
+  ripple.style.left = (e.clientX - rect.left - size/2) + 'px'
+  ripple.style.top = (e.clientY - rect.top - size/2) + 'px'
+  btn.appendChild(ripple)
+  setTimeout(function() { ripple.remove() }, 600)
+})
+
+// ===== CONFETTI =====
+function confetti() {
+  var colors = ['#C9A84C','#E8C96A','#2ecc71','#e74c3c','#f0f0f0','#e89043']
+  for (var i = 0; i < 50; i++) {
+    var piece = document.createElement('div')
+    piece.className = 'confetti-piece'
+    piece.style.left = Math.random() * 100 + '%'
+    piece.style.top = -(Math.random() * 20 + 10) + 'px'
+    piece.style.width = (Math.random() * 8 + 4) + 'px'
+    piece.style.height = (Math.random() * 8 + 4) + 'px'
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)]
+    piece.style.borderRadius = Math.random() > .5 ? '50%' : '2px'
+    piece.style.animationDuration = (Math.random() * 2 + 1.5) + 's'
+    piece.style.animationDelay = Math.random() * .5 + 's'
+    document.body.appendChild(piece)
+    setTimeout(function() { piece.remove() }, 3000)
+  }
+}
+
 // ===== ESCAPE HTML (anti-XSS) =====
 function esc(s) {
   if (!s && s !== 0) return ''
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')
 }
 
-// ===== TOAST =====
+// ===== SKELETON LOADING =====
+function skeleton_html(count) {
+  count = count || 3
+  var html = ''
+  for (var i = 0; i < count; i++) {
+    html += '<div class="skeleton skeleton-card" style="animation-delay:'+(i*.1)+'s">'
+      +'<div style="padding:16px">'
+      +'<div class="skeleton skeleton-title"></div>'
+      +'<div class="skeleton skeleton-text"></div>'
+      +'<div class="skeleton skeleton-text"></div>'
+      +'</div></div>'
+  }
+  return html
+}
+
+// ===== TOAST (melhorado) =====
 let _toastTimer = null
 function toast(msg, tipo) {
   tipo = tipo || 'ok'
   var t = document.getElementById('toast')
   if (!t) return
-  t.textContent = msg
-  t.className = 'toast show ' + tipo
   clearTimeout(_toastTimer)
-  _toastTimer = setTimeout(function(){ t.className = 'toast' }, 2500)
+  t.className = 'toast'
+  t.innerHTML = (tipo==='ok'?'✅ ':'❌ ') + msg
+  void t.offsetWidth
+  t.className = 'toast show ' + tipo
+  _toastTimer = setTimeout(function() {
+    t.classList.add('hide')
+    setTimeout(function() { t.className = 'toast'; t.textContent = '' }, 300)
+  }, 2500)
 }
 
 // ===== FORMATAÇÃO =====
