@@ -616,8 +616,8 @@ async function abrir_barbearia(id) {
   var { data: servicos } = await db.from('servicos').select('*').eq('barbearia_id', id).eq('ativo', true).order('nome')
   var el = document.getElementById('lista_servicos_barb')
   if(!(servicos||[]).length) { el.innerHTML='<div class="empty"><div class="empty_txt">Sem serviços disponíveis</div></div>'; return }
-  el.innerHTML = (servicos||[]).map(s => `<div class="srv_card" id="srv_${s.id}" onclick="selecionar_servico('${s.id}','${(s.nome||'').replace(/'/g,"\\'")}',${s.preco},${s.duracao})">
-    <div><div class="srv_nome">${s.nome}</div><div class="srv_info">${s.descricao||''}</div></div>
+  el.innerHTML = (servicos||[]).map(s => `<div class="srv_card" id="srv_${s.id}" onclick="selecionar_servico('${esc(s.id)}','${esc((s.nome||'').replace(/'/g,"\\'"))}',${s.preco},${s.duracao})">
+    <div><div class="srv_nome">${esc(s.nome)}</div><div class="srv_info">${esc(s.descricao||'')}</div></div>
     <div><div class="srv_preco">${fmt_preco(s.preco)}</div><div class="srv_duracao">${s.duracao||30} min</div></div>
   </div>`).join('')
 }
@@ -729,14 +729,16 @@ async function carregar_horas() {
   var min_fecha = h_fecha * 60 + m_fecha
 
   var prof_id = prof_selecionado?.id === 'qualquer' ? null : prof_selecionado?.id
-  let q = db.from('agendamentos').select('hora_inicio,servicos(duracao)').eq('barbearia_id', barb_selecionada).eq('data', data).neq('status','cancelado')
-  if(prof_id) q = q.eq('profissional_id', prof_id)
-  var { data: marcados } = await q
+  var { data: marcados, error: errHoras } = await db.rpc('horas_ocupadas', {
+    p_barbearia: barb_selecionada,
+    p_data: data,
+    p_profissional: prof_id
+  })
 
   var minutos_bloqueados = new Set()
   for(var ag of (marcados||[])) {
     var [hh, mm] = (ag.hora_inicio||'00:00').split(':').map(Number)
-    var dur_ag = ag.servicos?.duracao || 30
+    var dur_ag = ag.duracao || 30
     var inicio_min = hh * 60 + mm
     for(let m = inicio_min; m < inicio_min + dur_ag; m++) minutos_bloqueados.add(m)
   }
@@ -775,78 +777,38 @@ function selecionar_hora(hora) {
 
 async function confirmar_marcacao() {
   var data = document.getElementById('data_agendar').value
-  let cid = cliente_id
 
-  // Se tem cliente_id mas ainda sem barbearia_id, procurar/criar cliente específico
-  if (cid) {
-    var { data: cliAtual } = await db.from('clientes').select('barbearia_id').eq('id', cid).maybeSingle()
-    if (cliAtual && !cliAtual.barbearia_id) {
-      // Cliente criado sem barbearia - procurar ou criar um novo com barbearia
-      var email = localStorage.getItem('cliente_email') || ''
-      var tel = localStorage.getItem('cliente_tel') || ''
-      var { data: cliBarb } = await db.from('clientes').select('id').eq('barbearia_id', barb_selecionada).eq('email', email).maybeSingle()
-      if (!cliBarb && tel) {
-        var { data: cliBarb2 } = await db.from('clientes').select('id').eq('barbearia_id', barb_selecionada).eq('telefone', tel).maybeSingle()
-        cliBarb = cliBarb2
-      }
-      if (cliBarb) {
-        cid = cliBarb.id
-      } else {
-        var { data: novo } = await db.from('clientes').insert({ barbearia_id: barb_selecionada, nome: localStorage.getItem('cliente_nome')||'Cliente', telefone: tel, email: email }).select().single()
-        if (novo) cid = novo.id
-      }
-    }
-  }
-
-  // Se não tem conta, cria cliente temporário
-  if(!cid) {
-    var nome = document.getElementById('nome_sem_conta')?.value || 'Cliente'
-    var tel = document.getElementById('tel_sem_conta')?.value || ''
-    // Procurar cliente existente por telefone nesta barbearia
-    if (tel) {
-      var { data: cliExist } = await db.from('clientes').select('id').eq('barbearia_id', barb_selecionada).eq('telefone', tel).maybeSingle()
-      if (cliExist) {
-        cid = cliExist.id
-        await db.from('clientes').update({ nome }).eq('id', cid)
-      }
-    }
-    if (!cid) {
-      var { data: novoCli } = await db.from('clientes').insert({ barbearia_id: barb_selecionada, nome, telefone: tel }).select().single()
-      if(novoCli) cid = novoCli.id
-    }
-  }
-
-  // Validar hora selecionada
   if(!hora_selecionada) { toast('Escolhe uma hora primeiro', 'erro'); return }
 
-  // Hora fim - garantir que so usa HH:MM
-  var hora_limpa = hora_selecionada.substring(0,5)
-  var partes = hora_limpa.split(':')
-  var hh = parseInt(partes[0]) || 0
-  var mm = parseInt(partes[1]) || 0
-  var dur = parseInt(srv_selecionado?.duracao) || 30
-  var fim_min = hh*60+mm+dur
-  var hora_fim = String(Math.floor(fim_min/60)).padStart(2,'0')+':'+String(fim_min%60).padStart(2,'0')
-
   var prof_id = prof_selecionado?.id === 'qualquer' ? null : prof_selecionado?.id
+  var nome = user_atual ? (localStorage.getItem('cliente_nome') || 'Cliente') : (document.getElementById('nome_sem_conta')?.value || 'Cliente')
+  var tel = user_atual ? (localStorage.getItem('cliente_tel') || '') : (document.getElementById('tel_sem_conta')?.value || '')
+  var email = user_atual ? (user_atual.email || localStorage.getItem('cliente_email') || '') : ''
 
-  var { error } = await db.from('agendamentos').insert({
-    barbearia_id: barb_selecionada,
-    cliente_id: cid,
-    servico_id: srv_selecionado?.id,
-    profissional_id: prof_id || null,
-    data, hora_inicio: hora_limpa+':00', hora_fim: hora_fim+':00',
-    status: 'pendente'
+  var { data: result, error } = await db.rpc('marcar', {
+    p_barbearia: barb_selecionada,
+    p_servico: srv_selecionado?.id,
+    p_profissional: prof_id,
+    p_data: data,
+    p_hora: hora_selecionada,
+    p_nome: nome,
+    p_tel: tel,
+    p_email: email
   })
 
-  if(error) {
-    if (error.code === '23505' || (error.message && error.message.indexOf('duplicate') !== -1)) {
+  if(error) { toast('Erro ao confirmar: '+error.message, 'erro'); return }
+
+  if(!result || !result.ok) {
+    var motivo = (result && result.motivo) || 'Erro desconhecido'
+    if(motivo === 'ocupado') {
       toast('Essa hora já foi marcada, escolhe outra', 'erro')
     } else {
-      toast('Erro ao confirmar: '+error.message, 'erro')
+      toast('Erro ao confirmar: '+motivo, 'erro')
     }
     return
   }
+
+  if(result.cliente_id && !cliente_id) cliente_id = result.cliente_id
 
   // SUCESSO
   document.getElementById('flow_step4').style.display='none'
@@ -899,24 +861,22 @@ async function carregar_marcacoes() {
   }
   
   el.innerHTML='<div class="loading"><div class="spinner"></div></div>'
-  var q = db.from('agendamentos').select('*,barbearias(nome),servicos(nome),profissionais(nome)')
   
-  // Filtrar por IDs do cliente
-  if (ids.length === 1) {
-    q = q.eq('cliente_id', ids[0])
-  } else {
-    q = q.in('cliente_id', ids)
-  }
+  var email = localStorage.getItem('cliente_email') || ''
+  var tel = localStorage.getItem('cliente_tel') || ''
   
-  var { data } = await q.order('data',{ascending:false}).order('hora_inicio',{ascending:false}).limit(20)
-  var lista = data||[]
+  var { data: lista, error: errMarc } = await db.rpc('minhas_marcacoes', {
+    p_email: email,
+    p_tel: tel
+  })
+  lista = lista || []
   if(!lista.length) { el.innerHTML='<div class="empty"><div class="empty_ico"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-clipboard"/></svg></div><div class="empty_txt">Ainda não tens marcações</div></div>'; return }
   el.innerHTML=lista.map(function(a){return `<div class="hist_card">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
-      <div><div class="hist_nome">`+esc(a.barbearias?.nome||'Barbearia')+`</div><div class="hist_info">${fmt_data(a.data)} às ${a.hora_inicio?.substring(0,5)||'—'}</div></div>
+      <div><div class="hist_nome">`+esc(a.barbearia_nome||'Barbearia')+`</div><div class="hist_info">${fmt_data(a.data)} às ${(a.hora_inicio||'').substring(0,5)||'—'}</div></div>
       ${badge(a.status)}
     </div>
-    <div class="hist_info">`+esc(a.servicos?.nome||'—')+` · `+esc(a.profissionais?.nome||'Qualquer profissional')+`</div>
+    <div class="hist_info">`+esc(a.servico_nome||'—')+` · `+esc(a.profissional_nome||'Qualquer profissional')+`</div>
     ${a.status==='pendente'?`<div style="margin-top:10px"><button class="btn btn_outline" style="font-size:12px;padding:6px 12px" onclick="cancelar_marcacao('${esc(a.id)}')">Cancelar</button></div>`:''}
   </div>`}).join('')
 }
