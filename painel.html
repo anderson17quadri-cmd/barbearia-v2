@@ -737,74 +737,9 @@ function copiar_link() {
 }
 
 function ver_qr() {
-  const nome = encodeURIComponent(document.getElementById('perfil_nome')?.value || 'A minha barbearia')
-  const url = 'https://anderson17quadri-cmd.github.io/barbearia-v2/cartaz.html?b=' + barbearia_id + '&n=' + nome
+  var nome = encodeURIComponent(document.getElementById('perfil_nome')?.value || 'A minha barbearia')
+  var url = 'https://anderson17quadri-cmd.github.io/barbearia-v2/cartaz.html?b=' + barbearia_id + '&n=' + nome
   window.open(url, '_blank')
-  return
-
-  // LEGACY (nao usado)
-  const win = window.open('', '_blank')
-  win.document.write(`<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>QR Code - ${nome}</title>
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"><\/script>
-<style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:#fff; font-family:'Georgia',serif; display:flex; align-items:center; justify-content:center; min-height:100vh; }
-  .cartaz { width:400px; padding:40px 32px; text-align:center; border:3px solid #C9A84C; border-radius:16px; }
-  .logo_top { font-size:13px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:#888; margin-bottom:8px; }
-  .nome_barb { font-size:28px; font-weight:700; color:#111; margin-bottom:6px; line-height:1.2; }
-  .tagline { font-size:14px; color:#888; margin-bottom:28px; }
-  .qr_wrap { background:#fff; padding:16px; border-radius:12px; display:inline-block; border:2px solid #f0e8d0; margin-bottom:24px; }
-  .instrucao { font-size:14px; color:#555; margin-bottom:6px; }
-  .instrucao strong { color:#111; }
-  .divider { height:1px; background:#e0d0a8; margin:20px 0; }
-  .logo_bottom { font-size:18px; font-weight:700; color:#111; letter-spacing:1px; }
-  .logo_bottom span { color:#C9A84C; }
-  .url_txt { font-size:10px; color:#aaa; margin-top:6px; word-break:break-all; }
-  @media print {
-    body { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-    .btn_print { display:none; }
-  }
-</style>
-<link rel="stylesheet" href="pro.css">
-</head>
-<body>
-<div>
-  <div class="cartaz">
-    <div class="logo_top">Agendamento.pt</div>
-    <div class="nome_barb">${nome}</div>
-    <div class="tagline">Marca o teu corte agora</div>
-    <div class="qr_wrap">
-      <canvas id="qr"></canvas>
-    </div>
-    <div class="instrucao">📱 <strong>Aponta a câmara</strong> para o QR code</div>
-    <div class="instrucao">e marca online em segundos!</div>
-    <div class="divider"></div>
-    <div class="logo_bottom">Agenda<span>mento</span>.pt</div>
-    <div class="url_txt">${link}</div>
-  </div>
-  <div style="text-align:center;margin-top:16px">
-    <button class="btn_print" onclick="window.print()" 
-      style="background:#C9A84C;color:#000;border:none;padding:12px 32px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer">
-      🖨️ Imprimir / Guardar PDF
-    </button>
-  </div>
-</div>
-<script>
-  window.onload = function() {
-    QRCode.toCanvas(document.getElementById('qr'), '${link}', {
-      width: 220, margin: 2,
-      color: { dark: '#111111', light: '#ffffff' }
-    })
-  }
-<\/script>
-<script src="magic.js"></script>
-</body>
-</html>`)
-  win.document.close()
 }
 
 function preview_logo(input) {
@@ -900,5 +835,6 @@ async function init(){
 }
 init()
 </script>
+<script src="magic.js"></script>
 </body>
 </html>
