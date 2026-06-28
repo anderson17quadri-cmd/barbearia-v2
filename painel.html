@@ -741,6 +741,44 @@ function ver_qr() {
   window.open(url, '_blank')
 }
 
+// MODAIS
+function fechar_modal(id){document.getElementById(id).classList.remove('open')}
+document.querySelectorAll('.modal_overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}))
+
+// INIT
+async function entrar_app(user){
+  const{data:bar}=await db.from('barbearias').select('*').eq('user_id',user.id).maybeSingle()
+  if(!bar){
+    const{data:novaBar}=await db.from('barbearias').insert({user_id:user.id,nome:user.email.split('@')[0],email:user.email,ativo:true}).select().single()
+    if(novaBar){barbearia_id=novaBar.id;document.getElementById('sidebar_nome').textContent=novaBar.nome}
+    else { await sair(); return }
+  } else {
+    barbearia_id=bar.id
+    document.getElementById('sidebar_nome').textContent=bar.nome
+    var link = APP_URL + '/cliente.html?b=' + barbearia_id
+    var el = document.getElementById('meu_link')
+    if(el) el.textContent = link
+  }
+  document.getElementById('tela_auth').style.display='none'
+  document.getElementById('tela_app').style.display='block'
+  carregar_dashboard()
+}
+
+async function init(){
+  const{data:{session}}=await db.auth.getSession()
+  if(session) await entrar_app(session.user)
+  db.auth.onAuthStateChange(async(_,session)=>{
+    if(session) await entrar_app(session.user)
+    else{document.getElementById('tela_app').style.display='none';document.getElementById('tela_auth').style.display='flex'}
+  })
+}
+init()
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('sw.js').catch(function(){})
+  })
+}
+
 </script>
 </body>
 </html>
