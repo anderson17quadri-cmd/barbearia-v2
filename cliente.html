@@ -15,37 +15,99 @@
 <link rel="stylesheet" href="shared.css">
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
-<script src="shared.js"></script>
 <style>
+:root {
+  --bg: #080808;
+  --surface: #101010;
+  --surface2: #181818;
+  --border: #222;
+  --accent: #C9A84C;
+  --accent2: #E8C96A;
+  --text: #f0f0f0;
+  --text2: #777;
+  --text3: #444;
+  --success: #2ecc71;
+  --danger: #e74c3c;
+  --radius: 14px;
+  --bottom-bar: 68px;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; min-height:100vh; max-width:480px; margin:0 auto; }
+
 /* SPLASH */
-#tela_splash { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; background:radial-gradient(ellipse at 50% 0%, rgba(201,168,76,.12) 0%, #080808 65%); padding:32px; }
+#tela_splash {
+  min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:radial-gradient(ellipse at 50% 0%, rgba(201,168,76,.12) 0%, #080808 65%); padding:32px;
+}
 .splash_logo { font-family:'Playfair Display',serif; font-size:42px; font-weight:700; text-align:center; margin-bottom:8px; letter-spacing:.5px; }
 .splash_logo span { color:var(--accent); }
 .splash_sub { color:var(--text2); font-size:15px; text-align:center; margin-bottom:48px; }
 .splash_btns { width:100%; display:flex; flex-direction:column; gap:12px; }
+
 /* AUTH */
 #tela_auth { display:none; min-height:100vh; padding:32px 24px; }
 .auth_back { font-size:22px; cursor:pointer; margin-bottom:24px; display:inline-block; }
 .auth_titulo { font-family:'Playfair Display',serif; font-size:28px; font-weight:700; margin-bottom:6px; letter-spacing:-.3px; }
 .auth_sub { color:var(--text2); font-size:14px; margin-bottom:32px; }
-/* APP CLIENTE */
+.phone_input { display:flex; gap:8px; margin-bottom:16px; }
+.ddi_select { width:90px; padding:14px 10px; background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; color:var(--text); font-size:14px; outline:none; flex-shrink:0; }
+.field input { width:100%; padding:14px; background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; color:var(--text); font-size:16px; outline:none; font-family:'Inter',sans-serif; }
+.field input:focus { border-color:var(--accent); }
+.field { margin-bottom:14px; }
+.field label { display:block; font-size:11px; font-weight:600; color:var(--text2); margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px; }
+.otp_inputs { display:flex; gap:10px; justify-content:center; margin:24px 0; }
+.otp_inputs input { width:48px; height:56px; text-align:center; font-size:24px; font-weight:700; background:var(--surface2); border:1.5px solid var(--border); border-radius:12px; color:var(--text); outline:none; font-family:'Playfair Display',serif; }
+.otp_inputs input:focus { border-color:var(--accent); }
+
+/* BOTÕES */
+.btn_primary { width:100%; padding:16px; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#000; border:none; border-radius:12px; font-weight:800; font-size:16px; cursor:pointer; font-family:'Inter',sans-serif; letter-spacing:.3px; }
+.btn_secondary { width:100%; padding:15px; background:transparent; color:var(--text); border:1.5px solid var(--border); border-radius:12px; font-weight:600; font-size:15px; cursor:pointer; font-family:'Inter',sans-serif; }
+.btn { padding:9px 16px; border-radius:8px; border:none; cursor:pointer; font-size:13px; font-weight:600; font-family:'Inter',sans-serif; }
+.btn_gold { background:var(--accent); color:#000; }
+.btn_outline { background:transparent; border:1px solid var(--border); color:var(--text2); }
+.btn_full { width:100%; padding:15px; font-size:15px; justify-content:center; }
+.btn_success { background:rgba(45,158,107,.1); color:var(--success); border:1px solid rgba(45,158,107,.2); }
+
+/* APP PRINCIPAL */
 #tela_app { display:none; padding-bottom:var(--bottom-bar); }
+
+.topbar { position:sticky; top:0; z-index:100; background:rgba(8,8,8,.95); border-bottom:1px solid var(--border); padding:16px 20px; display:flex; align-items:center; justify-content:space-between; backdrop-filter:blur(20px); }
+.topbar_logo { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; letter-spacing:.5px; }
+.topbar_logo span { color:var(--accent); }
+.topbar_user { font-size:12px; color:var(--text2); }
+
+.bottom_nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:480px; background:rgba(10,10,10,.98); border-top:1px solid var(--border); display:flex; height:var(--bottom-bar); z-index:100; backdrop-filter:blur(20px); }
+.nav_btn { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; cursor:pointer; color:var(--text3); border:none; background:transparent; }
+.nav_btn.active { color:var(--accent); }
+.nav_btn .ico { font-size:20px; }
+.nav_btn .lbl { font-size:10px; font-weight:600; }
+
+.page { display:none; padding:16px; }
+.page.active { display:block; }
+.page_titulo { font-family:'Playfair Display',serif; font-size:26px; font-weight:700; margin-bottom:4px; padding-top:8px; letter-spacing:-.3px; }
+.page_sub { color:var(--text2); font-size:13px; margin-bottom:20px; }
+
 /* SEARCH */
 .search_box { display:flex; align-items:center; gap:10px; background:var(--surface2); border:1.5px solid var(--border); border-radius:12px; padding:12px 14px; margin-bottom:16px; }
-.search_box input { background:none; border:none; color:var(--text); font-size:15px; flex:1; outline:none; }
+.search_box input { background:none; border:none; color:var(--text); font-size:15px; flex:1; outline:none; font-family:'Inter',sans-serif; }
 .search_box .ico { font-size:18px; color:var(--text3); }
-/* BARBEARIAS */
+
+/* CARDS BARBEARIA */
 .barb_card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); margin-bottom:12px; overflow:hidden; cursor:pointer; transition:.2s; }
+.barb_card:hover { border-color:rgba(201,168,76,.3); }
 .barb_card:active { transform:scale(.98); }
 .barb_card_body { padding:16px; }
 .barb_card_nome { font-family:'Playfair Display',serif; font-weight:700; font-size:17px; margin-bottom:4px; letter-spacing:.3px; }
 .barb_card_info { font-size:13px; color:var(--text2); display:flex; gap:12px; flex-wrap:wrap; }
-/* BARBEARIA DETAIL */
+.barb_card_badge { display:inline-flex; align-items:center; gap:4px; font-size:12px; }
+
+/* PERFIL BARBEARIA */
 .barb_hero { background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(201,168,76,.02)); padding:28px 20px; border-bottom:1px solid var(--border); }
 .barb_hero_nome { font-family:'Playfair Display',serif; font-size:26px; font-weight:700; margin-bottom:4px; letter-spacing:-.3px; }
 .barb_hero_info { font-size:13px; color:var(--text2); }
 .barb_back { font-size:22px; cursor:pointer; margin-bottom:16px; display:inline-block; }
-/* SERVIÇOS */
+
+/* SERVIÇOS LISTA */
 .srv_card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:10px; cursor:pointer; transition:.15s; display:flex; justify-content:space-between; align-items:center; }
 .srv_card:active { transform:scale(.98); }
 .srv_card.selected { border-color:var(--accent); background:rgba(201,168,76,.08); box-shadow:0 0 0 1px rgba(201,168,76,.2); }
@@ -53,6 +115,7 @@
 .srv_info { font-size:13px; color:var(--text2); margin-top:2px; }
 .srv_preco { font-weight:700; color:var(--accent); font-size:16px; text-align:right; }
 .srv_duracao { font-size:12px; color:var(--text3); text-align:right; }
+
 /* PROFISSIONAIS */
 .prof_grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
 .prof_card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px; text-align:center; cursor:pointer; transition:.15s; }
@@ -62,30 +125,54 @@
 .prof_card.selected .prof_avatar { border-color:var(--accent); }
 .prof_nome { font-weight:600; font-size:14px; }
 .prof_esp { font-size:12px; color:var(--text2); margin-top:2px; }
-/* HORARIOS */
+
+/* HORÁRIOS DISPONÍVEIS */
 .horas_grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:20px; }
 .hora_chip { padding:10px 4px; background:var(--surface2); border:1.5px solid var(--border); border-radius:8px; text-align:center; font-size:13px; font-weight:600; cursor:pointer; transition:.15s; }
 .hora_chip:active { transform:scale(.95); }
 .hora_chip.selected { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#000; border-color:var(--accent); font-weight:800; }
 .hora_chip.indisponivel { opacity:.3; pointer-events:none; }
+
 /* RESUMO */
 .resumo_card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px; margin-bottom:16px; position:relative; overflow:hidden; }
 .resumo_card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--accent),var(--accent2)); }
 .resumo_linha { display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border); font-size:14px; }
 .resumo_linha:last-child { border-bottom:none; font-weight:700; font-size:16px; }
 .resumo_label { color:var(--text2); }
-/* HISTORICO */
+
+/* HISTÓRICO */
 .hist_card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:10px; }
 .hist_nome { font-weight:600; font-size:15px; margin-bottom:4px; }
 .hist_info { font-size:13px; color:var(--text2); }
+.badge { display:inline-flex; align-items:center; padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700; }
+.badge_pendente { background:rgba(230,126,34,.12); color:#e89043; border:1px solid rgba(230,126,34,.2); }
+.badge_confirmado { background:rgba(46,204,113,.12); color:#2ecc71; border:1px solid rgba(46,204,113,.2); }
+.badge_cancelado { background:rgba(192,57,43,.15); color:#c0392b; }
+.badge_concluido { background:rgba(100,100,200,.15); color:#aab; }
+
+/* STEP INDICATOR */
+.steps { display:flex; gap:6px; margin-bottom:24px; }
+.step { flex:1; height:3px; background:var(--border); border-radius:2px; transition:.3s; }
+.step.done { background:var(--accent); }
+
 /* MISC */
+.section_label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--accent); margin-bottom:14px; }
+.loading { display:flex; align-items:center; justify-content:center; padding:40px; color:var(--text3); gap:10px; }
+.spinner { width:20px; height:20px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .7s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.empty { text-align:center; padding:40px 20px; }
+.empty_ico { font-size:44px; margin-bottom:12px; }
+.empty_txt { color:var(--text2); font-size:14px; }
+.toast { position:fixed; bottom:calc(var(--bottom-bar) + 12px); left:50%; transform:translateX(-50%); background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:12px 20px; font-size:14px; z-index:999; display:none; white-space:nowrap; }
+.toast.show { display:block; }
+.toast.ok { border-color:var(--success); color:#6da; }
+.toast.erro { border-color:var(--danger); color:#e88; }
+.msg_erro { background:#1a0808; border:1px solid var(--danger); color:#e88; border-radius:8px; padding:10px 14px; font-size:13px; margin-top:10px; display:none; }
 .divider { height:1px; background:var(--border); margin:16px 0; }
-input[type="date"] { width:100%; padding:14px; background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; color:var(--text); font-size:16px; outline:none; }
+input[type="date"] { width:100%; padding:14px; background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; color:var(--text); font-size:16px; outline:none; font-family:'Inter',sans-serif; }
 </style>
 </head>
 <body>
-
-<!-- OFFLINE BANNER -->
 <div id="offline_banner" class="msg_erro" style="position:fixed;top:0;left:0;right:0;z-index:9999;display:none;text-align:center;border-radius:0;margin:0;padding:8px">⚠️ Sem ligação à internet</div>
 
 <!-- BANNER INSTALAÇÃO PWA -->
@@ -262,8 +349,8 @@ input[type="date"] { width:100%; padding:14px; background:var(--surface2); borde
       </div>
 
       <!-- SUCESSO -->
-      <div id="flow_sucesso" style="display:none;text-align:center;padding:32px 0" class="success-anim">
-        <div class="check-icon">🎉</div>
+      <div id="flow_sucesso" style="display:none;text-align:center;padding:32px 0">
+        <div style="font-size:60px;margin-bottom:16px">🎉</div>
         <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:800;margin-bottom:8px">Marcação confirmada!</div>
         <div style="color:var(--text2);font-size:14px;margin-bottom:32px">Receberás confirmação em breve</div>
         <div class="resumo_card" style="text-align:left">
@@ -288,8 +375,6 @@ input[type="date"] { width:100%; padding:14px; background:var(--surface2); borde
 <div class="toast" id="toast"></div>
 
 <script>
-// shared.js fornece toast, fmt_data, fmt_preco, badge, esc, etc.
-
 const { createClient } = supabase
 const db = createClient(SUPA_URL, SUPA_KEY)
 
@@ -300,6 +385,18 @@ let srv_selecionado = null
 let prof_selecionado = null
 let hora_selecionada = null
 let step_atual = 1
+
+function toast(msg, tipo='ok') {
+  const t = document.getElementById('toast')
+  t.textContent = msg; t.className = 'toast show ' + tipo
+  setTimeout(() => t.className = 'toast', 2500)
+}
+function fmt_data(d) { return new Date(d+'T12:00:00').toLocaleDateString('pt-PT',{weekday:'long',day:'numeric',month:'long'}) }
+function fmt_preco(v) { return v ? '€'+parseFloat(v).toFixed(2) : 'Grátis' }
+function badge(s) {
+  const m={pendente:'badge_pendente',confirmado:'badge_confirmado',cancelado:'badge_cancelado',concluido:'badge_concluido'}
+  return `<span class="badge ${m[s]||''}">${s}</span>`
+}
 
 // SPLASH / AUTH
 function mostrar_auth() {
@@ -428,11 +525,16 @@ async function carregar_barbearias(termo='') {
   const { data } = await q.order('nome')
   const lista = data || []
   if(!lista.length) { el.innerHTML='<div class="empty"><div class="empty_ico">💈</div><div class="empty_txt">Nenhuma barbearia encontrada</div></div>'; return }
-  el.innerHTML = lista.map(b => '<div class="barb_card" onclick="abrir_barbearia(\''+esc(b.id)+'\')">'
-    +'<div class="barb_card_body"><div class="barb_card_nome">💈 '+esc(b.nome)+'</div>'
-    +'<div class="barb_card_info">'+(b.cidade?'<span>📍 '+esc(b.cidade)+'</span>':'')+(b.telefone?'<span>📞 '+esc(b.telefone)+'</span>':'')+'</div>'
-    +(b.descricao?'<div style="font-size:13px;color:var(--text2);margin-top:8px">'+esc(b.descricao)+'</div>':'')
-    +'</div></div>').join('')
+  el.innerHTML = lista.map(b => `<div class="barb_card" onclick="abrir_barbearia('${b.id}')">
+    <div class="barb_card_body">
+      <div class="barb_card_nome">💈 ${b.nome}</div>
+      <div class="barb_card_info">
+        ${b.cidade ? `<span>📍 ${b.cidade}</span>` : ''}
+        ${b.telefone ? `<span>📞 ${b.telefone}</span>` : ''}
+      </div>
+      ${b.descricao ? `<div style="font-size:13px;color:var(--text2);margin-top:8px">${b.descricao}</div>` : ''}
+    </div>
+  </div>`).join('')
 }
 
 function pesquisar() {
@@ -460,11 +562,12 @@ async function abrir_barbearia(id) {
   window.scrollTo(0,0)
 
   const { data: barb } = await db.from('barbearias').select('*').eq('id', id).single()
-  document.getElementById('barb_hero_content').innerHTML =
-    '<div style="font-size:44px;margin-bottom:12px">💈</div>'
-    +'<div style="font-family:\'Playfair Display\',serif;font-size:24px;font-weight:800;margin-bottom:4px">'+esc(barb.nome)+'</div>'
-    +'<div style="color:var(--text2);font-size:13px">'+esc([barb.cidade,barb.telefone].filter(Boolean).join(' · '))+'</div>'
-    +(barb.descricao?'<div style="margin-top:10px;font-size:14px;color:var(--text2)">'+esc(barb.descricao)+'</div>':'')
+  document.getElementById('barb_hero_content').innerHTML = `
+    <div style="font-size:44px;margin-bottom:12px">💈</div>
+    <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:800;margin-bottom:4px">${barb.nome}</div>
+    <div style="color:var(--text2);font-size:13px">${[barb.cidade,barb.telefone].filter(Boolean).join(' · ')}</div>
+    ${barb.descricao?`<div style="margin-top:10px;font-size:14px;color:var(--text2)">${barb.descricao}</div>`:''}
+  `
 
   // Reset steps
   for(let i=1;i<=4;i++) {
@@ -478,10 +581,10 @@ async function abrir_barbearia(id) {
   const { data: servicos } = await db.from('servicos').select('*').eq('barbearia_id', id).eq('ativo', true).order('nome')
   const el = document.getElementById('lista_servicos_barb')
   if(!(servicos||[]).length) { el.innerHTML='<div class="empty"><div class="empty_txt">Sem serviços disponíveis</div></div>'; return }
-  el.innerHTML = (servicos||[]).map(s => '<div class="srv_card" id="srv_'+esc(s.id)+'" onclick="selecionar_servico(\''+esc(s.id)+'\',\''+esc(s.nome||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\','+parseFloat(s.preco)+','+parseInt(s.duracao)+')">'
-    +'<div><div class="srv_nome">'+esc(s.nome)+'</div><div class="srv_info">'+esc(s.descricao||'')+'</div></div>'
-    +'<div><div class="srv_preco">'+fmt_preco(s.preco)+'</div><div class="srv_duracao">'+(s.duracao||30)+' min</div></div>'
-    +'</div>').join('')
+  el.innerHTML = (servicos||[]).map(s => `<div class="srv_card" id="srv_${s.id}" onclick="selecionar_servico('${s.id}','${(s.nome||'').replace(/'/g,"\\'")}',${s.preco},${s.duracao})">
+    <div><div class="srv_nome">${s.nome}</div><div class="srv_info">${s.descricao||''}</div></div>
+    <div><div class="srv_preco">${fmt_preco(s.preco)}</div><div class="srv_duracao">${s.duracao||30} min</div></div>
+  </div>`).join('')
 }
 
 function fechar_barbearia() {
@@ -517,10 +620,15 @@ async function ir_step(n) {
     const el = document.getElementById('lista_profs_barb')
     const lista = profs || []
     // Adicionar opção "qualquer"
-    el.innerHTML = '<div class="prof_card selected" id="prof_qualquer" onclick="selecionar_prof(\'qualquer\',\'Qualquer profissional\')">'
-      +'<div class="prof_avatar">🎲</div><div class="prof_nome">Qualquer</div><div class="prof_esp">Sem preferência</div></div>'
-      + lista.map(p=>'<div class="prof_card" id="prof_'+esc(p.id)+'" onclick="selecionar_prof(\''+esc(p.id)+'\',\''+esc(p.nome||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\')">'
-        +'<div class="prof_avatar">💈</div><div class="prof_nome">'+esc(p.nome)+'</div><div class="prof_esp">'+esc(p.especialidade||'')+'</div></div>').join('')
+    el.innerHTML = `<div class="prof_card selected" id="prof_qualquer" onclick="selecionar_prof('qualquer','Qualquer profissional')">
+      <div class="prof_avatar">🎲</div>
+      <div class="prof_nome">Qualquer</div>
+      <div class="prof_esp">Sem preferência</div>
+    </div>` + lista.map(p=>`<div class="prof_card" id="prof_${p.id}" onclick="selecionar_prof('${p.id}','${(p.nome||'').replace(/'/g,"\\'")}')">
+      <div class="prof_avatar">💈</div>
+      <div class="prof_nome">${p.nome}</div>
+      <div class="prof_esp">${p.especialidade||''}</div>
+    </div>`).join('')
     prof_selecionado = { id: 'qualquer', nome: 'Qualquer profissional' }
     const btn = document.getElementById('btn_step2'); btn.disabled=false; btn.style.opacity='1'
   }
@@ -674,8 +782,6 @@ async function confirmar_marcacao() {
   document.getElementById('suc_data').textContent = fmt_data(data)
   document.getElementById('suc_hora').textContent = hora_selecionada
   for(let i=1;i<=4;i++) document.getElementById('step'+i).className='step done'
-  confetti()
-  setTimeout(function(){ toast('Marcação confirmada! 🎉') }, 500)
 }
 
 // MARCAÇÕES
@@ -691,13 +797,14 @@ async function carregar_marcacoes() {
   const { data } = await q.order('data',{ascending:false}).order('hora_inicio',{ascending:false}).limit(20)
   const lista = data||[]
   if(!lista.length) { el.innerHTML='<div class="empty"><div class="empty_ico">📋</div><div class="empty_txt">Ainda não tens marcações</div></div>'; return }
-  el.innerHTML=lista.map(a=>'<div class="hist_card">'
-    +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">'
-    +'<div><div class="hist_nome">💈 '+esc(a.barbearias?.nome||'Barbearia')+'</div><div class="hist_info">'+fmt_data(a.data)+' às '+esc(a.hora_inicio?.substring(0,5)||'—')+'</div></div>'
-    +badge(a.status)+'</div>'
-    +'<div class="hist_info">'+esc(a.servicos?.nome||'—')+' · '+esc(a.profissionais?.nome||'Qualquer profissional')+'</div>'
-    +(a.status==='pendente'?'<div style="margin-top:10px"><button class="btn btn_outline" style="font-size:12px;padding:6px 12px" onclick="cancelar_marcacao(\''+esc(a.id)+'\')">Cancelar</button></div>':'')
-    +'</div>').join('')
+  el.innerHTML=lista.map(a=>`<div class="hist_card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+      <div><div class="hist_nome">💈 ${a.barbearias?.nome||'Barbearia'}</div><div class="hist_info">${fmt_data(a.data)} às ${a.hora_inicio?.substring(0,5)||'—'}</div></div>
+      ${badge(a.status)}
+    </div>
+    <div class="hist_info">${a.servicos?.nome||'—'} · ${a.profissionais?.nome||'Qualquer profissional'}</div>
+    ${a.status==='pendente'?`<div style="margin-top:10px"><button class="btn btn_outline" style="font-size:12px;padding:6px 12px" onclick="cancelar_marcacao('${a.id}')">Cancelar</button></div>`:''}
+  </div>`).join('')
 }
 
 async function cancelar_marcacao(id) {
@@ -708,6 +815,11 @@ async function cancelar_marcacao(id) {
 
 // INIT
 async function init() {
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function() {
+    navigator.serviceWorker.register("sw.js").catch(function(){})
+  })
+}
   const { data: { session } } = await db.auth.getSession()
   if(session) {
     await entrar_cliente(session.user)
@@ -759,10 +871,9 @@ window.addEventListener('appinstalled', () => {
 })
 
 init()
-// SERVICE WORKER
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('sw.js').catch(function(){})
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function() {
+    navigator.serviceWorker.register("sw.js").catch(function(){})
   })
 }
 </script>
