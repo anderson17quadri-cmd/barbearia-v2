@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#C9A84C">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Agendamento.pt">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.png">
+<title>Agendamento.pt — Clientes</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
+<style>
+:root {
+  --bg: #080808;
+  --surface: #101010;
+  --surface2: #181818;
+  --border: #222;
+  --accent: #C9A84C;
+  --accent2: #E8C96A;
+  --text: #f0f0f0;
+  --text2: #777;
+  --text3: #444;
+  --success: #2ecc71;
+  --danger: #e74c3c;
+  --radius: 14px;
+  --bottom-bar: 68px;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; min-height:100vh; max-width:480px; margin:0 auto; }
+
+/* SPLASH */
+#tela_splash {
+  min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:radial-gradient(ellipse at 50% 0%, rgba(201,168,76,.12) 0%, #080808 65%); padding:32px;
+}
+.splash_logo { font-family:'Playfair Display',serif; font-size:42px; font-weight:700; text-align:center; margin-bottom:8px; letter-spacing:.5px; }
+.splash_logo span { color:var(--accent); }
+.splash_sub { color:var(--text2); font-size:15px; text-align:center; margin-bottom:48px; }
+.splash_btns { width:100%; display:flex; flex-direction:column; gap:12px; }
+
+/* AUTH */
+#tela_auth { display:none; min-height:100vh; padding:32px 24px; }
+.auth_back { font-size:22px; cursor:pointer; margin-bottom:24px; display:inline-block; }
+.auth_titulo { font-family:'Playfair Display',serif; font-size:28px; font-weight:700; margin-bottom:6px; letter-spacing:-.3px; }
+.auth_sub { color:var(--text2); font-size:14px; margin-bottom:32px; }
+.phone_input { display:flex; gap:8px; margin-bottom:16px; }
+.ddi_select { width:90px; padding:14px 10px; background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; color:var(--text); font-size:14px; outline:none; flex-shrink:0; }
+.field input { width:100%; padding:14px; background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; color:var(--text); font-size:16px; outline:none; font-family:'Inter',sans-serif; }
+.field input:focus { border-color:var(--accent); }
+.field { margin-bottom:14px; }
+.field label { display:block; font-size:11px; font-weight:600; color:var(--text2); margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px; }
+.otp_inputs { display:flex; gap:10px; justify-content:center; margin:24px 0; }
+.otp_inputs input { width:48px; height:56px; text-align:center; font-size:24px; font-weight:700; background:var(--surface2); border:1.5px solid var(--border); border-radius:12px; color:var(--text); outline:none; font-family:'Playfair Display',serif; }
+.otp_inputs input:focus { border-color:var(--accent); }
+
+/* BOTÕES */
+.btn_primary { width:100%; padding:16px; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#000; border:none; border-radius:12px; font-weight:800; font-size:16px; cursor:pointer; font-family:'Inter',sans-serif; letter-spacing:.3px; }
+.btn_secondary { width:100%; padding:15px; background:transparent; color:var(--text); border:1.5px solid var(--border); border-radius:12px; font-weight:600; font-size:15px; cursor:pointer; font-family:'Inter',sans-serif; }
+.btn { padding:9px 16px; border-radius:8px; border:none; cursor:pointer; font-size:13px; font-weight:600; font-family:'Inter',sans-serif; }
+.btn_gold { background:var(--accent); color:#000; }
+.btn_outline { background:transparent; border:1px solid var(--border); color:var(--text2); }
+.btn_full { width:100%; padding:15px; font-size:15px; justify-content:center; }
+.btn_success { background:rgba(45,158,107,.1); color:var(--success); border:1px solid rgba(45,158,107,.2); }
+
+/* APP PRINCIPAL */
+#tela_app { display:none; padding-bottom:var(--bottom-bar); }
+
+.topbar { position:sticky; top:0; z-index:100; background:rgba(8,8,8,.95); border-bottom:1px solid var(--border); padding:16px 20px; display:flex; align-items:center; justify-content:space-between; backdrop-filter:blur(20px); }
+.topbar_logo { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; letter-spacing:.5px; }
+.topbar_logo span { color:var(--accent); }
+.topbar_user { font-size:12px; color:var(--text2); }
+
+.bottom_nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:480px; background:rgba(10,10,10,.98); border-top:1px solid var(--border); display:flex; height:var(--bottom-bar); z-index:100; backdrop-filter:blur(20px); }
+.nav_btn { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; cursor:pointer; color:var(--text3); border:none; background:transparent; }
+.nav_btn.active { color:var(--accent); }
+.nav_btn .ico { font-size:20px; }
+.nav_btn .lbl { font-size:10px; font-weight:600; }
+
+.page { display:none; padding:16px; }
+.page.active { display:block; }
+.page_titulo { font-family:'Playfair Display',serif; font-size:26px; font-weight:700; margin-bottom:4px; padding-top:8px; letter-spacing:-.3px; }
+.page_sub { color:var(--text2); font-size:13px; margin-bottom:20px; }
+
+/* SEARCH */
+.search_box { display:flex; align-items:center; gap:10px; background:var(--surface2); border:1.5px solid var(--border); border-radius:12px; padding:12px 14px; margin-bottom:16px; }
+.search_box input { background:none; border:none; color:var(--text); font-size:15px; flex:1; outline:none; font-family:'Inter',sans-serif; }
+.search_box .ico { font-size:18px; color:var(--text3); }
+
+/* CARDS BARBEARIA */
+.barb_card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); margin-bottom:12px; overflow:hidden; cursor:pointer; transition:.2s; }
+.barb_card:hover { border-color:rgba(201,168,76,.3); }
+.barb_card:active { transform:scale(.98); }
+.barb_card_body { padding:16px; }
+.barb_card_nome { font-family:'Playfair Display',serif; font-weight:700; font-size:17px; margin-bottom:4px; letter-spacing:.3px; }
+.barb_card_info { font-size:13px; color:var(--text2); display:flex; gap:12px; flex-wrap:wrap; }
+.barb_card_badge { display:inline-flex; align-items:center; gap:4px; font-size:12px; }
+
+/* PERFIL BARBEARIA */
+.barb_hero { background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(201,168,76,.02)); padding:28px 20px; border-bottom:1px solid var(--border); }
+.barb_hero_nome { font-family:'Playfair Display',serif; font-size:26px; font-weight:700; margin-bottom:4px; letter-spacing:-.3px; }
+.barb_hero_info { font-size:13px; color:var(--text2); }
+.barb_back { font-size:22px; cursor:pointer; margin-bottom:16px; display:inline-block; }
+
+/* SERVIÇOS LISTA */
+.srv_card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:10px; cursor:pointer; transition:.15s; display:flex; justify-content:space-between; align-items:center; }
+.srv_card:active { transform:scale(.98); }
+.srv_card.selected { border-color:var(--accent); background:rgba(201,168,76,.08); box-shadow:0 0 0 1px rgba(201,168,76,.2); }
+.srv_nome { font-weight:600; font-size:15px; }
+.srv_info { font-size:13px; color:var(--text2); margin-top:2px; }
+.srv_preco { font-weight:700; color:var(--accent); font-size:16px; text-align:right; }
+.srv_duracao { font-size:12px; color:var(--text3); text-align:right; }
+
+/* PROFISSIONAIS */
+.prof_grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+.prof_card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px; text-align:center; cursor:pointer; transition:.15s; }
+.prof_card:active { transform:scale(.97); }
+.prof_card.selected { border-color:var(--accent); background:rgba(201,168,76,.08); box-shadow:0 0 0 1px rgba(201,168,76,.2); }
+.prof_avatar { width:52px; height:52px; background:var(--surface2); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px; margin:0 auto 10px; border:2px solid var(--border); }
+.prof_card.selected .prof_avatar { border-color:var(--accent); }
+.prof_nome { font-weight:600; font-size:14px; }
+.prof_esp { font-size:12px; color:var(--text2); margin-top:2px; }
+
+/* HORÁRIOS DISPONÍVEIS */
+.horas_grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:20px; }
+.hora_chip { padding:10px 4px; background:var(--surface2); border:1.5px solid var(--border); border-radius:8px; text-align:center; font-size:13px; font-weight:600; cursor:pointer; transition:.15s; }
+.hora_chip:active { transform:scale(.95); }
+.hora_chip.selected { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#000; border-color:var(--accent); font-weight:800; }
+.hora_chip.indisponivel { opacity:.3; pointer-events:none; }
+
+/* RESUMO */
+.resumo_card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px; margin-bottom:16px; position:relative; overflow:hidden; }
+.resumo_card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--accent),var(--accent2)); }
+.resumo_linha { display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border); font-size:14px; }
+.resumo_linha:last-child { border-bottom:none; font-weight:700; font-size:16px; }
+.resumo_label { color:var(--text2); }
+
+/* HISTÓRICO */
+.hist_card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:10px; }
+.hist_nome { font-weight:600; font-size:15px; margin-bottom:4px; }
+.hist_info { font-size:13px; color:var(--text2); }
+.badge { display:inline-flex; align-items:center; padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700; }
+.badge_pendente { background:rgba(230,126,34,.12); color:#e89043; border:1px solid rgba(230,126,34,.2); }
+.badge_confirmado { background:rgba(46,204,113,.12); color:#2ecc71; border:1px solid rgba(46,204,113,.2); }
+.badge_cancelado { background:rgba(192,57,43,.15); color:#c0392b; }
+.badge_concluido { background:rgba(100,100,200,.15); color:#aab; }
+
+/* STEP INDICATOR */
+.steps { display:flex; gap:6px; margin-bottom:24px; }
+.step { flex:1; height:3px; background:var(--border); border-radius:2px; transition:.3s; }
+.step.done { background:var(--accent); }
+
+/* MISC */
+.section_label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--accent); margin-bottom:14px; }
+.loading { display:flex; align-items:center; justify-content:center; padding:40px; color:var(--text3); gap:10px; }
+.spinner { width:20px; height:20px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .7s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.empty { text-align:center; padding:40px 20px; }
+.empty_ico { font-size:44px; margin-bottom:12px; }
+.empty_txt { color:var(--text2); font-size:14px; }
+.toast { position:fixed; bottom:calc(var(--bottom-bar) + 12px); left:50%; transform:translateX(-50%); background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:12px 20px; font-size:14px; z-index:999; display:none; white-space:nowrap; }
+.toast.show { display:block; }
+.toast.ok { border-color:var(--success); color:#6da; }
+.toast.erro { border-color:var(--danger); color:#e88; }
+.msg_erro { background:#1a0808; border:1px solid var(--danger); color:#e88; border-radius:8px; padding:10px 14px; font-size:13px; margin-top:10px; display:none; }
+.divider { height:1px; background:var(--border); margin:16px 0; }
+input[type="date"] { width:100%; padding:14px; background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; color:var(--text); font-size:16px; outline:none; font-family:'Inter',sans-serif; }
+</style>
+</head>
+<body>
+
+<!-- BANNER INSTALAÇÃO PWA -->
+<div id="banner_pwa" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;background:var(--surface);border-top:1px solid rgba(201,168,76,.3);padding:16px 20px;max-width:480px;margin:0 auto">
+  <div style="display:flex;align-items:center;gap:14px">
+    <div style="font-size:36px">💈</div>
+    <div style="flex:1">
+      <div style="font-weight:700;font-size:14px;margin-bottom:2px">Instalar Agendamento.pt</div>
+      <div style="font-size:12px;color:var(--text2)">Adiciona ao ecrã inicial para acesso rápido</div>
+    </div>
+    <button onclick="instalar_pwa()" style="background:var(--accent);color:#000;border:none;border-radius:8px;padding:10px 16px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap">Instalar</button>
+    <button onclick="document.getElementById('banner_pwa').style.display='none'" style="background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:4px">✕</button>
+  </div>
+</div>
+
+<!-- SPLASH -->
+<div id="tela_splash">
+  <div class="splash_logo">Agenda<span>mento</span>.pt</div>
+  <div class="splash_sub">Marca o teu próximo corte em segundos</div>
+  <div class="splash_btns">
+    <button class="btn_primary" onclick="mostrar_auth()">Entrar com telemóvel</button>
+    <button class="btn_secondary" onclick="entrar_sem_login()">Explorar barbearias</button>
+  </div>
+</div>
+
+<!-- AUTH -->
+<div id="tela_auth">
+  <div class="auth_back" onclick="voltar_splash()">←</div>
+
+  <!-- STEP 1: DADOS -->
+  <div id="auth_step1">
+    <div class="auth_titulo">Criar conta</div>
+    <div class="auth_sub">Preenche os teus dados para continuar</div>
+    <div class="field"><label>O teu nome</label><input type="text" id="auth_nome" placeholder="João Silva"></div>
+    <div class="field"><label>Telemóvel</label><input type="tel" id="auth_tel" placeholder="+351 912 345 678"></div>
+    <div class="field"><label>Email</label><input type="email" id="auth_email" placeholder="joao@email.com"></div>
+    <button class="btn_primary" onclick="enviar_magic_link()">Enviar link de acesso</button>
+    <div class="msg_erro" id="erro_auth"></div>
+  </div>
+
+  <!-- STEP 2: AGUARDAR EMAIL -->
+  <div id="auth_step2" style="display:none;text-align:center;padding-top:20px">
+    <div style="font-size:60px;margin-bottom:16px">📧</div>
+    <div class="auth_titulo">Verifica o email</div>
+    <div class="auth_sub" id="auth_sub2">Enviámos um link para o teu email. Clica nele para entrar.</div>
+    <div style="background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:10px;padding:14px;font-size:13px;color:var(--accent);margin:20px 0">
+      Abre o teu email e clica no link de acesso
+    </div>
+    <button class="btn_secondary" onclick="reenviar_email()">Reenviar email</button>
+  </div>
+
+</div>
+
+<!-- APP -->
+<div id="tela_app">
+  <div class="topbar">
+    <div class="topbar_logo">Agenda<span>mento</span>.pt</div>
+    <div class="topbar_user" id="user_nome_top"></div>
+  </div>
+
+  <!-- DESCOBRIR -->
+  <div class="page active" id="page_descobrir">
+    <div class="page_titulo" style="padding-top:8px">Barbearias</div>
+    <div class="page_sub">Encontra e marca online</div>
+    <div class="search_box">
+      <span class="ico">🔍</span>
+      <input type="text" id="search_input" placeholder="Pesquisar barbearia..." oninput="pesquisar()">
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      <button class="btn btn_outline" style="flex:1;padding:10px" onclick="buscar_por_localizacao()">📍 Perto de mim</button>
+      <button class="btn btn_outline" style="flex:1;padding:10px" onclick="mostrar_qr()">📷 QR Code</button>
+    </div>
+    <div class="section_label">Todas as barbearias</div>
+    <div id="lista_barbearias"><div class="loading"><div class="spinner"></div></div></div>
+  </div>
+
+  <!-- MARCAÇÕES -->
+  <div class="page" id="page_marcacoes">
+    <div class="page_titulo" style="padding-top:8px">As minhas marcações</div>
+    <div class="page_sub">Histórico e próximas visitas</div>
+    <div id="lista_marcacoes"><div class="loading"><div class="spinner"></div></div></div>
+  </div>
+
+  <!-- PERFIL CLIENTE -->
+  <div class="page" id="page_perfil_cliente">
+    <div class="page_titulo" style="padding-top:8px">O meu perfil</div>
+    <div id="perfil_content">
+      <div class="resumo_card" style="margin-bottom:16px">
+        <div style="font-size:40px;text-align:center;margin-bottom:12px">👤</div>
+        <div style="text-align:center">
+          <div style="font-weight:700;font-size:18px" id="perfil_nome_show">—</div>
+          <div style="color:var(--text2);font-size:14px;margin-top:4px" id="perfil_tel_show">—</div>
+        </div>
+      </div>
+      <button class="btn_secondary" onclick="sair_cliente()">Sair da conta</button>
+    </div>
+    <div id="perfil_sem_login" style="display:none">
+      <div class="empty">
+        <div class="empty_ico">👤</div>
+        <div class="empty_txt" style="margin-bottom:20px">Entra para ver o teu perfil e histórico</div>
+        <button class="btn_primary" onclick="mostrar_auth()">Entrar com telemóvel</button>
+      </div>
+    </div>
+  </div>
+
+  <nav class="bottom_nav">
+    <button class="nav_btn active" onclick="ir_para('descobrir')"><span class="ico">🏠</span><span class="lbl">Início</span></button>
+    <button class="nav_btn" onclick="ir_para('marcacoes')"><span class="ico">📋</span><span class="lbl">Marcações</span></button>
+    <button class="nav_btn" onclick="ir_para('perfil_cliente')"><span class="ico">👤</span><span class="lbl">Perfil</span></button>
+  </nav>
+</div>
+
+<!-- PERFIL BARBEARIA (fullscreen) -->
+<div id="tela_barbearia" style="display:none; padding-bottom:var(--bottom-bar)">
+  <div style="padding:20px">
+    <div class="barb_back" onclick="fechar_barbearia()">←</div>
+    <div id="barb_hero_content"></div>
+    <div class="divider"></div>
+
+    <!-- AGENDAR STEPS -->
+    <div id="agendar_flow">
+      <div class="steps" id="steps_bar">
+        <div class="step" id="step1"></div>
+        <div class="step" id="step2"></div>
+        <div class="step" id="step3"></div>
+        <div class="step" id="step4"></div>
+      </div>
+
+      <!-- STEP 1: SERVIÇO -->
+      <div id="flow_step1">
+        <div class="section_label">Escolhe o serviço</div>
+        <div id="lista_servicos_barb"></div>
+        <button class="btn_primary btn_full" onclick="ir_step(2)" id="btn_step1" disabled style="opacity:.4">Continuar</button>
+      </div>
+
+      <!-- STEP 2: PROFISSIONAL -->
+      <div id="flow_step2" style="display:none">
+        <div class="section_label">Escolhe o profissional</div>
+        <div class="prof_grid" id="lista_profs_barb"></div>
+        <button class="btn_primary btn_full" onclick="ir_step(3)" id="btn_step2" disabled style="opacity:.4">Continuar</button>
+      </div>
+
+      <!-- STEP 3: DATA E HORA -->
+      <div id="flow_step3" style="display:none">
+        <div class="section_label">Escolhe a data</div>
+        <div class="field"><input type="date" id="data_agendar" onchange="carregar_horas()"></div>
+        <div class="section_label" style="margin-top:16px">Horários disponíveis</div>
+        <div class="horas_grid" id="lista_horas"></div>
+        <button class="btn_primary btn_full" onclick="ir_step(4)" id="btn_step3" disabled style="opacity:.4">Continuar</button>
+      </div>
+
+      <!-- STEP 4: CONFIRMAÇÃO -->
+      <div id="flow_step4" style="display:none">
+        <div class="section_label">Confirmar marcação</div>
+        <div class="resumo_card">
+          <div class="resumo_linha"><span class="resumo_label">Serviço</span><span id="res_servico">—</span></div>
+          <div class="resumo_linha"><span class="resumo_label">Profissional</span><span id="res_prof">—</span></div>
+          <div class="resumo_linha"><span class="resumo_label">Data</span><span id="res_data">—</span></div>
+          <div class="resumo_linha"><span class="resumo_label">Hora</span><span id="res_hora">—</span></div>
+          <div class="resumo_linha"><span class="resumo_label">Total</span><span id="res_preco" style="color:var(--accent)">—</span></div>
+        </div>
+        <div id="agendar_login_aviso" style="display:none;margin-bottom:16px">
+          <div style="background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:10px;padding:14px;font-size:13px;color:var(--accent)">
+            ⚠️ Para confirmar precisas de entrar com o teu número de telefone.
+          </div>
+          <button class="btn_primary btn_full" style="margin-top:10px" onclick="mostrar_auth()">Entrar agora</button>
+        </div>
+        <div id="agendar_nome_aviso" style="display:none;margin-bottom:16px">
+          <div class="field"><label>O teu nome</label><input type="text" id="nome_sem_conta" placeholder="João Silva"></div>
+          <div class="field"><label>Telemóvel</label><input type="tel" id="tel_sem_conta" placeholder="+351 912 000 000"></div>
+        </div>
+        <button class="btn_primary btn_full" id="btn_confirmar" onclick="confirmar_marcacao()">✓ Confirmar marcação</button>
+        <button class="btn_outline btn_full" style="margin-top:8px" onclick="ir_step(3)">← Voltar</button>
+      </div>
+
+      <!-- SUCESSO -->
+      <div id="flow_sucesso" style="display:none;text-align:center;padding:32px 0">
+        <div style="font-size:60px;margin-bottom:16px">🎉</div>
+        <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:800;margin-bottom:8px">Marcação confirmada!</div>
+        <div style="color:var(--text2);font-size:14px;margin-bottom:32px">Receberás confirmação em breve</div>
+        <div class="resumo_card" style="text-align:left">
+          <div class="resumo_linha"><span class="resumo_label">Serviço</span><span id="suc_servico">—</span></div>
+          <div class="resumo_linha"><span class="resumo_label">Data</span><span id="suc_data">—</span></div>
+          <div class="resumo_linha"><span class="resumo_label">Hora</span><span id="suc_hora">—</span></div>
+        </div>
+        <button class="btn_primary btn_full" onclick="fechar_barbearia()">Voltar ao início</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QR MODAL -->
+<div id="modal_qr" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:300;align-items:center;justify-content:center;flex-direction:column;gap:16px">
+  <div style="color:var(--text2);font-size:14px">Aponta a câmara para o QR code da barbearia</div>
+  <div style="width:240px;height:240px;border:3px solid var(--accent);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:60px">📷</div>
+  <div style="color:var(--text3);font-size:13px">Funcionalidade QR em breve</div>
+  <button class="btn_secondary" style="width:200px" onclick="document.getElementById('modal_qr').style.display='none'">Fechar</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const { createClient } = supabase
+const db = createClient(SUPA_URL, SUPA_KEY)
+
+let user_atual = null
+let cliente_id = null
+let barb_selecionada = null
+let srv_selecionado = null
+let prof_selecionado = null
+let hora_selecionada = null
+let step_atual = 1
+
+function toast(msg, tipo='ok') {
+  const t = document.getElementById('toast')
+  t.textContent = msg; t.className = 'toast show ' + tipo
+  setTimeout(() => t.className = 'toast', 2500)
+}
+function fmt_data(d) { return new Date(d+'T12:00:00').toLocaleDateString('pt-PT',{weekday:'long',day:'numeric',month:'long'}) }
+function fmt_preco(v) { return v ? '€'+parseFloat(v).toFixed(2) : 'Grátis' }
+function badge(s) {
+  const m={pendente:'badge_pendente',confirmado:'badge_confirmado',cancelado:'badge_cancelado',concluido:'badge_concluido'}
+  return `<span class="badge ${m[s]||''}">${s}</span>`
+}
+
+// SPLASH / AUTH
+function mostrar_auth() {
+  document.getElementById('tela_splash').style.display='none'
+  document.getElementById('tela_app').style.display='none'
+  document.getElementById('tela_auth').style.display='block'
+  document.getElementById('tela_barbearia').style.display='none'
+}
+function voltar_splash() {
+  document.getElementById('tela_auth').style.display='none'
+  if(user_atual) { document.getElementById('tela_app').style.display='block' }
+  else { document.getElementById('tela_splash').style.display='flex' }
+}
+function entrar_sem_login() {
+  document.getElementById('tela_splash').style.display='none'
+  document.getElementById('tela_app').style.display='block'
+  carregar_barbearias()
+  atualizar_perfil_ui()
+}
+
+// AUTH EMAIL MAGIC LINK
+async function enviar_magic_link() {
+  const nome = document.getElementById('auth_nome').value.trim()
+  const tel = document.getElementById('auth_tel').value.trim()
+  const email = document.getElementById('auth_email').value.trim()
+  const erro = document.getElementById('erro_auth')
+  erro.style.display='none'
+  if(!nome||!email) { erro.textContent='Preenche o nome e email.'; erro.style.display='block'; return }
+  localStorage.setItem('cliente_nome', nome)
+  localStorage.setItem('cliente_tel', tel)
+  localStorage.setItem('cliente_email', email)
+  try {
+    const { error } = await db.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: window.location.href, data: { nome, telefone: tel } }
+    })
+    if(error) { erro.textContent='Erro: '+error.message; erro.style.display='block'; return }
+    document.getElementById('auth_step1').style.display='none'
+    document.getElementById('auth_step2').style.display='block'
+    document.getElementById('auth_sub2').textContent = 'Enviámos um link para ' + email
+  } catch(e) {
+    erro.textContent='Erro: '+e.message; erro.style.display='block'
+  }
+}
+
+async function reenviar_email() {
+  const email = localStorage.getItem('cliente_email') || ''
+  if(!email) return
+  await db.auth.signInWithOtp({ email })
+  toast('Email reenviado!')
+}
+
+async function entrar_cliente(user) {
+  user_atual = user
+  const nome = localStorage.getItem('cliente_nome') || ''
+  const tel = localStorage.getItem('cliente_tel') || ''
+  const email = user.email || localStorage.getItem('cliente_email') || ''
+  // Criar ou buscar cliente pelo email
+  const { data: cli } = await db.from('clientes').select('*').eq('email', email).maybeSingle()
+  if(!cli) {
+    const { data: novoCli } = await db.from('clientes').insert({
+      nome: nome||'Cliente',
+      telefone: tel,
+      email: email
+    }).select().single()
+    if(novoCli) cliente_id = novoCli.id
+  } else {
+    // Atualiza nome e telefone se mudaram
+    if(nome && nome !== cli.nome) await db.from('clientes').update({ nome, telefone: tel||cli.telefone }).eq('id', cli.id)
+    cliente_id = cli.id
+  }
+  document.getElementById('tela_auth').style.display='none'
+  document.getElementById('tela_app').style.display='block'
+  atualizar_perfil_ui()
+  carregar_barbearias()
+  // Se estava a agendar, volta para o flow
+  if(barb_selecionada) {
+    document.getElementById('tela_barbearia').style.display='block'
+    document.getElementById('tela_app').style.display='none'
+    ir_step(4)
+  }
+}
+
+function atualizar_perfil_ui() {
+  const nome = localStorage.getItem('cliente_nome') || ''
+  const tel = localStorage.getItem('cliente_tel') || ''
+  document.getElementById('user_nome_top').textContent = nome ? nome.split(' ')[0] : ''
+  if(user_atual || nome) {
+    document.getElementById('perfil_content').style.display='block'
+    document.getElementById('perfil_sem_login').style.display='none'
+    document.getElementById('perfil_nome_show').textContent = nome || '—'
+    document.getElementById('perfil_tel_show').textContent = tel || '—'
+  } else {
+    document.getElementById('perfil_content').style.display='none'
+    document.getElementById('perfil_sem_login').style.display='block'
+  }
+}
+
+async function sair_cliente() {
+  await db.auth.signOut()
+  user_atual = null; cliente_id = null
+  localStorage.removeItem('cliente_nome')
+  localStorage.removeItem('cliente_tel')
+  location.reload()
+}
+
+// NAVEGAÇÃO
+function ir_para(pag) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
+  document.querySelectorAll('.nav_btn').forEach(n => n.classList.remove('active'))
+  document.getElementById('page_'+pag).classList.add('active')
+  const navMap = {descobrir:0, marcacoes:1, perfil_cliente:2}
+  if(navMap[pag]!==undefined) document.querySelectorAll('.nav_btn')[navMap[pag]].classList.add('active')
+  if(pag==='descobrir') carregar_barbearias()
+  if(pag==='marcacoes') carregar_marcacoes()
+  if(pag==='perfil_cliente') atualizar_perfil_ui()
+  window.scrollTo(0,0)
+}
+
+// BARBEARIAS
+async function carregar_barbearias(termo='') {
+  const el = document.getElementById('lista_barbearias')
+  el.innerHTML = '<div class="loading"><div class="spinner"></div></div>'
+  let q = db.from('barbearias').select('*').eq('ativo', true)
+  if(termo) q = q.ilike('nome', '%'+termo+'%')
+  const { data } = await q.order('nome')
+  const lista = data || []
+  if(!lista.length) { el.innerHTML='<div class="empty"><div class="empty_ico">💈</div><div class="empty_txt">Nenhuma barbearia encontrada</div></div>'; return }
+  el.innerHTML = lista.map(b => `<div class="barb_card" onclick="abrir_barbearia('${b.id}')">
+    <div class="barb_card_body">
+      <div class="barb_card_nome">💈 ${b.nome}</div>
+      <div class="barb_card_info">
+        ${b.cidade ? `<span>📍 ${b.cidade}</span>` : ''}
+        ${b.telefone ? `<span>📞 ${b.telefone}</span>` : ''}
+      </div>
+      ${b.descricao ? `<div style="font-size:13px;color:var(--text2);margin-top:8px">${b.descricao}</div>` : ''}
+    </div>
+  </div>`).join('')
+}
+
+function pesquisar() {
+  const termo = document.getElementById('search_input').value
+  clearTimeout(window._searchTimer)
+  window._searchTimer = setTimeout(() => carregar_barbearias(termo), 400)
+}
+
+function buscar_por_localizacao() {
+  if(!navigator.geolocation) { toast('Geolocalização não disponível', 'erro'); return }
+  navigator.geolocation.getCurrentPosition(
+    pos => { toast('A procurar barbearias perto de ti...'); carregar_barbearias() },
+    () => { toast('Sem permissão de localização', 'erro') }
+  )
+}
+
+function mostrar_qr() { document.getElementById('modal_qr').style.display='flex' }
+
+// PERFIL BARBEARIA + AGENDAMENTO
+async function abrir_barbearia(id) {
+  barb_selecionada = id
+  srv_selecionado = null; prof_selecionado = null; hora_selecionada = null; step_atual = 1
+  document.getElementById('tela_app').style.display='none'
+  document.getElementById('tela_barbearia').style.display='block'
+  window.scrollTo(0,0)
+
+  const { data: barb } = await db.from('barbearias').select('*').eq('id', id).single()
+  document.getElementById('barb_hero_content').innerHTML = `
+    <div style="font-size:44px;margin-bottom:12px">💈</div>
+    <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:800;margin-bottom:4px">${barb.nome}</div>
+    <div style="color:var(--text2);font-size:13px">${[barb.cidade,barb.telefone].filter(Boolean).join(' · ')}</div>
+    ${barb.descricao?`<div style="margin-top:10px;font-size:14px;color:var(--text2)">${barb.descricao}</div>`:''}
+  `
+
+  // Reset steps
+  for(let i=1;i<=4;i++) {
+    document.getElementById('flow_step'+i).style.display=i===1?'block':'none'
+    document.getElementById('step'+i).className='step'
+  }
+  document.getElementById('flow_sucesso').style.display='none'
+  document.getElementById('step1').className='step done'
+
+  // Carregar serviços
+  const { data: servicos } = await db.from('servicos').select('*').eq('barbearia_id', id).eq('ativo', true).order('nome')
+  const el = document.getElementById('lista_servicos_barb')
+  if(!(servicos||[]).length) { el.innerHTML='<div class="empty"><div class="empty_txt">Sem serviços disponíveis</div></div>'; return }
+  el.innerHTML = (servicos||[]).map(s => `<div class="srv_card" id="srv_${s.id}" onclick="selecionar_servico('${s.id}','${(s.nome||'').replace(/'/g,"\\'")}',${s.preco},${s.duracao})">
+    <div><div class="srv_nome">${s.nome}</div><div class="srv_info">${s.descricao||''}</div></div>
+    <div><div class="srv_preco">${fmt_preco(s.preco)}</div><div class="srv_duracao">${s.duracao||30} min</div></div>
+  </div>`).join('')
+}
+
+function fechar_barbearia() {
+  document.getElementById('tela_barbearia').style.display='none'
+  document.getElementById('tela_app').style.display='block'
+  barb_selecionada = null
+  srv_selecionado = null
+  prof_selecionado = null
+  hora_selecionada = null
+  step_atual = 1
+  window.scrollTo(0,0)
+}
+
+function selecionar_servico(id, nome, preco, duracao) {
+  document.querySelectorAll('.srv_card').forEach(c => c.classList.remove('selected'))
+  document.getElementById('srv_'+id).classList.add('selected')
+  srv_selecionado = { id, nome, preco, duracao }
+  const btn = document.getElementById('btn_step1')
+  btn.disabled = false; btn.style.opacity='1'
+}
+
+async function ir_step(n) {
+  document.getElementById('flow_step'+step_atual).style.display='none'
+  step_atual = n
+
+  if(n <= 4) {
+    for(let i=1;i<=4;i++) document.getElementById('step'+i).className='step'+(i<=n?' done':'')
+  }
+
+  if(n === 2) {
+    document.getElementById('flow_step2').style.display='block'
+    const { data: profs } = await db.from('profissionais').select('*').eq('barbearia_id', barb_selecionada).eq('ativo', true).order('nome')
+    const el = document.getElementById('lista_profs_barb')
+    const lista = profs || []
+    // Adicionar opção "qualquer"
+    el.innerHTML = `<div class="prof_card selected" id="prof_qualquer" onclick="selecionar_prof('qualquer','Qualquer profissional')">
+      <div class="prof_avatar">🎲</div>
+      <div class="prof_nome">Qualquer</div>
+      <div class="prof_esp">Sem preferência</div>
+    </div>` + lista.map(p=>`<div class="prof_card" id="prof_${p.id}" onclick="selecionar_prof('${p.id}','${(p.nome||'').replace(/'/g,"\\'")}')">
+      <div class="prof_avatar">💈</div>
+      <div class="prof_nome">${p.nome}</div>
+      <div class="prof_esp">${p.especialidade||''}</div>
+    </div>`).join('')
+    prof_selecionado = { id: 'qualquer', nome: 'Qualquer profissional' }
+    const btn = document.getElementById('btn_step2'); btn.disabled=false; btn.style.opacity='1'
+  }
+
+  if(n === 3) {
+    document.getElementById('flow_step3').style.display='block'
+    const hoje = new Date().toISOString().split('T')[0]
+    document.getElementById('data_agendar').min = hoje
+    document.getElementById('data_agendar').value = hoje
+    carregar_horas()
+  }
+
+  if(n === 4) {
+    document.getElementById('flow_step4').style.display='block'
+    document.getElementById('res_servico').textContent = srv_selecionado?.nome || '—'
+    document.getElementById('res_prof').textContent = prof_selecionado?.nome || '—'
+    document.getElementById('res_data').textContent = fmt_data(document.getElementById('data_agendar').value)
+    document.getElementById('res_hora').textContent = hora_selecionada || '—'
+    document.getElementById('res_preco').textContent = fmt_preco(srv_selecionado?.preco)
+
+    if(!user_atual) {
+      document.getElementById('agendar_login_aviso').style.display='none'
+      document.getElementById('agendar_nome_aviso').style.display='block'
+    } else {
+      document.getElementById('agendar_login_aviso').style.display='none'
+      document.getElementById('agendar_nome_aviso').style.display='none'
+    }
+  }
+
+  window.scrollTo(0,0)
+}
+
+function selecionar_prof(id, nome) {
+  document.querySelectorAll('.prof_card').forEach(c => c.classList.remove('selected'))
+  document.getElementById('prof_'+(id==='qualquer'?'qualquer':id)).classList.add('selected')
+  prof_selecionado = { id, nome }
+  const btn = document.getElementById('btn_step2'); btn.disabled=false; btn.style.opacity='1'
+}
+
+async function carregar_horas() {
+  const data = document.getElementById('data_agendar').value
+  if(!data) return
+  const el = document.getElementById('lista_horas')
+  el.innerHTML = '<div style="color:var(--text3);font-size:13px">A carregar...</div>'
+  hora_selecionada = null
+  const btn = document.getElementById('btn_step3'); btn.disabled=true; btn.style.opacity='.4'
+
+  const dur = srv_selecionado?.duracao || 30
+
+  const dia_semana = new Date(data + 'T12:00:00').getDay()
+  const { data: horario_barb } = await db.from('horarios').select('*').eq('barbearia_id', barb_selecionada).eq('dia_semana', dia_semana).maybeSingle()
+
+  if(horario_barb && !horario_barb.ativo) {
+    el.innerHTML = '<div style="color:var(--text2);font-size:13px;text-align:center;padding:16px">A barbearia esta fechada neste dia.</div>'
+    return
+  }
+
+  const hora_abre = horario_barb?.hora_inicio || '09:00'
+  const hora_fecha = horario_barb?.hora_fim || '19:00'
+  const [h_abre, m_abre] = hora_abre.split(':').map(Number)
+  const [h_fecha, m_fecha] = hora_fecha.split(':').map(Number)
+  const min_abre = h_abre * 60 + m_abre
+  const min_fecha = h_fecha * 60 + m_fecha
+
+  const prof_id = prof_selecionado?.id === 'qualquer' ? null : prof_selecionado?.id
+  let q = db.from('agendamentos').select('hora_inicio,servicos(duracao)').eq('barbearia_id', barb_selecionada).eq('data', data).neq('status','cancelado')
+  if(prof_id) q = q.eq('profissional_id', prof_id)
+  const { data: marcados } = await q
+
+  const minutos_bloqueados = new Set()
+  for(const ag of (marcados||[])) {
+    const [hh, mm] = (ag.hora_inicio||'00:00').split(':').map(Number)
+    const dur_ag = ag.servicos?.duracao || 30
+    const inicio_min = hh * 60 + mm
+    for(let m = inicio_min; m < inicio_min + dur_ag; m++) minutos_bloqueados.add(m)
+  }
+
+  const agora = new Date()
+  const hoje = agora.toISOString().split('T')[0]
+  const min_agora = data === hoje ? agora.getHours() * 60 + agora.getMinutes() + 30 : 0
+
+  const slots = []
+  for(let m = min_abre; m + dur <= min_fecha; m += 30) slots.push(m)
+
+  if(!slots.length) {
+    el.innerHTML = '<div style="color:var(--text2);font-size:13px;text-align:center;padding:16px">Sem horarios disponiveis.</div>'
+    return
+  }
+
+  el.innerHTML = slots.map(m => {
+    const h = String(Math.floor(m/60)).padStart(2,'0')
+    const min = String(m%60).padStart(2,'0')
+    const s = h + ':' + min
+    let bloqueado = m < min_agora
+    if(!bloqueado) for(let i = m; i < m + dur; i++) if(minutos_bloqueados.has(i)) { bloqueado = true; break }
+    const cls = bloqueado ? 'hora_chip indisponivel' : 'hora_chip'
+    const id = 'hora_' + h + '_' + min
+    return `<div class="${cls}" id="${id}" onclick="selecionar_hora('${s}')">${s}</div>`
+  }).join('')
+}
+
+function selecionar_hora(hora) {
+  document.querySelectorAll('.hora_chip').forEach(c => c.classList.remove('selected'))
+  const el = document.getElementById('hora_'+hora.replace(':','_'))
+  if(el) el.classList.add('selected')
+  hora_selecionada = hora
+  const btn = document.getElementById('btn_step3'); btn.disabled=false; btn.style.opacity='1'
+}
+
+async function confirmar_marcacao() {
+  const data = document.getElementById('data_agendar').value
+  let cid = cliente_id
+
+  // Se não tem conta, cria cliente temporário
+  if(!cid) {
+    const nome = document.getElementById('nome_sem_conta')?.value || 'Cliente'
+    const tel = document.getElementById('tel_sem_conta')?.value || ''
+    const { data: novoCli } = await db.from('clientes').insert({ barbearia_id: barb_selecionada, nome, telefone: tel }).select().single()
+    if(novoCli) cid = novoCli.id
+  }
+
+  // Validar hora selecionada
+  if(!hora_selecionada) { toast('Escolhe uma hora primeiro', 'erro'); return }
+
+  // Hora fim - garantir que so usa HH:MM
+  const hora_limpa = hora_selecionada.substring(0,5)
+  const partes = hora_limpa.split(':')
+  const hh = parseInt(partes[0]) || 0
+  const mm = parseInt(partes[1]) || 0
+  const dur = parseInt(srv_selecionado?.duracao) || 30
+  const fim_min = hh*60+mm+dur
+  const hora_fim = String(Math.floor(fim_min/60)).padStart(2,'0')+':'+String(fim_min%60).padStart(2,'0')
+
+  const prof_id = prof_selecionado?.id === 'qualquer' ? null : prof_selecionado?.id
+
+  const { error } = await db.from('agendamentos').insert({
+    barbearia_id: barb_selecionada,
+    cliente_id: cid,
+    servico_id: srv_selecionado?.id,
+    profissional_id: prof_id || null,
+    data, hora_inicio: hora_limpa+':00', hora_fim: hora_fim+':00',
+    status: 'pendente'
+  })
+
+  if(error) { toast('Erro ao confirmar: '+error.message, 'erro'); return }
+
+  // SUCESSO
+  document.getElementById('flow_step4').style.display='none'
+  document.getElementById('flow_sucesso').style.display='block'
+  document.getElementById('suc_servico').textContent = srv_selecionado?.nome || '—'
+  document.getElementById('suc_data').textContent = fmt_data(data)
+  document.getElementById('suc_hora').textContent = hora_selecionada
+  for(let i=1;i<=4;i++) document.getElementById('step'+i).className='step done'
+}
+
+// MARCAÇÕES
+async function carregar_marcacoes() {
+  const el = document.getElementById('lista_marcacoes')
+  if(!cliente_id && !localStorage.getItem('cliente_tel')) {
+    el.innerHTML='<div class="empty"><div class="empty_ico">📋</div><div class="empty_txt" style="margin-bottom:16px">Entra para ver as tuas marcações</div><button class="btn_primary" onclick="mostrar_auth()">Entrar</button></div>'
+    return
+  }
+  el.innerHTML='<div class="loading"><div class="spinner"></div></div>'
+  let q = db.from('agendamentos').select('*,barbearias(nome),servicos(nome),profissionais(nome)')
+  if(cliente_id) q = q.eq('cliente_id', cliente_id)
+  const { data } = await q.order('data',{ascending:false}).order('hora_inicio',{ascending:false}).limit(20)
+  const lista = data||[]
+  if(!lista.length) { el.innerHTML='<div class="empty"><div class="empty_ico">📋</div><div class="empty_txt">Ainda não tens marcações</div></div>'; return }
+  el.innerHTML=lista.map(a=>`<div class="hist_card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+      <div><div class="hist_nome">💈 ${a.barbearias?.nome||'Barbearia'}</div><div class="hist_info">${fmt_data(a.data)} às ${a.hora_inicio?.substring(0,5)||'—'}</div></div>
+      ${badge(a.status)}
+    </div>
+    <div class="hist_info">${a.servicos?.nome||'—'} · ${a.profissionais?.nome||'Qualquer profissional'}</div>
+    ${a.status==='pendente'?`<div style="margin-top:10px"><button class="btn btn_outline" style="font-size:12px;padding:6px 12px" onclick="cancelar_marcacao('${a.id}')">Cancelar</button></div>`:''}
+  </div>`).join('')
+}
+
+async function cancelar_marcacao(id) {
+  if(!confirm('Cancelar esta marcação?')) return
+  await db.from('agendamentos').update({status:'cancelado'}).eq('id',id)
+  toast('Marcação cancelada!'); carregar_marcacoes()
+}
+
+// INIT
+async function init() {
+  const { data: { session } } = await db.auth.getSession()
+  if(session) {
+    await entrar_cliente(session.user)
+  } else {
+    // Verificar se tem nome guardado (usou sem login antes)
+    const nome = localStorage.getItem('cliente_nome')
+    if(nome) {
+      document.getElementById('tela_splash').style.display='none'
+      document.getElementById('tela_app').style.display='block'
+      atualizar_perfil_ui()
+      carregar_barbearias()
+    }
+    // Verificar se URL tem ID de barbearia
+    const params = new URLSearchParams(window.location.search)
+    const barbId = params.get('b')
+    if(barbId) {
+      document.getElementById('tela_splash').style.display='none'
+      document.getElementById('tela_app').style.display='block'
+      carregar_barbearias()
+      setTimeout(() => abrir_barbearia(barbId), 500)
+    }
+  }
+}
+
+// PWA INSTALL
+let pwa_prompt = null
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault()
+  pwa_prompt = e
+  // Mostrar banner depois de 3 segundos
+  setTimeout(() => {
+    if(pwa_prompt) document.getElementById('banner_pwa').style.display='block'
+  }, 3000)
+})
+
+function instalar_pwa() {
+  if(!pwa_prompt) return
+  pwa_prompt.prompt()
+  pwa_prompt.userChoice.then(() => {
+    pwa_prompt = null
+    document.getElementById('banner_pwa').style.display='none'
+  })
+}
+
+// Se vem de link direto de barbearia, abrir direto
+window.addEventListener('appinstalled', () => {
+  document.getElementById('banner_pwa').style.display='none'
+  toast('App instalada! 🎉')
+})
+
+init()
+</script>
+</body>
+</html>

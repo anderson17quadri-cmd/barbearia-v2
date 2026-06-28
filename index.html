@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agendamento.pt — Planos</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#0a0a0a; color:#f0f0f0; font-family:'Inter',sans-serif; }
+.header { padding:18px 20px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #222; }
+.logo { font-size:18px; font-weight:800; }
+.logo span { color:#C9A84C; }
+.hero { text-align:center; padding:40px 20px 24px; }
+.hero_tag { background:rgba(201,168,76,.1); border:1px solid rgba(201,168,76,.3); color:#C9A84C; padding:6px 16px; border-radius:20px; font-size:12px; font-weight:700; display:inline-block; margin-bottom:16px; }
+.hero_titulo { font-size:28px; font-weight:800; margin-bottom:10px; line-height:1.2; }
+.hero_sub { color:#888; font-size:14px; margin-bottom:28px; }
+.toggle_wrap { display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:32px; }
+.toggle_label { font-size:14px; font-weight:600; color:#888; }
+.toggle_label.active { color:#f0f0f0; }
+.toggle_btn { width:48px; height:26px; background:#C9A84C; border-radius:13px; position:relative; cursor:pointer; }
+.toggle_btn::after { content:''; position:absolute; width:20px; height:20px; background:#000; border-radius:50%; top:3px; left:3px; transition:.2s; }
+.toggle_btn.anual::after { left:25px; }
+.desconto { background:rgba(45,158,107,.15); color:#2d9e6b; border:1px solid rgba(45,158,107,.3); padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700; }
+.planos { padding:0 16px 40px; display:flex; flex-direction:column; gap:14px; max-width:460px; margin:0 auto; }
+.plano { background:#141414; border:1.5px solid #2a2a2a; border-radius:14px; padding:22px; }
+.plano.popular { border-color:#C9A84C; }
+.popular_badge { background:#C9A84C; color:#000; text-align:center; font-size:11px; font-weight:800; padding:5px; border-radius:10px 10px 0 0; margin:-22px -22px 18px; letter-spacing:1px; }
+.plano_nome { font-size:20px; font-weight:800; margin-bottom:4px; }
+.plano_desc { font-size:13px; color:#888; margin-bottom:16px; }
+.plano_preco { font-size:34px; font-weight:800; margin-bottom:4px; }
+.plano_preco span { font-size:15px; font-weight:400; color:#888; }
+.plano_info { font-size:12px; color:#2d9e6b; margin-bottom:18px; min-height:16px; }
+.features { list-style:none; margin-bottom:20px; }
+.features li { padding:6px 0; font-size:14px; display:flex; align-items:center; gap:8px; }
+.features li::before { content:'✓'; color:#C9A84C; font-weight:800; }
+.btn_comecar { width:100%; padding:14px; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; font-family:'Inter',sans-serif; border:none; }
+.btn_gold { background:#C9A84C; color:#000; }
+.btn_outline { background:transparent; border:1.5px solid #333; color:#f0f0f0; }
+
+/* CHECKOUT PAGE */
+#checkout_page { display:none; min-height:100vh; padding:24px 20px; max-width:460px; margin:0 auto; }
+.checkout_back { font-size:22px; cursor:pointer; margin-bottom:20px; display:inline-block; }
+.checkout_titulo { font-size:22px; font-weight:800; margin-bottom:4px; }
+.checkout_sub { color:#888; font-size:13px; margin-bottom:24px; }
+.resumo { background:#141414; border:1px solid #222; border-radius:12px; padding:16px; margin-bottom:24px; }
+.resumo_linha { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #1a1a1a; font-size:14px; }
+.resumo_linha:last-child { border:none; font-weight:700; font-size:16px; }
+.resumo_label { color:#888; }
+.field { margin-bottom:14px; }
+.field label { display:block; font-size:11px; font-weight:600; color:#888; margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px; }
+.field input { width:100%; padding:14px; background:#1e1e1e; border:1.5px solid #2a2a2a; border-radius:10px; color:#f0f0f0; font-size:15px; outline:none; font-family:'Inter',sans-serif; }
+.field input:focus { border-color:#C9A84C; }
+.btn_pagar { width:100%; padding:15px; background:#C9A84C; color:#000; border:none; border-radius:12px; font-weight:800; font-size:16px; cursor:pointer; font-family:'Inter',sans-serif; margin-top:8px; }
+.msg_erro { background:#1a0808; border:1px solid #c0392b; color:#e88; border-radius:8px; padding:10px 14px; font-size:13px; margin-top:10px; display:none; }
+.seguro { text-align:center; font-size:11px; color:#444; margin-top:12px; }
+.spinner { display:inline-block; width:16px; height:16px; border:2px solid rgba(0,0,0,.3); border-top-color:#000; border-radius:50%; animation:spin .7s linear infinite; vertical-align:middle; margin-right:6px; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* SUCESSO */
+#sucesso_page { display:none; text-align:center; padding:60px 24px; }
+</style>
+</head>
+<body>
+
+<div id="main_page">
+  <div class="header">
+    <div class="logo">Agenda<span>mento</span>.pt</div>
+    <a href="https://dapper-flan-f0287c.netlify.app" style="color:#888;font-size:14px;text-decoration:none">Entrar</a>
+  </div>
+
+  <div class="hero">
+    <div class="hero_tag">✨ 30 dias grátis</div>
+    <div class="hero_titulo">Planos simples,<br>sem surpresas</div>
+    <div class="hero_sub">Tudo o que precisas para gerir a tua barbearia online.</div>
+    <div class="toggle_wrap">
+      <span class="toggle_label active" id="lbl_mensal">Mensal</span>
+      <div class="toggle_btn" id="toggle" onclick="trocar()"></div>
+      <span class="toggle_label" id="lbl_anual">Anual</span>
+      <span class="desconto">2 meses grátis</span>
+    </div>
+  </div>
+
+  <div class="planos">
+    <div class="plano">
+      <div class="plano_nome">Solo</div>
+      <div class="plano_desc">Para profissionais autónomos</div>
+      <div class="plano_preco" id="preco_solo">€9,90<span>/mês</span></div>
+      <div class="plano_info" id="info_solo"></div>
+      <ul class="features">
+        <li>1 profissional</li>
+        <li>Agendamentos ilimitados</li>
+        <li>App para clientes</li>
+        <li>Gestão de serviços</li>
+        <li>Suporte por email</li>
+      </ul>
+      <button class="btn_comecar btn_outline" id="btn_solo">Começar grátis</button>
+    </div>
+
+    <div class="plano popular">
+      <div class="popular_badge">MAIS POPULAR</div>
+      <div class="plano_nome">Pro</div>
+      <div class="plano_desc">Para barbearias em crescimento</div>
+      <div class="plano_preco" id="preco_pro">€19,90<span>/mês</span></div>
+      <div class="plano_info" id="info_pro"></div>
+      <ul class="features">
+        <li>Até 5 profissionais</li>
+        <li>Agendamentos ilimitados</li>
+        <li>App para clientes</li>
+        <li>Notificações automáticas</li>
+        <li>Relatórios e estatísticas</li>
+        <li>Suporte prioritário</li>
+      </ul>
+      <button class="btn_comecar btn_gold" id="btn_pro">Começar grátis</button>
+    </div>
+
+    <div class="plano">
+      <div class="plano_nome">Business</div>
+      <div class="plano_desc">Para redes e grandes equipas</div>
+      <div class="plano_preco" id="preco_business">€34,90<span>/mês</span></div>
+      <div class="plano_info" id="info_business"></div>
+      <ul class="features">
+        <li>Profissionais ilimitados</li>
+        <li>Agendamentos ilimitados</li>
+        <li>Múltiplas localizações</li>
+        <li>Tudo do plano Pro</li>
+        <li>Gestor de conta dedicado</li>
+      </ul>
+      <button class="btn_comecar btn_outline" id="btn_business">Começar grátis</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKOUT -->
+<div id="checkout_page">
+  <div class="checkout_back" onclick="voltar()">← Voltar</div>
+  <div class="checkout_titulo" id="co_titulo">Plano Pro</div>
+  <div class="checkout_sub">30 dias grátis · Cancela quando quiseres</div>
+  <div class="resumo">
+    <div class="resumo_linha"><span class="resumo_label">Plano</span><span id="co_plano">—</span></div>
+    <div class="resumo_linha"><span class="resumo_label">Hoje</span><span style="color:#2d9e6b">€0,00 (trial)</span></div>
+    <div class="resumo_linha"><span class="resumo_label">Após 30 dias</span><span id="co_valor">—</span></div>
+  </div>
+  <div class="field"><label>Nome completo</label><input type="text" id="co_nome" placeholder="João Silva"></div>
+  <div class="field"><label>Email</label><input type="email" id="co_email" placeholder="joao@email.com"></div>
+  <div class="msg_erro" id="co_erro"></div>
+  <button class="btn_pagar" id="co_btn" onclick="pagar()">🔒 Continuar para pagamento</button>
+  <div class="seguro">Pagamento seguro via Stripe · SSL 256-bit</div>
+</div>
+
+<!-- SUCESSO -->
+<div id="sucesso_page">
+  <div style="font-size:60px;margin-bottom:16px">🎉</div>
+  <div style="font-size:24px;font-weight:800;margin-bottom:8px">Bem-vindo!</div>
+  <div style="color:#888;margin-bottom:32px">A tua subscrição está ativa.</div>
+  <a href="https://dapper-flan-f0287c.netlify.app" style="display:block;background:#C9A84C;color:#000;padding:15px;border-radius:12px;font-weight:800;text-decoration:none;max-width:280px;margin:0 auto">Ir para o painel →</a>
+</div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
+<script>
+const EDGE = SUPA_URL + '/functions/v1/quick-handler'
+
+const PLANOS = {
+  solo:     { nome:'Solo',     mensal:9.90,  anual:79,  txt_m:'€9,90/mês',  txt_a:'€79/ano' },
+  pro:      { nome:'Pro',      mensal:19.90, anual:159, txt_m:'€19,90/mês', txt_a:'€159/ano' },
+  business: { nome:'Business', mensal:34.90, anual:279, txt_m:'€34,90/mês', txt_a:'€279/ano' }
+}
+
+let modo = 'mensal'
+let plano_atual = null
+
+function trocar() {
+  modo = modo === 'mensal' ? 'anual' : 'mensal'
+  document.getElementById('toggle').classList.toggle('anual', modo==='anual')
+  document.getElementById('lbl_mensal').classList.toggle('active', modo==='mensal')
+  document.getElementById('lbl_anual').classList.toggle('active', modo==='anual')
+  atualizar()
+}
+
+function atualizar() {
+  const anual = modo === 'anual'
+  document.getElementById('preco_solo').innerHTML = (anual ? '€79<span>/ano</span>' : '€9,90<span>/mês</span>')
+  document.getElementById('preco_pro').innerHTML = (anual ? '€159<span>/ano</span>' : '€19,90<span>/mês</span>')
+  document.getElementById('preco_business').innerHTML = (anual ? '€279<span>/ano</span>' : '€34,90<span>/mês</span>')
+  document.getElementById('info_solo').textContent = anual ? 'Poupa €39,80/ano' : ''
+  document.getElementById('info_pro').textContent = anual ? 'Poupa €79,80/ano' : ''
+  document.getElementById('info_business').textContent = anual ? 'Poupa €139,80/ano' : ''
+}
+
+function abrir(plano) {
+  plano_atual = plano
+  const p = PLANOS[plano]
+  const anual = modo === 'anual'
+  document.getElementById('co_titulo').textContent = 'Plano ' + p.nome
+  document.getElementById('co_plano').textContent = p.nome + (anual ? ' Anual' : ' Mensal')
+  document.getElementById('co_valor').textContent = anual ? p.txt_a : p.txt_m
+  document.getElementById('main_page').style.display = 'none'
+  document.getElementById('checkout_page').style.display = 'block'
+  window.scrollTo(0,0)
+}
+
+function voltar() {
+  document.getElementById('checkout_page').style.display = 'none'
+  document.getElementById('main_page').style.display = 'block'
+  window.scrollTo(0,0)
+}
+
+async function pagar() {
+  const nome = document.getElementById('co_nome').value.trim()
+  const email = document.getElementById('co_email').value.trim()
+  const erro = document.getElementById('co_erro')
+  const btn = document.getElementById('co_btn')
+  erro.style.display = 'none'
+
+  if (!nome || !email) {
+    erro.textContent = 'Preenche o nome e email.'
+    erro.style.display = 'block'
+    return
+  }
+
+  btn.disabled = true
+  btn.innerHTML = '<span class="spinner"></span> A redirecionar...'
+
+  try {
+    const res = await fetch(EDGE, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPA_KEY },
+      body: JSON.stringify({ 
+        plano: plano_atual, 
+        periodo: modo, 
+        email, 
+        nome
+      })
+    })
+    const texto = await res.text()
+    let data
+    try { data = JSON.parse(texto) } catch(e) { throw new Error("Resposta: " + texto.substring(0,200)) }
+    if (!data || !data.url) throw new Error("Sem URL na resposta: " + texto.substring(0,200))
+    window.location.href = data.url
+  } catch(e) {
+    erro.textContent = 'Erro: ' + e.message
+    erro.style.display = 'block'
+    btn.disabled = false
+    btn.innerHTML = '🔒 Continuar para pagamento'
+  }
+}
+
+// Ligar botões
+document.getElementById('btn_solo').addEventListener('click', function() { abrir('solo') })
+document.getElementById('btn_pro').addEventListener('click', function() { abrir('pro') })
+document.getElementById('btn_business').addEventListener('click', function() { abrir('business') })
+
+// Sucesso
+if (new URLSearchParams(window.location.search).get('sucesso') === '1') {
+  document.getElementById('main_page').style.display = 'none'
+  document.getElementById('sucesso_page').style.display = 'block'
+}
+</script>
+</body>
+</html>
