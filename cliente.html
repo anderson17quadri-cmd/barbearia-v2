@@ -172,31 +172,20 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; 
 input[type="date"] { width:100%; padding:14px; background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; color:var(--text); font-size:16px; outline:none; font-family:'Inter',sans-serif; }
 </style>
 <link rel="stylesheet" href="pro.css">
-<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
 </head>
 <body>
-<div id="offline_banner" class="msg_erro" style="position:fixed;top:0;left:0;right:0;z-index:9999;display:none;text-align:center;border-radius:0;margin:0;padding:8px"><i class="ph ph-warning"></i> Sem ligação à internet</div>
+<div id="offline_banner" class="msg_erro" style="position:fixed;top:0;left:0;right:0;z-index:9999;display:none;text-align:center;border-radius:0;margin:0;padding:8px">⚠️ Sem ligação à internet</div>
 
 <!-- BANNER INSTALAÇÃO PWA -->
 <div id="banner_pwa" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;background:var(--surface);border-top:1px solid rgba(201,168,76,.3);padding:16px 20px;max-width:480px;margin:0 auto">
   <div style="display:flex;align-items:center;gap:14px">
-    <div style="font-size:36px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;overflow:visible">
-  <rect x="10" y="1" width="4" height="22" rx="2" fill="none" stroke="currentColor"/>
-  <line x1="10" y1="3" x2="14" y2="1.5" stroke="#e74c3c" stroke-width="2.5"/>
-  <line x1="10" y1="6.5" x2="14" y2="5" stroke="#fff" stroke-width="2.5"/>
-  <line x1="10" y1="10" x2="14" y2="8.5" stroke="#3498db" stroke-width="2.5"/>
-  <line x1="10" y1="13.5" x2="14" y2="12" stroke="#e74c3c" stroke-width="2.5"/>
-  <line x1="10" y1="17" x2="14" y2="15.5" stroke="#fff" stroke-width="2.5"/>
-  <line x1="10" y1="20.5" x2="14" y2="19" stroke="#3498db" stroke-width="2.5"/>
-  <circle cx="12" cy="1" r="2.5" fill="#e74c3c" stroke="#e74c3c"/>
-  <circle cx="12" cy="23" r="2.5" fill="#e74c3c" stroke="#e74c3c"/>
-</svg></div>
+    <div style="font-size:36px">💈</div>
     <div style="flex:1">
       <div style="font-weight:700;font-size:14px;margin-bottom:2px">Instalar Agendamento.pt</div>
       <div style="font-size:12px;color:var(--text2)">Adiciona ao ecrã inicial para acesso rápido</div>
     </div>
     <button onclick="instalar_pwa()" style="background:var(--accent);color:#000;border:none;border-radius:8px;padding:10px 16px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap">Instalar</button>
-    <button onclick="document.getElementById('banner_pwa').style.display='none'" style="background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:4px"><i class="ph ph-x"></i></button>
+    <button onclick="document.getElementById('banner_pwa').style.display='none'" style="background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:4px">✕</button>
   </div>
 </div>
 
@@ -212,7 +201,7 @@ input[type="date"] { width:100%; padding:14px; background:var(--surface2); borde
 
 <!-- AUTH -->
 <div id="tela_auth">
-  <div class="auth_back" onclick="voltar_splash()"><i class="ph ph-arrow-left"></i></div>
+  <div class="auth_back" onclick="voltar_splash()">←</div>
 
   <!-- STEP 1: DADOS -->
   <div id="auth_step1">
@@ -227,7 +216,7 @@ input[type="date"] { width:100%; padding:14px; background:var(--surface2); borde
 
   <!-- STEP 2: AGUARDAR EMAIL -->
   <div id="auth_step2" style="display:none;text-align:center;padding-top:20px">
-    <div style="font-size:60px;margin-bottom:16px"><i class="ph ph-envelope"></i></div>
+    <div style="font-size:60px;margin-bottom:16px">📧</div>
     <div class="auth_titulo">Verifica o email</div>
     <div class="auth_sub" id="auth_sub2">Enviámos um link para o teu email. Clica nele para entrar.</div>
     <div style="background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:10px;padding:14px;font-size:13px;color:var(--accent);margin:20px 0">
@@ -250,12 +239,12 @@ input[type="date"] { width:100%; padding:14px; background:var(--surface2); borde
     <div class="page_titulo" style="padding-top:8px">Barbearias</div>
     <div class="page_sub">Encontra e marca online</div>
     <div class="search_box">
-      <span class="ico"><i class="ph ph-magnifying-glass"></i></span>
+      <span class="ico">🔍</span>
       <input type="text" id="search_input" placeholder="Pesquisar barbearia..." oninput="pesquisar()">
     </div>
     <div style="display:flex;gap:8px;margin-bottom:16px">
-      <button class="btn btn_outline" style="flex:1;padding:10px" onclick="buscar_por_localizacao()"><i class="ph ph-map-pin"></i> Perto de mim</button>
-      <button class="btn btn_outline" style="flex:1;padding:10px" onclick="mostrar_qr()"><i class="ph ph-camera"></i> QR Code</button>
+      <button class="btn btn_outline" style="flex:1;padding:10px" onclick="buscar_por_localizacao()">📍 Perto de mim</button>
+      <button class="btn btn_outline" style="flex:1;padding:10px" onclick="mostrar_qr()">📷 QR Code</button>
     </div>
     <div class="section_label">Todas as barbearias</div>
     <div id="lista_barbearias"><div class="loading"><div class="spinner"></div></div></div>
@@ -273,7 +262,7 @@ input[type="date"] { width:100%; padding:14px; background:var(--surface2); borde
     <div class="page_titulo" style="padding-top:8px">O meu perfil</div>
     <div id="perfil_content">
       <div class="resumo_card" style="margin-bottom:16px">
-        <div style="font-size:40px;text-align:center;margin-bottom:12px"><i class="ph ph-user"></i></div>
+        <div style="font-size:40px;text-align:center;margin-bottom:12px">👤</div>
         <div style="text-align:center">
           <div style="font-weight:700;font-size:18px" id="perfil_nome_show">—</div>
           <div style="color:var(--text2);font-size:14px;margin-top:4px" id="perfil_tel_show">—</div>
@@ -283,7 +272,7 @@ input[type="date"] { width:100%; padding:14px; background:var(--surface2); borde
     </div>
     <div id="perfil_sem_login" style="display:none">
       <div class="empty">
-        <div class="empty_ico"><i class="ph ph-user"></i></div>
+        <div class="empty_ico">👤</div>
         <div class="empty_txt" style="margin-bottom:20px">Entra para ver o teu perfil e histórico</div>
         <button class="btn_primary" onclick="mostrar_auth()">Entrar com telemóvel</button>
       </div>
@@ -291,16 +280,16 @@ input[type="date"] { width:100%; padding:14px; background:var(--surface2); borde
   </div>
 
   <nav class="bottom_nav">
-    <button class="nav_btn active" onclick="ir_para('descobrir')"><span class="ico"><i class="ph ph-compass"></i></span><span class="lbl">Início</span></button>
-    <button class="nav_btn" onclick="ir_para('marcacoes')"><span class="ico"><i class="ph ph-clipboard-text"></i></span><span class="lbl">Marcações</span></button>
-    <button class="nav_btn" onclick="ir_para('perfil_cliente')"><span class="ico"><i class="ph ph-user"></i></span><span class="lbl">Perfil</span></button>
+    <button class="nav_btn active" onclick="ir_para('descobrir')"><span class="ico">🏠</span><span class="lbl">Início</span></button>
+    <button class="nav_btn" onclick="ir_para('marcacoes')"><span class="ico">📋</span><span class="lbl">Marcações</span></button>
+    <button class="nav_btn" onclick="ir_para('perfil_cliente')"><span class="ico">👤</span><span class="lbl">Perfil</span></button>
   </nav>
 </div>
 
 <!-- PERFIL BARBEARIA (fullscreen) -->
 <div id="tela_barbearia" style="display:none; padding-bottom:var(--bottom-bar)">
   <div style="padding:20px">
-    <div class="barb_back" onclick="fechar_barbearia()"><i class="ph ph-arrow-left"></i></div>
+    <div class="barb_back" onclick="fechar_barbearia()">←</div>
     <div id="barb_hero_content"></div>
     <div class="divider"></div>
 
@@ -348,7 +337,7 @@ input[type="date"] { width:100%; padding:14px; background:var(--surface2); borde
         </div>
         <div id="agendar_login_aviso" style="display:none;margin-bottom:16px">
           <div style="background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:10px;padding:14px;font-size:13px;color:var(--accent)">
-            <i class="ph ph-warning"></i> Para confirmar precisas de entrar com o teu número de telefone.
+            ⚠️ Para confirmar precisas de entrar com o teu número de telefone.
           </div>
           <button class="btn_primary btn_full" style="margin-top:10px" onclick="mostrar_auth()">Entrar agora</button>
         </div>
@@ -356,13 +345,13 @@ input[type="date"] { width:100%; padding:14px; background:var(--surface2); borde
           <div class="field"><label>O teu nome</label><input type="text" id="nome_sem_conta" placeholder="João Silva"></div>
           <div class="field"><label>Telemóvel</label><input type="tel" id="tel_sem_conta" placeholder="+351 912 000 000"></div>
         </div>
-        <button class="btn_primary btn_full" id="btn_confirmar" onclick="confirmar_marcacao()"><i class="ph ph-check"></i> Confirmar marcação</button>
-        <button class="btn_outline btn_full" style="margin-top:8px" onclick="ir_step(3)"><i class="ph ph-arrow-left"></i> Voltar</button>
+        <button class="btn_primary btn_full" id="btn_confirmar" onclick="confirmar_marcacao()">✓ Confirmar marcação</button>
+        <button class="btn_outline btn_full" style="margin-top:8px" onclick="ir_step(3)">← Voltar</button>
       </div>
 
       <!-- SUCESSO -->
       <div id="flow_sucesso" style="display:none;text-align:center;padding:32px 0">
-        <div style="font-size:60px;margin-bottom:16px"><i class="ph ph-confetti"></i></div>
+        <div style="font-size:60px;margin-bottom:16px">🎉</div>
         <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:800;margin-bottom:8px">Marcação confirmada!</div>
         <div style="color:var(--text2);font-size:14px;margin-bottom:32px">Receberás confirmação em breve</div>
         <div class="resumo_card" style="text-align:left">
@@ -379,7 +368,7 @@ input[type="date"] { width:100%; padding:14px; background:var(--surface2); borde
 <!-- QR MODAL -->
 <div id="modal_qr" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:300;align-items:center;justify-content:center;flex-direction:column;gap:16px">
   <div style="color:var(--text2);font-size:14px">Aponta a câmara para o QR code da barbearia</div>
-  <div style="width:240px;height:240px;border:3px solid var(--accent);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:60px"><i class="ph ph-camera"></i></div>
+  <div style="width:240px;height:240px;border:3px solid var(--accent);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:60px">📷</div>
   <div style="color:var(--text3);font-size:13px">Funcionalidade QR em breve</div>
   <button class="btn_secondary" style="width:200px" onclick="document.getElementById('modal_qr').style.display='none'">Fechar</button>
 </div>
@@ -536,33 +525,13 @@ async function carregar_barbearias(termo='') {
   if(termo) q = q.ilike('nome', '%'+termo+'%')
   var { data } = await q.order('nome')
   var lista = data || []
-  if(!lista.length) { el.innerHTML='<div class="empty"><div class="empty_ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;overflow:visible">
-  <rect x="10" y="1" width="4" height="22" rx="2" fill="none" stroke="currentColor"/>
-  <line x1="10" y1="3" x2="14" y2="1.5" stroke="#e74c3c" stroke-width="2.5"/>
-  <line x1="10" y1="6.5" x2="14" y2="5" stroke="#fff" stroke-width="2.5"/>
-  <line x1="10" y1="10" x2="14" y2="8.5" stroke="#3498db" stroke-width="2.5"/>
-  <line x1="10" y1="13.5" x2="14" y2="12" stroke="#e74c3c" stroke-width="2.5"/>
-  <line x1="10" y1="17" x2="14" y2="15.5" stroke="#fff" stroke-width="2.5"/>
-  <line x1="10" y1="20.5" x2="14" y2="19" stroke="#3498db" stroke-width="2.5"/>
-  <circle cx="12" cy="1" r="2.5" fill="#e74c3c" stroke="#e74c3c"/>
-  <circle cx="12" cy="23" r="2.5" fill="#e74c3c" stroke="#e74c3c"/>
-</svg></div><div class="empty_txt">Nenhuma barbearia encontrada</div></div>'; return }
+  if(!lista.length) { el.innerHTML='<div class="empty"><div class="empty_ico">💈</div><div class="empty_txt">Nenhuma barbearia encontrada</div></div>'; return }
   el.innerHTML = lista.map(b => `<div class="barb_card" onclick="abrir_barbearia('${b.id}')">
     <div class="barb_card_body">
-      <div class="barb_card_nome"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;overflow:visible">
-  <rect x="10" y="1" width="4" height="22" rx="2" fill="none" stroke="currentColor"/>
-  <line x1="10" y1="3" x2="14" y2="1.5" stroke="#e74c3c" stroke-width="2.5"/>
-  <line x1="10" y1="6.5" x2="14" y2="5" stroke="#fff" stroke-width="2.5"/>
-  <line x1="10" y1="10" x2="14" y2="8.5" stroke="#3498db" stroke-width="2.5"/>
-  <line x1="10" y1="13.5" x2="14" y2="12" stroke="#e74c3c" stroke-width="2.5"/>
-  <line x1="10" y1="17" x2="14" y2="15.5" stroke="#fff" stroke-width="2.5"/>
-  <line x1="10" y1="20.5" x2="14" y2="19" stroke="#3498db" stroke-width="2.5"/>
-  <circle cx="12" cy="1" r="2.5" fill="#e74c3c" stroke="#e74c3c"/>
-  <circle cx="12" cy="23" r="2.5" fill="#e74c3c" stroke="#e74c3c"/>
-</svg> ${b.nome}</div>
+      <div class="barb_card_nome">💈 ${b.nome}</div>
       <div class="barb_card_info">
-        ${b.cidade ? `<span><i class="ph ph-map-pin"></i> ${b.cidade}</span>` : ''}
-        ${b.telefone ? `<span><i class="ph ph-phone"></i> ${b.telefone}</span>` : ''}
+        ${b.cidade ? `<span>📍 ${b.cidade}</span>` : ''}
+        ${b.telefone ? `<span>📞 ${b.telefone}</span>` : ''}
       </div>
       ${b.descricao ? `<div style="font-size:13px;color:var(--text2);margin-top:8px">${b.descricao}</div>` : ''}
     </div>
@@ -595,7 +564,7 @@ async function abrir_barbearia(id) {
 
   var { data: barb } = await db.from('barbearias').select('*').eq('id', id).single()
   document.getElementById('barb_hero_content').innerHTML = `
-    <div style="font-size:44px;margin-bottom:12px"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;overflow:visible"><rect x="10" y="1" width="4" height="22" rx="2" fill="none" stroke="currentColor"/><line x1="10" y1="3" x2="14" y2="1.5" stroke="#e74c3c" stroke-width="2.5"/><line x1="10" y1="6.5" x2="14" y2="5" stroke="#fff" stroke-width="2.5"/><line x1="10" y1="10" x2="14" y2="8.5" stroke="#3498db" stroke-width="2.5"/><line x1="10" y1="13.5" x2="14" y2="12" stroke="#e74c3c" stroke-width="2.5"/><line x1="10" y1="17" x2="14" y2="15.5" stroke="#fff" stroke-width="2.5"/><line x1="10" y1="20.5" x2="14" y2="19" stroke="#3498db" stroke-width="2.5"/><circle cx="12" cy="1" r="2.5" fill="#e74c3c" stroke="#e74c3c"/><circle cx="12" cy="23" r="2.5" fill="#e74c3c" stroke="#e74c3c"/></svg></div>
+    <div style="font-size:44px;margin-bottom:12px">💈</div>
     <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:800;margin-bottom:4px">${barb.nome}</div>
     <div style="color:var(--text2);font-size:13px">${[barb.cidade,barb.telefone].filter(Boolean).join(' · ')}</div>
     ${barb.descricao?`<div style="margin-top:10px;font-size:14px;color:var(--text2)">${barb.descricao}</div>`:''}
@@ -653,21 +622,11 @@ async function ir_step(n) {
     var lista = profs || []
     // Adicionar opção "qualquer"
     el.innerHTML = `<div class="prof_card selected" id="prof_qualquer" onclick="selecionar_prof('qualquer','Qualquer profissional')">
-      <div class="prof_avatar"><i class="ph ph-shuffle"></i></div>
+      <div class="prof_avatar">🎲</div>
       <div class="prof_nome">Qualquer</div>
       <div class="prof_esp">Sem preferência</div>
     </div>` + lista.map(p=>`<div class="prof_card" id="prof_${p.id}" onclick="selecionar_prof('${p.id}','${(p.nome||'').replace(/'/g,"\\'")}')">
-      <div class="prof_avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;overflow:visible">
-  <rect x="10" y="1" width="4" height="22" rx="2" fill="none" stroke="currentColor"/>
-  <line x1="10" y1="3" x2="14" y2="1.5" stroke="#e74c3c" stroke-width="2.5"/>
-  <line x1="10" y1="6.5" x2="14" y2="5" stroke="#fff" stroke-width="2.5"/>
-  <line x1="10" y1="10" x2="14" y2="8.5" stroke="#3498db" stroke-width="2.5"/>
-  <line x1="10" y1="13.5" x2="14" y2="12" stroke="#e74c3c" stroke-width="2.5"/>
-  <line x1="10" y1="17" x2="14" y2="15.5" stroke="#fff" stroke-width="2.5"/>
-  <line x1="10" y1="20.5" x2="14" y2="19" stroke="#3498db" stroke-width="2.5"/>
-  <circle cx="12" cy="1" r="2.5" fill="#e74c3c" stroke="#e74c3c"/>
-  <circle cx="12" cy="23" r="2.5" fill="#e74c3c" stroke="#e74c3c"/>
-</svg></div>
+      <div class="prof_avatar">💈</div>
       <div class="prof_nome">${p.nome}</div>
       <div class="prof_esp">${p.especialidade||''}</div>
     </div>`).join('')
@@ -830,7 +789,7 @@ async function confirmar_marcacao() {
 async function carregar_marcacoes() {
   var el = document.getElementById('lista_marcacoes')
   if(!cliente_id && !localStorage.getItem('cliente_tel')) {
-    el.innerHTML='<div class="empty"><div class="empty_ico"><i class="ph ph-clipboard-text"></i></div><div class="empty_txt" style="margin-bottom:16px">Entra para ver as tuas marcações</div><button class="btn_primary" onclick="mostrar_auth()">Entrar</button></div>'
+    el.innerHTML='<div class="empty"><div class="empty_ico">📋</div><div class="empty_txt" style="margin-bottom:16px">Entra para ver as tuas marcações</div><button class="btn_primary" onclick="mostrar_auth()">Entrar</button></div>'
     return
   }
   el.innerHTML='<div class="loading"><div class="spinner"></div></div>'
@@ -838,20 +797,10 @@ async function carregar_marcacoes() {
   if(cliente_id) q = q.eq('cliente_id', cliente_id)
   var { data } = await q.order('data',{ascending:false}).order('hora_inicio',{ascending:false}).limit(20)
   var lista = data||[]
-  if(!lista.length) { el.innerHTML='<div class="empty"><div class="empty_ico"><i class="ph ph-clipboard-text"></i></div><div class="empty_txt">Ainda não tens marcações</div></div>'; return }
+  if(!lista.length) { el.innerHTML='<div class="empty"><div class="empty_ico">📋</div><div class="empty_txt">Ainda não tens marcações</div></div>'; return }
   el.innerHTML=lista.map(a=>`<div class="hist_card">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
-      <div><div class="hist_nome"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;overflow:visible">
-  <rect x="10" y="1" width="4" height="22" rx="2" fill="none" stroke="currentColor"/>
-  <line x1="10" y1="3" x2="14" y2="1.5" stroke="#e74c3c" stroke-width="2.5"/>
-  <line x1="10" y1="6.5" x2="14" y2="5" stroke="#fff" stroke-width="2.5"/>
-  <line x1="10" y1="10" x2="14" y2="8.5" stroke="#3498db" stroke-width="2.5"/>
-  <line x1="10" y1="13.5" x2="14" y2="12" stroke="#e74c3c" stroke-width="2.5"/>
-  <line x1="10" y1="17" x2="14" y2="15.5" stroke="#fff" stroke-width="2.5"/>
-  <line x1="10" y1="20.5" x2="14" y2="19" stroke="#3498db" stroke-width="2.5"/>
-  <circle cx="12" cy="1" r="2.5" fill="#e74c3c" stroke="#e74c3c"/>
-  <circle cx="12" cy="23" r="2.5" fill="#e74c3c" stroke="#e74c3c"/>
-</svg> ${a.barbearias?.nome||'Barbearia'}</div><div class="hist_info">${fmt_data(a.data)} às ${a.hora_inicio?.substring(0,5)||'—'}</div></div>
+      <div><div class="hist_nome">💈 ${a.barbearias?.nome||'Barbearia'}</div><div class="hist_info">${fmt_data(a.data)} às ${a.hora_inicio?.substring(0,5)||'—'}</div></div>
       ${badge(a.status)}
     </div>
     <div class="hist_info">${a.servicos?.nome||'—'} · ${a.profissionais?.nome||'Qualquer profissional'}</div>
@@ -919,7 +868,7 @@ function instalar_pwa() {
 // Se vem de link direto de barbearia, abrir direto
 window.addEventListener('appinstalled', () => {
   document.getElementById('banner_pwa').style.display='none'
-  toast('App instalada! <i class="ph ph-confetti"></i>')
+  toast('App instalada! 🎉')
 })
 
 init()
