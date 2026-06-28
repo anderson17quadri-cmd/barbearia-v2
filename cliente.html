@@ -180,7 +180,7 @@ input[type="date"] { width:100%; padding:14px; background:var(--surface2); borde
 <!-- BANNER INSTALAÇÃO PWA -->
 <div id="banner_pwa" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;background:var(--surface);border-top:1px solid rgba(201,168,76,.3);padding:16px 20px;max-width:480px;margin:0 auto">
   <div style="display:flex;align-items:center;gap:14px">
-    <div style="font-size:36px"><i class="ph ph-storefront"></i></div>
+    <div style="font-size:36px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M12 2L9 7l-5 .5L6 12l-1.5 4.5L8 20h8l3.5-3.5L18 12l2-4.5L15 7z"/><circle cx="12" cy="12" r="2"/></svg></div>
     <div style="flex:1">
       <div style="font-weight:700;font-size:14px;margin-bottom:2px">Instalar Agendamento.pt</div>
       <div style="font-size:12px;color:var(--text2)">Adiciona ao ecrã inicial para acesso rápido</div>
@@ -526,10 +526,10 @@ async function carregar_barbearias(termo='') {
   if(termo) q = q.ilike('nome', '%'+termo+'%')
   var { data } = await q.order('nome')
   var lista = data || []
-  if(!lista.length) { el.innerHTML='<div class="empty"><div class="empty_ico"><i class="ph ph-storefront"></i></div><div class="empty_txt">Nenhuma barbearia encontrada</div></div>'; return }
+  if(!lista.length) { el.innerHTML='<div class="empty"><div class="empty_ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M12 2L9 7l-5 .5L6 12l-1.5 4.5L8 20h8l3.5-3.5L18 12l2-4.5L15 7z"/><circle cx="12" cy="12" r="2"/></svg></div><div class="empty_txt">Nenhuma barbearia encontrada</div></div>'; return }
   el.innerHTML = lista.map(b => `<div class="barb_card" onclick="abrir_barbearia('${b.id}')">
     <div class="barb_card_body">
-      <div class="barb_card_nome"><i class="ph ph-storefront"></i> ${b.nome}</div>
+      <div class="barb_card_nome"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M12 2L9 7l-5 .5L6 12l-1.5 4.5L8 20h8l3.5-3.5L18 12l2-4.5L15 7z"/><circle cx="12" cy="12" r="2"/></svg> ${b.nome}</div>
       <div class="barb_card_info">
         ${b.cidade ? `<span><i class="ph ph-map-pin"></i> ${b.cidade}</span>` : ''}
         ${b.telefone ? `<span><i class="ph ph-phone"></i> ${b.telefone}</span>` : ''}
@@ -565,7 +565,7 @@ async function abrir_barbearia(id) {
 
   var { data: barb } = await db.from('barbearias').select('*').eq('id', id).single()
   document.getElementById('barb_hero_content').innerHTML = `
-    <div style="font-size:44px;margin-bottom:12px"><i class="ph ph-storefront"></i></div>
+    <div style="font-size:44px;margin-bottom:12px"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M12 2L9 7l-5 .5L6 12l-1.5 4.5L8 20h8l3.5-3.5L18 12l2-4.5L15 7z"/><circle cx="12" cy="12" r="2"/></svg></div>
     <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:800;margin-bottom:4px">${barb.nome}</div>
     <div style="color:var(--text2);font-size:13px">${[barb.cidade,barb.telefone].filter(Boolean).join(' · ')}</div>
     ${barb.descricao?`<div style="margin-top:10px;font-size:14px;color:var(--text2)">${barb.descricao}</div>`:''}
@@ -627,7 +627,7 @@ async function ir_step(n) {
       <div class="prof_nome">Qualquer</div>
       <div class="prof_esp">Sem preferência</div>
     </div>` + lista.map(p=>`<div class="prof_card" id="prof_${p.id}" onclick="selecionar_prof('${p.id}','${(p.nome||'').replace(/'/g,"\\'")}')">
-      <div class="prof_avatar"><i class="ph ph-storefront"></i></div>
+      <div class="prof_avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M12 2L9 7l-5 .5L6 12l-1.5 4.5L8 20h8l3.5-3.5L18 12l2-4.5L15 7z"/><circle cx="12" cy="12" r="2"/></svg></div>
       <div class="prof_nome">${p.nome}</div>
       <div class="prof_esp">${p.especialidade||''}</div>
     </div>`).join('')
@@ -801,7 +801,7 @@ async function carregar_marcacoes() {
   if(!lista.length) { el.innerHTML='<div class="empty"><div class="empty_ico"><i class="ph ph-clipboard-text"></i></div><div class="empty_txt">Ainda não tens marcações</div></div>'; return }
   el.innerHTML=lista.map(a=>`<div class="hist_card">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
-      <div><div class="hist_nome"><i class="ph ph-storefront"></i> ${a.barbearias?.nome||'Barbearia'}</div><div class="hist_info">${fmt_data(a.data)} às ${a.hora_inicio?.substring(0,5)||'—'}</div></div>
+      <div><div class="hist_nome"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M12 2L9 7l-5 .5L6 12l-1.5 4.5L8 20h8l3.5-3.5L18 12l2-4.5L15 7z"/><circle cx="12" cy="12" r="2"/></svg> ${a.barbearias?.nome||'Barbearia'}</div><div class="hist_info">${fmt_data(a.data)} às ${a.hora_inicio?.substring(0,5)||'—'}</div></div>
       ${badge(a.status)}
     </div>
     <div class="hist_info">${a.servicos?.nome||'—'} · ${a.profissionais?.nome||'Qualquer profissional'}</div>
