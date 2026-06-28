@@ -315,12 +315,9 @@ body::after {
   100% { transform: translateY(-110vh) scale(1.5); opacity: 0; }
 }
 
-/* === ICON TOGGLE === */
-/* Remove class="use-icons" do <html> para voltar aos emojis */
-.emoji-fallback { display: inline; }
-.ph { display: none; }
-.use-icons .emoji-fallback { display: none; }
-.use-icons .ph { display: inline-block; vertical-align: middle; font-size: 1.2em; }
+/* === ICONES === */
+.emoji-fallback { display: none; }
+.ph { display: inline-block; vertical-align: middle; font-size: 1.2em; }
 
 /* Phosphor Icons */
 .ph-fill { font-family: 'Phosphor-Fill' !important; }
