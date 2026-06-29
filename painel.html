@@ -769,13 +769,13 @@ async function carregar_perfil(){
 function copiar_link() {
   const link = 'https://agendado.pt/cliente.html?b=' + barbearia_id
   if(navigator.clipboard) {
-    navigator.clipboard.writeText(link).then(() => toast('Link copiado! <svg class="ic" width="1.2em" height="1.2em"><use href="#ic-link"/></svg>'))
+    navigator.clipboard.writeText(link).then(() => toast('✓ Link copiado!'))
   } else {
     const el = document.createElement('textarea')
     el.value = link; document.body.appendChild(el)
     el.select(); document.execCommand('copy')
     document.body.removeChild(el)
-    toast('Link copiado! <svg class="ic" width="1.2em" height="1.2em"><use href="#ic-link"/></svg>')
+    toast('✓ Link copiado!')
   }
 }
 
