@@ -767,7 +767,7 @@ async function carregar_perfil(){
   }
 }
 function copiar_link() {
-  const link = 'https://anderson17quadri-cmd.github.io/barbearia-v2/cliente.html?b=' + barbearia_id
+  const link = 'https://agendado.pt/cliente.html?b=' + barbearia_id
   if(navigator.clipboard) {
     navigator.clipboard.writeText(link).then(() => toast('Link copiado! <svg class="ic" width="1.2em" height="1.2em"><use href="#ic-link"/></svg>'))
   } else {
@@ -781,7 +781,7 @@ function copiar_link() {
 
 function ver_qr() {
   var nome = encodeURIComponent(document.getElementById('perfil_nome')?.value || 'A minha barbearia')
-  var url = 'https://anderson17quadri-cmd.github.io/barbearia-v2/cartaz.html?b=' + barbearia_id + '&n=' + nome
+  var url = 'https://agendado.pt/cartaz.html?b=' + barbearia_id + '&n=' + nome
   window.open(url, '_blank')
 }
 
@@ -867,7 +867,7 @@ async function entrar_app(user){
     document.getElementById('sidebar_nome').textContent=bar.nome
 
   // Atualizar link da barbearia
-  const link = 'https://anderson17quadri-cmd.github.io/barbearia-v2/cliente.html?b=' + barbearia_id
+  const link = 'https://agendado.pt/cliente.html?b=' + barbearia_id
   const el = document.getElementById('meu_link')
   if(el) el.textContent = link
   }
