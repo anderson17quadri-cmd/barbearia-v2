@@ -4,7 +4,7 @@
 
 // ===== RIPPLE EFFECT =====
 document.addEventListener('click', function(e) {
-  var btn = e.target.closest('.btn, .btn_primary, .btn_secondary, .btn_gold, .btn_outline, .btn_danger, .btn_success, .filtro_chip')
+  var btn = e.target.closest('.btn_outline, .btn_danger, .btn_success, .filtro_chip')
   if (!btn) return
   var ripple = document.createElement('span')
   ripple.className = 'ripple'
