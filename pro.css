@@ -99,9 +99,11 @@ body::after {
   0%, 100% { background-position: 0% 50%; box-shadow: 0 8px 30px rgba(201,168,76,0.3); }
   50% { background-position: 100% 50%; box-shadow: 0 8px 40px rgba(201,168,76,0.6); }
 }
-.btn_primary:hover, .btn_gold:hover {
-  transform: translateY(-2px) scale(1.01);
-  box-shadow: 0 14px 45px rgba(201,168,76,0.5), inset 0 1px 0 rgba(255,255,255,0.25);
+@media (hover:hover) and (pointer:fine) {
+  .btn_primary:hover, .btn_gold:hover {
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 14px 45px rgba(201,168,76,0.5), inset 0 1px 0 rgba(255,255,255,0.25);
+  }
 }
 .btn_primary:active, .btn_gold:active {
   transform: scale(0.96);
@@ -325,3 +327,12 @@ body::after {
 .ic-xl { width: 2.5em; height: 2.5em; }
 
 .ic svg, svg.ic { width: 1.2em !important; height: 1.2em !important; }
+
+/* ===== FIX MOBILE: hover preso em ecrãs de toque ===== */
+@media (hover:none), (pointer:coarse) {
+  .btn_primary:hover, .btn_gold:hover,
+  .card_item:hover, .barb_card:hover, .stat_card:hover, .p_card:hover,
+  .p_card.star:hover {
+    transform: none !important;
+  }
+}
