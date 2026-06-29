@@ -63,7 +63,7 @@ input, textarea, select, button { font-family:'Inter',sans-serif; }
 .btn_secondary:active { background:var(--surface2); transform:scale(.97); }
 .btn {
   padding:9px 16px; border-radius:var(--radius-xs); border:none; cursor:pointer;
-  font-size:13px; font-weight:600; position:relative; overflow:hidden; transition:all var(--transition);
+  font-size:13px; font-weight:600; position:relative; overflow:hidden; transition:background var(--transition), transform var(--transition), box-shadow var(--transition);
   display:inline-flex; align-items:center; gap:6px;
 }
 .btn:active { transform:scale(.95); }
