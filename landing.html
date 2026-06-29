@@ -14,23 +14,23 @@ html{scroll-behavior:smooth}
 body{background:var(--dark);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden}
 
 /* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:999;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;background:rgba(8,8,8,0);transition:.4s}
+nav{position:fixed;top:0;left:0;right:0;z-index:999;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;gap:10px;background:rgba(8,8,8,0);transition:.4s}
 nav.scrolled{background:rgba(8,8,8,.95);border-bottom:1px solid var(--border);backdrop-filter:blur(20px)}
-.nav_logo{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;letter-spacing:1px}
+.nav_logo{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;letter-spacing:.5px;flex-shrink:0}
 .nav_logo span{color:var(--gold)}
-.nav_btn{background:var(--gold);color:#000;padding:11px 22px;border-radius:6px;font-weight:800;font-size:13px;text-decoration:none;letter-spacing:.5px}
+.nav_btn{background:var(--gold);color:#000;padding:10px 16px;border-radius:6px;font-weight:800;font-size:12px;text-decoration:none;letter-spacing:.3px;white-space:nowrap;flex-shrink:0}
 
 /* HERO */
-.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:120px 24px 80px;position:relative;overflow:hidden}
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:100px 24px 60px;position:relative;overflow:hidden}
 .hero_bg{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(201,168,76,.08) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(201,168,76,.04) 0%,transparent 50%)}
-.hero_linha{font-size:11px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:20px;display:flex;align-items:center;gap:12px}
-.hero_linha::before{content:'';width:32px;height:1px;background:var(--gold)}
-.hero_h1{font-family:'Playfair Display',serif;font-size:52px;font-weight:900;line-height:1.05;letter-spacing:-1px;margin-bottom:24px}
+.hero_linha{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.hero_linha::before{content:'';width:24px;height:1px;background:var(--gold)}
+.hero_h1{font-family:'Playfair Display',serif;font-size:38px;font-weight:900;line-height:1.1;letter-spacing:-1px;margin-bottom:20px;color:#f0f0f0}
 .hero_h1 em{color:var(--gold);font-style:italic}
-.hero_desc{font-size:16px;color:var(--text2);line-height:1.8;max-width:360px;margin-bottom:40px}
+.hero_desc{font-size:15px;color:var(--text2);line-height:1.7;max-width:320px;margin-bottom:36px}
 .hero_desc strong{color:var(--text);font-weight:600}
-.hero_ctas{display:flex;flex-direction:column;gap:12px}
-.cta_main{background:var(--gold);color:#000;padding:18px 28px;border-radius:8px;font-weight:900;font-size:15px;text-decoration:none;text-align:center;letter-spacing:.3px}
+.hero_ctas{display:flex;flex-direction:column;gap:12px;max-width:320px}
+.cta_main{background:var(--gold);color:#000;padding:18px 24px;border-radius:10px;font-weight:900;font-size:15px;text-decoration:none;text-align:center;letter-spacing:.3px;white-space:normal;box-shadow:0 4px 20px rgba(201,168,76,.2)}
 .cta_sec{color:var(--text2);font-size:14px;text-align:center;padding:10px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px}
 .hero_prova{margin-top:48px;padding-top:32px;border-top:1px solid var(--border)}
 .prova_label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text2);margin-bottom:14px}
@@ -208,7 +208,7 @@ footer{padding:40px 24px;border-top:1px solid var(--border);text-align:center}
 
 <nav id="nav">
   <div class="nav_logo">Agenda<span>do</span>.pt</div>
-  <a href="painel.html" style="color:var(--text2);font-size:13px;text-decoration:none;margin-right:12px;font-weight:600">Entrar</a>
+  <a href="painel.html" style="color:var(--text2);font-size:12px;text-decoration:none;font-weight:600;flex-shrink:0">Entrar</a>
   <a href="index.html" class="nav_btn">Começar grátis</a>
 </nav>
 

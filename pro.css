@@ -69,6 +69,7 @@ body::after {
 
 /* Landing hero títulos gradiente */
 .hero_h1, .page_titulo, .p_nome {
+  color: #f0f0f0;
   background: linear-gradient(135deg, #FFFFFF 0%, #E8C96A 30%, #C9A84C 60%, #FFD700 100%);
   background-size: 200% 200%;
   -webkit-background-clip: text;
