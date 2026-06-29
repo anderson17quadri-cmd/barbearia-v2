@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Agendamento.pt</title>
+<title>Agendado.pt</title>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
 <script src="shared.js"></script>
@@ -84,7 +84,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; 
 
 /* STAT CARDS */
 .stats_grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
-.stat_card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px; position:relative; overflow:hidden; }
+.stat_card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px; position:relative; overflow:hidden; cursor:pointer; }
 .stat_card::after { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, var(--accent), var(--accent2)); }
 .stat_label { font-size:11px; color:var(--text2); text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; }
 .stat_valor { font-family:'Playfair Display',serif; font-size:32px; font-weight:700; line-height:1; color:var(--accent); }
@@ -243,10 +243,10 @@ input[type="time"], input[type="date"] { width:100%; padding:12px 14px; backgrou
       <div class="page_sub" id="dash_data"></div>
     </div>
     <div class="stats_grid">
-      <div class="stat_card"><div class="stat_label">Hoje</div><div class="stat_valor" id="stat_hoje">—</div><div class="stat_sub">agendamentos</div></div>
-      <div class="stat_card"><div class="stat_label">Semana</div><div class="stat_valor" id="stat_semana">—</div><div class="stat_sub">agendamentos</div></div>
-      <div class="stat_card"><div class="stat_label">Clientes</div><div class="stat_valor" id="stat_clientes">—</div><div class="stat_sub">registados</div></div>
-      <div class="stat_card"><div class="stat_label">Pendentes</div><div class="stat_valor" id="stat_pendentes">—</div><div class="stat_sub">a confirmar</div></div>
+      <div class="stat_card" onclick="ir_para('agenda')" style="cursor:pointer"><div class="stat_label">Hoje</div><div class="stat_valor" id="stat_hoje">—</div><div class="stat_sub">agendamentos</div></div>
+      <div class="stat_card" onclick="ir_para('agendamentos')" style="cursor:pointer"><div class="stat_label">Semana</div><div class="stat_valor" id="stat_semana">—</div><div class="stat_sub">agendamentos</div></div>
+      <div class="stat_card" onclick="ir_para('clientes')" style="cursor:pointer"><div class="stat_label">Clientes</div><div class="stat_valor" id="stat_clientes">—</div><div class="stat_sub">registados</div></div>
+      <div class="stat_card" onclick="ver_pendentes()" style="cursor:pointer"><div class="stat_label">Pendentes</div><div class="stat_valor" id="stat_pendentes">—</div><div class="stat_sub">a confirmar</div></div>
     </div>
     <div class="section_label">Próximos agendamentos</div>
     <div class="lista" id="lista_proximos"><div class="loading"><div class="spinner"></div></div></div>
@@ -829,6 +829,14 @@ function fechar_modal(id){document.getElementById(id).classList.remove('open')}
 document.querySelectorAll('.modal_overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}))
 
 // INIT
+function ver_pendentes(){
+  _filtro = 'pendente'
+  ir_para('agendamentos')
+  var chips = document.querySelectorAll('#page_agendamentos .filtro_chip')
+  chips.forEach(function(c){ c.classList.remove('active') })
+  if(chips[1]) chips[1].classList.add('active')
+}
+
 async function entrar_app(user){
   const{data:bar}=await db.from('barbearias').select('*').eq('user_id',user.id).maybeSingle()
   if(!bar){

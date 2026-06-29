@@ -43,3 +43,4 @@ yarn-error.*
 /ios
 /android
 .painel-stable.html
+.backup-ref.html

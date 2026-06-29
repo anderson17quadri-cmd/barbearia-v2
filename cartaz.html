@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cartaz QR — Agendamento.pt</title>
+<title>Cartaz QR — Agendado.pt</title>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
 <link rel="stylesheet" href="shared.css">
@@ -138,7 +138,7 @@ function desenhar(qr) {
   // === LOGO AGENDAMENTO.PT ===
   ctx.font = 'italic 700 32px Georgia, serif'
   ctx.textAlign = 'left'
-  var t1 = 'Agendamento'
+  var t1 = 'Agendado'
   var t2 = '.pt'
   var w1 = ctx.measureText(t1).width
   var w2 = ctx.measureText(t2).width
@@ -251,7 +251,7 @@ function desenhar(qr) {
     ctx.font = 'italic 700 18px Georgia, serif'
     ctx.textAlign = 'left'
     var r1 = 'Agenda'
-    var r2 = 'mento'
+    var r2 = 'do'
     var r3 = '.pt'
     var rw1 = ctx.measureText(r1).width
     var rw2 = ctx.measureText(r2).width
@@ -286,7 +286,7 @@ async function guardar() {
 
 async function partilhar() {
   if(navigator.share) {
-    await navigator.share({ title: 'Agendamento.pt — ' + barb_nome, text: 'Marca o teu próximo corte online!', url: link_url })
+    await navigator.share({ title: 'Agendado.pt — ' + barb_nome, text: 'Marca o teu próximo corte online!', url: link_url })
   } else { guardar() }
 }
 init_cartaz()
