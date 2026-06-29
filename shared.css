@@ -66,7 +66,7 @@ input, textarea, select, button { font-family:'Inter',sans-serif; }
   font-size:13px; font-weight:600; position:relative; overflow:hidden; transition:background var(--transition), transform var(--transition), box-shadow var(--transition);
   display:inline-flex; align-items:center; gap:6px;
 }
-.btn:active { transform:scale(.95); }
+.btn:active { transform:scale(.95); } .btn { -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
 .btn_gold { background:var(--accent); color:#000; }
 .btn_gold:active { background:var(--accent2); }
 .btn_outline { background:transparent; border:1px solid var(--border); color:var(--text2); }
