@@ -212,6 +212,7 @@ input[type="time"], input[type="date"] { width:100%; padding:12px 14px; backgrou
       <div class="field"><label>Email</label><input type="email" id="login_email" placeholder="o@teu.email" autocomplete="email"></div>
       <div class="field"><label>Password</label><input type="password" id="login_pass" placeholder="••••••••"></div>
       <button class="btn_primary" onclick="fazer_login()">Entrar no painel</button>
+      <div style="text-align:center;margin-top:12px"><a href="#" onclick="recuperar_password();return false" style="color:var(--text2);font-size:13px;text-decoration:underline">Esqueci-me da password</a></div>
       <div class="msg_erro" id="erro_login"></div>
     </div>
     <div id="form_registro" style="display:none">
@@ -485,6 +486,15 @@ function trocar_tab(t) {
   document.getElementById('form_login').style.display = t==='login'?'block':'none'
   document.getElementById('form_registro').style.display = t==='registro'?'block':'none'
   document.querySelectorAll('.tab_auth').forEach((el,i) => el.classList.toggle('active',(t==='login'&&i===0)||(t==='registro'&&i===1)))
+}
+
+async function recuperar_password() {
+  var email = document.getElementById('login_email').value.trim()
+  var erro = document.getElementById('erro_login')
+  if(!email) { erro.textContent='Escreve o teu email primeiro.'; erro.style.display='block'; return }
+  var { error } = await db.auth.resetPasswordForEmail(email, { redirectTo: 'https://agendado.pt/painel.html' })
+  if(error) { erro.textContent='Erro: '+error.message; erro.style.display='block'; return }
+  erro.style.color='#2ecc71'; erro.textContent='Email de recuperacao enviado! Verifica a tua caixa.'; erro.style.display='block'
 }
 
 async function fazer_login() {
@@ -915,7 +925,15 @@ function ir_subscrever(){
 async function init(){
   const{data:{session}}=await db.auth.getSession()
   if(session) await entrar_app(session.user)
-  db.auth.onAuthStateChange(async(_,session)=>{
+  db.auth.onAuthStateChange(async(evento,session)=>{
+    if(evento==='PASSWORD_RECOVERY'){
+      var nova = prompt('Define a tua nova password (minimo 6 caracteres):')
+      if(nova && nova.length>=6){
+        var { error } = await db.auth.updateUser({ password: nova })
+        alert(error ? ('Erro: '+error.message) : 'Password alterada! Ja podes entrar.')
+      }
+      return
+    }
     if(session) await entrar_app(session.user)
     else{document.getElementById('tela_app').style.display='none';document.getElementById('tela_auth').style.display='flex'}
   })
