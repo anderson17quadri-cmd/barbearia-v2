@@ -210,16 +210,16 @@ input[type="time"], input[type="date"] { width:100%; padding:12px 14px; backgrou
     </div>
     <div id="form_login">
       <div class="field"><label>Email</label><input type="email" id="login_email" placeholder="o@teu.email" autocomplete="email"></div>
-      <div class="field"><label>Password</label><input type="password" id="login_pass" placeholder="••••••••"></div>
+      <div class="field"><label>Password</label><input type="password" id="login_pass" placeholder="••••••••" autocomplete="current-password"></div>
       <button class="btn_primary" onclick="fazer_login()">Entrar no painel</button>
       <div style="text-align:center;margin-top:12px"><a href="#" onclick="recuperar_password();return false" style="color:var(--text2);font-size:13px;text-decoration:underline">Esqueci-me da password</a></div>
       <div class="msg_erro" id="erro_login"></div>
     </div>
     <div id="form_registro" style="display:none">
       <div class="field"><label>Nome da barbearia</label><input type="text" id="reg_nome" placeholder="Barbearia do João"></div>
-      <div class="field"><label>Email</label><input type="email" id="reg_email" placeholder="o@teu.email"></div>
+      <div class="field"><label>Email</label><input type="email" id="reg_email" placeholder="o@teu.email" autocomplete="email"></div>
       <div class="field"><label>Telefone</label><input type="tel" id="reg_tel" placeholder="+351 912 345 678"></div>
-      <div class="field"><label>Password</label><input type="password" id="reg_pass" placeholder="mínimo 6 caracteres"></div>
+      <div class="field"><label>Password</label><input type="password" id="reg_pass" placeholder="mínimo 6 caracteres" autocomplete="new-password"></div>
       <button class="btn_primary" onclick="fazer_registro()">Criar conta gratuita</button>
       <div class="msg_erro" id="erro_reg"></div>
       <div class="msg_ok" id="ok_reg"></div>
