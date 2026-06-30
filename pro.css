@@ -336,3 +336,11 @@ body::after {
     transform: none !important;
   }
 }
+
+
+/* FIX MOBILE 2: botoes pequenos (Sair, etc) nao crescem ao tocar */
+@media (hover:none), (pointer:coarse) {
+  .btn:hover, .btn_sm:hover, .btn_outline:hover, .topbar_right .btn:hover {
+    transform: none !important;
+  }
+}

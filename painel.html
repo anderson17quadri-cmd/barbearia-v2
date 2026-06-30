@@ -596,7 +596,7 @@ async function carregar_agenda(){
   document.getElementById('agenda_data_label').textContent=fmt_data(d)
   const{data}=await db.from('agendamentos').select('*,servicos(nome),profissionais(nome),clientes(nome,telefone)').eq('barbearia_id',barbearia_id).eq('data',d).order('hora_inicio')
   const el=document.getElementById('agenda_visual')
-  if(!(data||[]).length){el.innerHTML='<div class="empty"><div class="empty_ico">🗓️</div><div class="empty_txt">Sem agendamentos</div></div>';return}
+  if(!(data||[]).length){el.innerHTML='<div class="empty"><div class="empty_ico"><svg class="ic" width="1.2em" height="1.2em"><use href="#ic-calendar"/></svg></div><div class="empty_txt">Sem agendamentos</div></div>';return}
   el.innerHTML=(data||[]).map(a=>`<div class="card_item">
     <div class="card_item_header"><div><div class="card_item_nome">${fmt_hora(a.hora_inicio)}${a.hora_fim?' - '+fmt_hora(a.hora_fim):''} · ${esc(a.clientes?.nome||'Cliente')}</div><div class="card_item_info">${esc(a.servicos?.nome||'—')} · ${esc(a.profissionais?.nome||'Qualquer')}</div></div>${badge(a.status)}</div>
     <div class="card_item_info" style="margin-top:4px;color:var(--text2)">${esc(a.clientes?.telefone||'')}</div>
@@ -899,7 +899,7 @@ async function entrar_app(user){
     mostrar_bloqueio_trial()
     return
   }
-  if(estado && estado.ok && !estado.plano_ativo && estado.dias_restantes <= 7) {
+  if(estado && estado.ok && !estado.plano_ativo && estado.dias_restantes <= 5) {
     var aviso = document.getElementById('aviso_trial')
     if(aviso) {
       aviso.style.display = 'block'
