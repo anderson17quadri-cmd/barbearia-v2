@@ -473,7 +473,7 @@ function toast(msg, tipo='ok') {
   t.textContent = msg; t.className = 'toast show ' + tipo
   setTimeout(() => t.className = 'toast', 2500)
 }
-function fmt_data(d) { return new Date(d+'T12:00:00').toLocaleDateString('pt-PT',{weekday:'short',day:'numeric',month:'short'}) }
+function fmt_data(d) { if(!d) return '—'; var dt=new Date(d+'T12:00:00'); return isNaN(dt)?'—':dt.toLocaleDateString('pt-PT',{weekday:'short',day:'numeric',month:'short'}) }
 function fmt_hora(h) { return h ? h.substring(0,5) : '—' }
 function fmt_preco(v) { return v ? '€'+parseFloat(v).toFixed(2) : '—' }
 function badge(s) {
@@ -810,7 +810,8 @@ function ver_qr() {
 function preview_logo(input) {
   const file = input.files[0]
   if(!file) return
-  if(file.size > 3 * 1024 * 1024) { toast('Imagem demasiado grande. Máx 3MB', 'erro'); return }
+  if(!file.type.startsWith('image/')) { toast('Escolhe um ficheiro de imagem (JPG ou PNG)', 'erro'); input.value=''; return }
+  if(file.size > 3 * 1024 * 1024) { toast('Imagem demasiado grande. Máx 3MB', 'erro'); input.value=''; return }
   const reader = new FileReader()
   reader.onload = (e) => {
     const preview = document.getElementById('logo_preview')

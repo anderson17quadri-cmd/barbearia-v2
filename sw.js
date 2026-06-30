@@ -1,15 +1,16 @@
-var CACHE = 'barbearia-v2-v1'
+var CACHE = 'agendado-v2'
 var ASSETS = [
-  '/barbearia-v2/',
-  '/barbearia-v2/index.html',
-  '/barbearia-v2/landing.html',
-  '/barbearia-v2/cliente.html',
-  '/barbearia-v2/painel.html',
-  '/barbearia-v2/cartaz.html',
-  '/barbearia-v2/shared.css',
-  '/barbearia-v2/shared.js',
-  '/barbearia-v2/config.js',
-  '/barbearia-v2/manifest.json'
+  '/',
+  '/index.html',
+  '/landing.html',
+  '/cliente.html',
+  '/painel.html',
+  '/cartaz.html',
+  '/shared.css',
+  '/pro.css',
+  '/shared.js',
+  '/config.js',
+  '/manifest.json'
 ]
 
 self.addEventListener('install', function(e) {
@@ -32,21 +33,20 @@ self.addEventListener('activate', function(e) {
   self.clients.claim()
 })
 
+// NETWORK-FIRST: busca sempre a versao nova; usa cache so se estiver offline
 self.addEventListener('fetch', function(e) {
   if (e.request.method !== 'GET') return
-  
   e.respondWith(
-    caches.match(e.request).then(function(cached) {
-      var fetched = fetch(e.request).then(function(res) {
-        if (res && res.status === 200) {
-          var clone = res.clone()
-          caches.open(CACHE).then(function(cache) { cache.put(e.request, clone) })
-        }
-        return res
-      }).catch(function() {
-        return cached || new Response('Offline', {status:503})
+    fetch(e.request).then(function(res) {
+      if (res && res.status === 200) {
+        var clone = res.clone()
+        caches.open(CACHE).then(function(cache) { cache.put(e.request, clone) })
+      }
+      return res
+    }).catch(function() {
+      return caches.match(e.request).then(function(cached) {
+        return cached || new Response('Offline', { status: 503 })
       })
-      return cached || fetched
     })
   )
 })
