@@ -679,7 +679,9 @@ function editar_servico(id,nome,desc,preco,dur){
 }
 async function guardar_servico(){
   const id=document.getElementById('srv_id').value
-  const dados={barbearia_id,nome:document.getElementById('srv_nome').value,descricao:document.getElementById('srv_desc').value,preco:parseFloat(document.getElementById('srv_preco').value)||0,duracao:parseInt(document.getElementById('srv_duracao').value)||30}
+  const nome_srv=document.getElementById('srv_nome').value.trim()
+  if(!nome_srv){ toast('Escreve o nome do servico','erro'); return }
+  const dados={barbearia_id,nome:nome_srv,descricao:document.getElementById('srv_desc').value.trim(),preco:parseFloat(document.getElementById('srv_preco').value)||0,duracao:parseInt(document.getElementById('srv_duracao').value)||30}
   if(id) await db.from('servicos').update(dados).eq('id',id)
   else await db.from('servicos').insert(dados)
   fechar_modal('modal_servico'); toast('Serviço guardado!'); carregar_servicos()
@@ -717,7 +719,9 @@ function editar_profissional(id,nome,esp,tel){
 }
 async function guardar_profissional(){
   const id=document.getElementById('prof_id').value
-  const dados={barbearia_id,nome:document.getElementById('prof_nome').value,especialidade:document.getElementById('prof_esp').value,telefone:document.getElementById('prof_tel').value}
+  const nome_prof=document.getElementById('prof_nome').value.trim()
+  if(!nome_prof){ toast('Escreve o nome do profissional','erro'); return }
+  const dados={barbearia_id,nome:nome_prof,especialidade:document.getElementById('prof_esp').value.trim(),telefone:document.getElementById('prof_tel').value.trim()}
   if(id) await db.from('profissionais').update(dados).eq('id',id)
   else await db.from('profissionais').insert(dados)
   fechar_modal('modal_profissional'); toast('Profissional guardado!'); carregar_profissionais()

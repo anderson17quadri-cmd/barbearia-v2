@@ -7,7 +7,7 @@
 
   var colors = ['#C9A84C','#E8C96A','#FFD700','#B8942E','#D4AF37','#F5D76E']
   var container = document.createElement('div')
-  container.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden'
+  container.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden'
   document.body.insertBefore(container, document.body.firstChild)
   
   for (var i = 0; i < 40; i++) {
