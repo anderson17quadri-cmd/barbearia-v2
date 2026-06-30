@@ -922,18 +922,34 @@ function ir_subscrever(){
   window.location.href = 'https://agendado.pt/index.html'
 }
 
+async function tratar_recovery(){
+  var nova = prompt('Define a tua nova password (minimo 6 caracteres):')
+  while(nova !== null && nova.length < 6){ nova = prompt('Muito curta. Minimo 6 caracteres:') }
+  if(nova){
+    var { error } = await db.auth.updateUser({ password: nova })
+    if(error){ alert('Erro: '+error.message); return }
+    alert('Password alterada com sucesso!')
+  }
+  // limpar o hash de recovery do URL e entrar normalmente
+  history.replaceState(null,'',location.pathname)
+  var{data:{session}}=await db.auth.getSession()
+  if(session) await entrar_app(session.user)
+}
+
 async function init(){
+  var hash = window.location.hash || ''
+  var is_recovery = hash.indexOf('type=recovery') !== -1
+  if(is_recovery){
+    // espera o Supabase processar o token antes de pedir nova password
+    db.auth.onAuthStateChange(async(evento)=>{
+      if(evento==='PASSWORD_RECOVERY') await tratar_recovery()
+    })
+    return
+  }
   const{data:{session}}=await db.auth.getSession()
   if(session) await entrar_app(session.user)
   db.auth.onAuthStateChange(async(evento,session)=>{
-    if(evento==='PASSWORD_RECOVERY'){
-      var nova = prompt('Define a tua nova password (minimo 6 caracteres):')
-      if(nova && nova.length>=6){
-        var { error } = await db.auth.updateUser({ password: nova })
-        alert(error ? ('Erro: '+error.message) : 'Password alterada! Ja podes entrar.')
-      }
-      return
-    }
+    if(evento==='PASSWORD_RECOVERY'){ await tratar_recovery(); return }
     if(session) await entrar_app(session.user)
     else{document.getElementById('tela_app').style.display='none';document.getElementById('tela_auth').style.display='flex'}
   })
