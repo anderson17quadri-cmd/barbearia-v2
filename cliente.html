@@ -883,7 +883,11 @@ async function carregar_marcacoes() {
 
 async function cancelar_marcacao(id) {
   if(!confirm('Cancelar esta marcação?')) return
-  await db.from('agendamentos').update({status:'cancelado'}).eq('id',id)
+  var email = user_atual ? (user_atual.email || localStorage.getItem('cliente_email') || '') : (localStorage.getItem('cliente_email') || '')
+  var tel = localStorage.getItem('cliente_tel') || ''
+  var { data: r, error } = await db.rpc('cancelar_minha', { p_id: id, p_email: email, p_tel: tel })
+  if(error) { toast('Erro ao cancelar: '+error.message, 'erro'); return }
+  if(!r || !r.ok) { toast('Não foi possível cancelar esta marcação', 'erro'); return }
   toast('Marcação cancelada!'); carregar_marcacoes()
 }
 

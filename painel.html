@@ -226,6 +226,16 @@ input[type="time"], input[type="date"] { width:100%; padding:12px 14px; backgrou
   </div>
 </div>
 
+<!-- BLOQUEIO TRIAL -->
+<div id="tela_bloqueio" style="display:none;min-height:100vh;display:none;align-items:center;justify-content:center;padding:24px;text-align:center;flex-direction:column">
+  <div style="max-width:420px">
+    <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:900;margin-bottom:8px">O teu trial terminou</div>
+    <div style="color:var(--text2);font-size:15px;margin-bottom:24px">Os 30 dias grátis chegaram ao fim. Subscreve um plano para continuares a receber marcações e a gerir a tua barbearia.</div>
+    <button class="btn btn_gold btn_full" onclick="ir_subscrever()">Ver planos e subscrever</button>
+    <button class="btn btn_outline btn_full" style="margin-top:10px" onclick="sair()">Sair</button>
+  </div>
+</div>
+
 <!-- APP -->
 <div id="tela_app">
   <div class="topbar">
@@ -238,6 +248,7 @@ input[type="time"], input[type="date"] { width:100%; padding:12px 14px; backgrou
 
   <!-- DASHBOARD -->
   <div class="page active" id="page_dashboard">
+    <div id="aviso_trial" style="display:none;background:rgba(232,144,67,.12);border:1px solid rgba(232,144,67,.4);color:#e89043;border-radius:10px;padding:12px;font-size:13px;margin-bottom:16px;font-weight:600"></div>
     <div class="page_header" style="padding-top:16px">
       <div class="page_titulo">Dashboard</div>
       <div class="page_sub" id="dash_data"></div>
@@ -871,9 +882,33 @@ async function entrar_app(user){
   const el = document.getElementById('meu_link')
   if(el) el.textContent = link
   }
+  // Verificar estado da subscrição (trial / plano)
+  var { data: estado } = await db.rpc('estado_conta')
+  if(estado && estado.ok && !estado.acesso) {
+    mostrar_bloqueio_trial()
+    return
+  }
+  if(estado && estado.ok && !estado.plano_ativo && estado.dias_restantes <= 7) {
+    var aviso = document.getElementById('aviso_trial')
+    if(aviso) {
+      aviso.style.display = 'block'
+      aviso.textContent = 'Faltam ' + estado.dias_restantes + ' dia(s) de trial. Subscreve para não perderes o acesso.'
+    }
+  }
   document.getElementById('tela_auth').style.display='none'
   document.getElementById('tela_app').style.display='block'
   carregar_dashboard()
+}
+
+function mostrar_bloqueio_trial(){
+  document.getElementById('tela_auth').style.display='none'
+  document.getElementById('tela_app').style.display='none'
+  var b = document.getElementById('tela_bloqueio')
+  if(b) b.style.display='block'
+}
+
+function ir_subscrever(){
+  window.location.href = 'https://agendado.pt/index.html'
 }
 
 async function init(){
