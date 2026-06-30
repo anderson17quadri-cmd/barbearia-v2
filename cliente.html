@@ -418,7 +418,7 @@ function toast(msg, tipo='ok') {
   t.textContent = msg; t.className = 'toast show ' + tipo
   setTimeout(() => t.className = 'toast', 2500)
 }
-function fmt_data(d) { return new Date(d+'T12:00:00').toLocaleDateString('pt-PT',{weekday:'long',day:'numeric',month:'long'}) }
+function fmt_data(d) { if(!d) return '—'; var dt=new Date(d+'T12:00:00'); return isNaN(dt)?'—':dt.toLocaleDateString('pt-PT',{weekday:'long',day:'numeric',month:'long'}) }
 function fmt_preco(v) { return v ? '€'+parseFloat(v).toFixed(2) : 'Grátis' }
 function badge(s) {
   var m ={pendente:'badge_pendente',confirmado:'badge_confirmado',cancelado:'badge_cancelado',concluido:'badge_concluido'}

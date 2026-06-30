@@ -404,6 +404,16 @@ input[type="time"], input[type="date"] { width:100%; padding:12px 14px; backgrou
   </div>
 
   <!-- MODAL QR CODE -->
+  <div class="modal_overlay" id="modal_recovery">
+    <div class="modal">
+      <div class="modal_handle"></div>
+      <div class="modal_titulo">Define a tua nova password</div>
+      <div class="field"><label>Nova password</label><input type="password" id="rec_pass" placeholder="minimo 6 caracteres" autocomplete="new-password"></div>
+      <div class="msg_erro" id="rec_erro"></div>
+      <button class="btn btn_gold btn_full" style="margin-top:8px" onclick="confirmar_nova_password()">Guardar password</button>
+    </div>
+  </div>
+
   <div class="modal_overlay" id="modal_qr">
     <div class="modal" style="text-align:center">
       <div class="modal_handle"></div>
@@ -755,8 +765,12 @@ function toggle_dia(i){
   hrs.style.pointerEvents=horarios_data[i].ativo?'all':'none'
 }
 async function guardar_horarios(){
+  const DIAS_NOME=['Domingo','Segunda','Terca','Quarta','Quinta','Sexta','Sabado']
   for(let i=0;i<7;i++){
-    const dados={barbearia_id,dia_semana:i,ativo:horarios_data[i].ativo,hora_inicio:document.getElementById('hi_'+i)?.value||'09:00',hora_fim:document.getElementById('hf_'+i)?.value||'19:00'}
+    const hi=document.getElementById('hi_'+i)?.value||'09:00'
+    const hf=document.getElementById('hf_'+i)?.value||'19:00'
+    if(horarios_data[i].ativo && hf<=hi){ toast(DIAS_NOME[i]+': a hora de fecho tem de ser depois da abertura','erro'); return }
+    const dados={barbearia_id,dia_semana:i,ativo:horarios_data[i].ativo,hora_inicio:hi,hora_fim:hf}
     const{data}=await db.from('horarios').select('id').eq('barbearia_id',barbearia_id).eq('dia_semana',i)
     if(data&&data.length) await db.from('horarios').update(dados).eq('barbearia_id',barbearia_id).eq('dia_semana',i)
     else await db.from('horarios').insert(dados)
@@ -923,15 +937,18 @@ function ir_subscrever(){
   window.location.href = 'https://agendado.pt/index.html'
 }
 
-async function tratar_recovery(){
-  var nova = prompt('Define a tua nova password (minimo 6 caracteres):')
-  while(nova !== null && nova.length < 6){ nova = prompt('Muito curta. Minimo 6 caracteres:') }
-  if(nova){
-    var { error } = await db.auth.updateUser({ password: nova })
-    if(error){ alert('Erro: '+error.message); return }
-    alert('Password alterada com sucesso!')
-  }
-  // limpar o hash de recovery do URL e entrar normalmente
+function tratar_recovery(){
+  document.getElementById('modal_recovery').classList.add('open')
+}
+async function confirmar_nova_password(){
+  var nova = document.getElementById('rec_pass').value
+  var err = document.getElementById('rec_erro')
+  err.style.display='none'
+  if(!nova || nova.length < 6){ err.textContent='Minimo 6 caracteres.'; err.style.display='block'; return }
+  var { error } = await db.auth.updateUser({ password: nova })
+  if(error){ err.textContent='Erro: '+error.message; err.style.display='block'; return }
+  document.getElementById('modal_recovery').classList.remove('open')
+  toast('Password alterada com sucesso!')
   history.replaceState(null,'',location.pathname)
   var{data:{session}}=await db.auth.getSession()
   if(session) await entrar_app(session.user)
