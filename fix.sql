@@ -152,3 +152,62 @@ DROP POLICY IF EXISTS "Agendamentos - insert publico" ON agendamentos;
 DROP POLICY IF EXISTS "Agendamentos - select publico" ON agendamentos;
 DROP POLICY IF EXISTS "Agendamentos - gestao pelo dono" ON agendamentos;
 CREATE POLICY "Agendamentos - gestao pelo dono" ON agendamentos FOR ALL USING (EXISTS (SELECT 1 FROM barbearias WHERE id = agendamentos.barbearia_id AND user_id = auth.uid())) WITH CHECK (EXISTS (SELECT 1 FROM barbearias WHERE id = agendamentos.barbearia_id AND user_id = auth.uid()));
+
+
+-- ═══════════════════════════════════════════════════════════
+-- ─── 6. TRIAL / SUBSCRIÇÃO (adicionado pós-lançamento) ───
+-- ═══════════════════════════════════════════════════════════
+
+-- 6a. Colunas de trial e plano
+ALTER TABLE barbearias ADD COLUMN IF NOT EXISTS trial_inicio timestamptz DEFAULT now();
+ALTER TABLE barbearias ADD COLUMN IF NOT EXISTS plano_ativo boolean NOT NULL DEFAULT false;
+
+-- 6b. Uma barbearia por conta (impede duplicados)
+ALTER TABLE barbearias DROP CONSTRAINT IF EXISTS uniq_user_barbearia;
+ALTER TABLE barbearias ADD CONSTRAINT uniq_user_barbearia UNIQUE (user_id);
+
+-- 6c. estado_conta — devolve dias de trial restantes (15 dias) e acesso
+CREATE OR REPLACE FUNCTION estado_conta()
+RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path = ''
+AS $$
+DECLARE v_inicio timestamptz; v_ativo boolean; v_dias int; v_restantes int;
+BEGIN
+  SELECT trial_inicio, plano_ativo INTO v_inicio, v_ativo
+  FROM barbearias WHERE user_id = auth.uid() LIMIT 1;
+  IF v_inicio IS NULL THEN RETURN jsonb_build_object('ok', false, 'motivo', 'sem_barbearia'); END IF;
+  v_dias := EXTRACT(DAY FROM (now() - v_inicio))::int;
+  v_restantes := GREATEST(0, 15 - v_dias);
+  RETURN jsonb_build_object('ok', true, 'plano_ativo', v_ativo, 'dias_restantes', v_restantes, 'acesso', (v_ativo OR v_restantes > 0));
+END; $$;
+
+-- 6d. cancelar_minha — cancelamento seguro pelo cliente (valida email/tel)
+CREATE OR REPLACE FUNCTION cancelar_minha(p_id uuid, p_email text DEFAULT '', p_tel text DEFAULT '')
+RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path = ''
+AS $$
+DECLARE v_ok boolean;
+BEGIN
+  SELECT EXISTS (
+    SELECT 1 FROM agendamentos a
+    JOIN clientes c ON c.id = a.cliente_id
+    WHERE a.id = p_id AND a.status = 'pendente'
+      AND ((p_email != '' AND c.email = p_email) OR (p_tel != '' AND c.telefone = p_tel))
+  ) INTO v_ok;
+  IF NOT v_ok THEN RETURN jsonb_build_object('ok', false); END IF;
+  UPDATE agendamentos SET status = 'cancelado' WHERE id = p_id;
+  RETURN jsonb_build_object('ok', true);
+END; $$;
+
+-- 6e. ativar_plano — chamada pelo webhook Stripe (só service_role)
+CREATE OR REPLACE FUNCTION ativar_plano(p_email text)
+RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path = ''
+AS $$
+BEGIN
+  UPDATE barbearias SET plano_ativo = true
+  WHERE user_id = (SELECT id FROM auth.users WHERE email = p_email LIMIT 1);
+  RETURN jsonb_build_object('ok', true);
+END; $$;
+
+-- 6f. Grants (estado_conta e cancelar_minha p/ clientes; ativar_plano NÃO p/ anon)
+GRANT EXECUTE ON FUNCTION estado_conta() TO authenticated;
+GRANT EXECUTE ON FUNCTION cancelar_minha(uuid, text, text) TO anon, authenticated;
+-- ativar_plano: sem grant a anon/authenticated (só service_role via webhook)
