@@ -517,6 +517,7 @@ async function fazer_registro() {
     const { data: barb_exist } = await db.from('barbearias').select('id').eq('user_id', data.user.id).maybeSingle()
     if (!barb_exist) {
       await db.from('barbearias').insert({ user_id:data.user.id, nome, email, telefone:tel, ativo:true })
+      try { await db.functions.invoke('welcome-email', { body: { email, nome } }) } catch(e) {}
     }
     ok.textContent='Conta criada! A entrar...'; ok.style.display='block'
     setTimeout(() => fazer_login(), 1000)
