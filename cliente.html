@@ -781,8 +781,13 @@ async function confirmar_marcacao() {
   if(!hora_selecionada) { toast('Escolhe uma hora primeiro', 'erro'); return }
 
   var prof_id = prof_selecionado?.id === 'qualquer' ? null : prof_selecionado?.id
-  var nome = user_atual ? (localStorage.getItem('cliente_nome') || 'Cliente') : (document.getElementById('nome_sem_conta')?.value || 'Cliente')
-  var tel = user_atual ? (localStorage.getItem('cliente_tel') || '') : (document.getElementById('tel_sem_conta')?.value || '')
+  var nome = user_atual ? (localStorage.getItem('cliente_nome') || 'Cliente') : (document.getElementById('nome_sem_conta')?.value || '').trim()
+  var tel = user_atual ? (localStorage.getItem('cliente_tel') || '') : (document.getElementById('tel_sem_conta')?.value || '').trim()
+
+  if(!user_atual) {
+    if(!nome) { toast('Escreve o teu nome', 'erro'); return }
+    if(tel.replace(/\D/g,'').length < 9) { toast('Escreve um telemóvel válido', 'erro'); return }
+  }
   var email = user_atual ? (user_atual.email || localStorage.getItem('cliente_email') || '') : ''
 
   var { data: result, error } = await db.rpc('marcar', {
